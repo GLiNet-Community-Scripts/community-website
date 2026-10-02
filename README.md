@@ -68,25 +68,25 @@ the workflow run, so new projects don't go unnoticed.
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds and publishes the site on every push
-to `main`, every night at 04:41 UTC and on manual dispatch.
-`.github/workflows/ci.yml` runs the same build on pull requests.
+GitHub Pages is published by GitHub Actions, there is no `gh-pages`
+branch. `.github/workflows/deploy.yml` builds and publishes the site on
+every push to the default branch (whatever it is called), every night at
+04:41 UTC and on manual dispatch. `.github/workflows/ci.yml` runs the same
+build on pull requests.
 
 One-time setup:
 
-1. **Default branch:** this repository started empty, so the first pushed
-   branch became the default. Create `main` from it and make `main` the
-   default branch (Settings → General). Scheduled runs only happen on the
-   default branch.
-2. **Settings → Pages:** Source **GitHub Actions**, custom domain
+1. **Settings → Pages:** Source **GitHub Actions**, custom domain
    `gl-i.net`, then **Enforce HTTPS** once the certificate is issued.
-3. **DNS for `gl-i.net`** (apex domain):
+   Runs before this step fail at "Configure Pages"; start one again via
+   Actions → Deploy to GitHub Pages → Run workflow.
+2. **DNS for `gl-i.net`** (apex domain):
    - `A` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`,
      `185.199.111.153`
    - `AAAA` → `2606:50c0:8000::153`, `2606:50c0:8001::153`,
      `2606:50c0:8002::153`, `2606:50c0:8003::153`
    - optional `CNAME www` → `glinet-community-scripts.github.io`
-4. Recommended: verify `gl-i.net` for the organization
+3. Recommended: verify `gl-i.net` for the organization
    (Organization settings → Pages → Add a domain) so no other account can
    claim it.
 
