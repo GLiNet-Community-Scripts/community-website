@@ -24,7 +24,8 @@ Same approach as [apps.admon.me](https://github.com/admonstrator/apps-admon-me-w
   message.
 - A scheduled GitHub Action rebuilds the site every night and pulls stars,
   the latest release (or tag) and the last update for every repository from
-  the GitHub API. New repositories in the organization without a YAML entry
+  the GitHub API. Stars and "Recently updated" come from the original
+  repository, not from the synced copy in the organization. New repositories in the organization without a YAML entry
   are reported, so nothing appears without a reviewed description.
 - Privacy: no cookies, no analytics, no requests to third parties at view
   time. Fonts use the system stack; should a web font ever be needed, the

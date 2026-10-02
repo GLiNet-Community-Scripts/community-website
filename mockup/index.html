@@ -34,6 +34,15 @@
   --mute-bg: rgba(93, 106, 100, 0.12);
   --tile-ring: rgba(0, 0, 0, 0.07);
   --overlay: rgba(10, 20, 15, 0.38);
+  --on-accent: #ffffff;
+  --term-bg: #13201a;
+  --term-fg: #e4ede8;
+  --term-dim: #8ba197;
+  --term-prompt: #6fdca5;
+  --term-line: rgba(255, 255, 255, 0.09);
+  --term-btn: rgba(255, 255, 255, 0.1);
+  --term-ph-bg: rgba(255, 179, 64, 0.22);
+  --term-ph-fg: #ffd28a;
 
   --radius-card: 18px;
   --radius-tile: 22.5%;
@@ -63,6 +72,9 @@
     --mute-bg: rgba(155, 166, 161, 0.15);
     --tile-ring: rgba(255, 255, 255, 0.09);
     --overlay: rgba(0, 0, 0, 0.6);
+    --on-accent: #04140c;
+    --term-bg: #0c120f;
+    --term-line: rgba(255, 255, 255, 0.1);
     color-scheme: dark;
   }
 }
@@ -86,6 +98,9 @@
   --mute-bg: rgba(155, 166, 161, 0.15);
   --tile-ring: rgba(255, 255, 255, 0.09);
   --overlay: rgba(0, 0, 0, 0.6);
+  --on-accent: #04140c;
+  --term-bg: #0c120f;
+  --term-line: rgba(255, 255, 255, 0.1);
   color-scheme: dark;
 }
 
@@ -217,33 +232,26 @@ button { font: inherit; color: inherit; }
 .grid { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
 .empty { margin-top: 40px; padding: 48px 24px; text-align: center; color: var(--text-2); background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-card); }
 
-/* ── featured ──────────────────────────────────────────────── */
-.featured { margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.feature {
-  position: relative;
-  border-radius: var(--radius-card);
-  padding: 24px;
-  color: #fff;
-  overflow: hidden;
-  display: flex; flex-direction: column; gap: 14px;
-  cursor: pointer;
-  text-align: left;
-  border: 0;
-  min-height: 236px;
-  transition: transform .3s cubic-bezier(.2,.6,.2,1);
-}
-.feature:hover { transform: translateY(-3px); text-decoration: none; }
-.feature::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,.28)); pointer-events: none; }
-.feature > * { position: relative; z-index: 1; }
-.feature .rank { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
-.feature .top { display: flex; align-items: center; gap: 14px; }
-.feature .tile { box-shadow: inset 0 0 0 1px rgba(255,255,255,.25); background: rgba(255,255,255,.16) !important; }
-.feature h3 { font-size: 21px; }
-.feature .by { font-size: 13.5px; color: inherit; opacity: .85; }
-.feature p.desc { font-size: 15px; line-height: 1.5; color: inherit; opacity: .93; }
-.feature .foot { margin-top: auto; display: flex; gap: 14px; font-size: 13.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.feature .foot span { display: inline-flex; align-items: center; gap: 5px; }
-.feature .foot svg { width: 14px; height: 14px; fill: currentColor; }
+/* ── charts ────────────────────────────────────────────────── */
+.charts { margin-top: 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.chart { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--card-shadow); padding: 22px 22px 6px; min-width: 0; }
+.chart-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.chart h2 { font-size: 22px; }
+.chart ol { margin: 8px 0 0; padding: 0; list-style: none; }
+.chart li { display: flex; align-items: center; gap: 14px; padding-block: 12px; min-width: 0; }
+.chart li + li { border-top: 1px solid var(--border); }
+.lead-col { flex: none; width: 30px; text-align: center; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.lead-col.rank { font-size: 18px; font-weight: 700; }
+.lead-col.when { display: flex; flex-direction: column; line-height: 1.05; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.lead-col.when b { font-size: 18px; color: var(--text); letter-spacing: 0; }
+.chart .text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.chart .name { all: unset; cursor: pointer; font-weight: 600; font-size: 15.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chart .name:hover { color: var(--accent); }
+.chart .name:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.chart .tl { font-size: 13.5px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chart .sub { margin-top: 2px; display: flex; gap: 10px; align-items: center; font-size: 12.5px; color: var(--text-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.chart .sub .stars { margin: 0; align-self: auto; font-size: 12.5px; }
+.mono { font-family: var(--font-mono); }
 
 /* ── card ──────────────────────────────────────────────────── */
 .card {
@@ -269,26 +277,32 @@ button { font: inherit; color: inherit; }
 .tagline { font-size: 15px; font-weight: 600; }
 .desc { font-size: 15px; line-height: 1.55; color: var(--text-2); }
 .card .desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.feature p.desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .pill { font-size: 12px; font-weight: 600; line-height: 1; padding: 5px 9px; border-radius: var(--radius-pill); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .pill.ver { color: var(--accent); background: var(--accent-soft); font-family: var(--font-mono); font-weight: 600; }
 .pill.beta, .pill.experimental { color: var(--warn); background: var(--warn-bg); }
 .pill.type { color: var(--info); background: var(--info-bg); }
 .pill.mute { color: var(--text-2); background: var(--mute-bg); font-weight: 500; }
-.install { display: flex; align-items: stretch; background: var(--surface-2); border-radius: 10px; min-width: 0; }
-.install code { flex: 1; min-width: 0; font-size: 12.5px; line-height: 1.4; padding: 9px 4px 9px 12px; white-space: nowrap; overflow-x: auto; scrollbar-width: none; }
-.install code::-webkit-scrollbar { display: none; }
-.install-note { font-size: 13.5px; color: var(--text-2); background: var(--surface-2); border-radius: 10px; padding: 8px 12px; }
-.card .install-note { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.copy { flex: none; border: 0; background: none; padding: 0 11px; cursor: pointer; color: var(--text-2); display: grid; place-items: center; border-radius: 0 10px 10px 0; }
-.copy:hover { color: var(--accent); }
-.copy svg { width: 16px; height: 16px; }
-.copy.done { color: var(--accent); }
-.card-foot { margin-top: auto; display: flex; align-items: center; gap: 16px; font-size: 14px; font-weight: 500; padding-top: 2px; }
-.card-foot .details { border: 0; background: var(--accent-soft); color: var(--accent); font-weight: 600; font-size: 13.5px; border-radius: var(--radius-pill); padding: 6px 14px; cursor: pointer; }
-.card-foot .details:hover { filter: brightness(1.08); }
-.card-foot .updated { margin-left: auto; font-size: 12.5px; color: var(--text-2); font-weight: 400; }
+.card-foot { margin-top: auto; display: flex; align-items: center; gap: 8px; padding-top: 4px; }
+.btn-install, .btn-soft { flex: none; border: 0; cursor: pointer; font-weight: 650; font-size: 13.5px; border-radius: var(--radius-pill); padding: 7px 16px; white-space: nowrap; }
+.btn-install { background: var(--accent); color: var(--on-accent); }
+.btn-install.soft { background: var(--accent-soft); color: var(--accent); padding: 6px 15px; }
+.btn-install.lg { font-size: 14.5px; padding: 9px 20px; }
+.btn-install:hover { filter: brightness(1.08); text-decoration: none; }
+.btn-soft { background: var(--surface-2); color: var(--text); }
+.btn-soft:hover { color: var(--accent); }
+.card-foot .updated { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--text-2); white-space: nowrap; }
+.updated svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+/* ── terminal ──────────────────────────────────────────────── */
+.term { min-width: 0; border-radius: 12px; background: var(--term-bg); color: var(--term-fg); overflow: hidden; }
+.term-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 6px 6px 14px; border-bottom: 1px solid var(--term-line); font: 12px var(--font-mono); color: var(--term-dim); }
+.term-copy { border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font: 600 12.5px var(--font-sans); color: var(--term-fg); background: var(--term-btn); padding: 5px 11px; border-radius: 7px; }
+.term-copy:hover { color: var(--term-prompt); }
+.term-copy svg { width: 14px; height: 14px; }
+.term pre { margin: 0; padding: 13px 16px 14px; overflow-x: auto; font: 13px/1.7 var(--font-mono); white-space: pre; scrollbar-width: thin; scrollbar-color: var(--term-dim) transparent; }
+.term .ps { color: var(--term-prompt); user-select: none; }
+.term mark { background: var(--term-ph-bg); color: var(--term-ph-fg); border-radius: 4px; padding: 0 3px; }
 
 /* ── tile ──────────────────────────────────────────────────── */
 .tile { display: grid; place-items: center; border-radius: var(--radius-tile); flex: none; box-shadow: inset 0 0 0 1px var(--tile-ring); }
@@ -343,6 +357,7 @@ dialog {
   box-shadow: 0 30px 80px rgba(0,0,0,.25);
 }
 dialog::backdrop { background: var(--overlay); backdrop-filter: blur(4px); }
+.sheet:focus { outline: none; }
 .sheet { padding: 28px; display: flex; flex-direction: column; gap: 22px; }
 .sheet-head { display: flex; gap: 18px; align-items: center; }
 .sheet-head .heading { min-width: 0; flex: 1; }
@@ -361,13 +376,29 @@ dialog::backdrop { background: var(--overlay); backdrop-filter: blur(4px); }
 .features { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; font-size: 15px; }
 .features li { display: flex; gap: 10px; }
 .features svg { flex: none; width: 17px; height: 17px; margin-top: 3px; stroke: var(--accent); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-.sheet .install code { font-size: 13px; padding: 12px 4px 12px 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .sheet .hint { margin-top: 8px; font-size: 13.5px; color: var(--text-2); }
 .sheet .note { display: flex; gap: 10px; padding: 12px 14px; border-radius: 12px; background: var(--warn-bg); font-size: 14.5px; }
+.note details { margin-top: 6px; }
+.note summary { cursor: pointer; font-weight: 600; color: var(--warn); }
+.note details p { margin-top: 6px; }
 .sheet .note svg { flex: none; width: 18px; height: 18px; stroke: var(--warn); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-top: 2px; }
 .dev { display: flex; flex-wrap: wrap; gap: 6px; }
 .dev span { font-size: 13px; border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 4px 11px; }
-.sheet-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.sheet .sub-head { font-size: 13.5px; color: var(--text-2); margin-top: 2px; }
+.req { font-size: 14px; color: var(--text-2); }
+.req b { color: var(--text); font-weight: 600; }
+.isteps { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 22px; counter-reset: istep; }
+.istep { display: grid; grid-template-columns: 28px minmax(0, 1fr); column-gap: 14px; row-gap: 4px; }
+.istep::before { counter-increment: istep; content: counter(istep); grid-column: 1; grid-row: 1 / span 4; width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 14px; display: grid; place-items: center; }
+.istep > * { grid-column: 2; }
+.istep h3 { font-size: 16.5px; line-height: 28px; }
+.istep p { font-size: 14.5px; color: var(--text-2); }
+.istep .term { margin-top: 8px; }
+.manual { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.manual h3 { font-size: 17px; }
+.manual p { font-size: 15px; color: var(--text-2); }
+.manual .term { align-self: stretch; }
+.sheet-links { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .sheet-links a { font-size: 14px; font-weight: 600; border-radius: var(--radius-pill); padding: 8px 15px; background: var(--surface-2); color: var(--text); }
 .sheet-links a.primary { background: var(--accent); color: var(--bg); }
 .sheet-links a:hover { text-decoration: none; filter: brightness(1.06); }
@@ -386,8 +417,7 @@ dialog::backdrop { background: var(--overlay); backdrop-filter: blur(4px); }
 
 /* ── responsive ────────────────────────────────────────────── */
 @media (max-width: 900px) {
-  .featured { grid-template-columns: 1fr; }
-  .feature { min-height: 0; }
+  .charts { grid-template-columns: 1fr; }
   .steps, .duo { grid-template-columns: 1fr; }
 }
 @media (max-width: 700px) {
@@ -398,6 +428,7 @@ dialog::backdrop { background: var(--overlay); backdrop-filter: blur(4px); }
   .section h2 { font-size: 24px; }
   .grid { grid-template-columns: 1fr; }
   .sort span { display: none; }
+  .sort select { max-width: 124px; }
   .sheet-head { gap: 14px; }
   .sheet-head .tile.xl { width: 60px; height: 60px; }
   .sheet-head .tile.xl svg { width: 32px; height: 32px; }
@@ -474,8 +505,8 @@ dialog::backdrop { background: var(--overlay); backdrop-filter: blur(4px); }
       <div class="section-head"><h2 id="h-install">How installing works</h2></div>
       <p class="intro">Most apps here are shell scripts that run on the router itself. You need SSH access, which every GL.iNet router has out of the box.</p>
       <div class="steps">
-        <div class="step"><h3>Connect via SSH</h3><p>Open a terminal and log in with your admin password. The default router address is 192.168.8.1.</p><div class="install"><code>ssh root@192.168.8.1</code><button class="copy" type="button" data-copy="ssh root@192.168.8.1" aria-label="Copy command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2.2"/><path d="M15.5 8.5V6.7a2.2 2.2 0 0 0-2.2-2.2H6.7a2.2 2.2 0 0 0-2.2 2.2v6.6a2.2 2.2 0 0 0 2.2 2.2h1.8"/></svg></button></div></div>
-        <div class="step"><h3>Paste the install command</h3><p>Copy the command from the app's card. It downloads the script from GitHub and starts it.</p></div>
+        <div class="step"><h3>Connect via SSH</h3><p>Open a terminal and log in with your admin password. The default router address is 192.168.8.1.</p><div id="ssh-term"></div></div>
+        <div class="step"><h3>Run the installer</h3><p>Press Install on any app. You get its command with a copy button, plus what to check before you run it.</p></div>
         <div class="step"><h3>Follow the prompts</h3><p>Most scripts ask before they change anything and explain how to undo it. Details are in each project's README.</p></div>
       </div>
       <div class="callout">
@@ -584,6 +615,7 @@ const UI = {
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
   tick: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
   close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
   warn: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5"/><path d="M12 17.3h.01"/></svg>',
 };
 
@@ -609,11 +641,74 @@ function tile(app, size) {
   const [a, b] = app.gradient;
   return `<span class="tile ${size}" style="background:linear-gradient(160deg, ${a}, ${b})" aria-hidden="true"><svg viewBox="0 0 24 24">${ICONS[app.icon] || ICONS.router}</svg></span>`;
 }
-function installBlock(app) {
-  if (app.install) {
-    return `<div class="install"><code>${esc(app.install)}</code><button class="copy" type="button" data-copy="${esc(app.install)}" aria-label="Copy install command">${UI.copy}</button></div>`;
+const RUNS_ON = {
+  'router-script': 'router', 'luci-app': 'router', 'router-service': 'router', firmware: 'router',
+  'desktop-app': 'computer', docker: 'server', bot: 'server', 'module-tools': 'modem',
+};
+const RUNS_ON_LABEL = { router: 'Runs on your router', computer: 'Runs on your computer', server: 'Runs on a server', modem: 'For the modem module' };
+
+// Split a shell command at top-level separators, ignoring quotes and $( … ).
+function splitTop(cmd, seps) {
+  const parts = [];
+  let cur = '', quote = null, depth = 0;
+  for (let i = 0; i < cmd.length; i++) {
+    const c = cmd[i];
+    if (quote) { cur += c; if (c === quote) quote = null; continue; }
+    if (c === '"' || c === "'") { quote = c; cur += c; continue; }
+    if (c === '(') depth++;
+    if (c === ')') depth = Math.max(0, depth - 1);
+    const sep = depth ? null : seps.find((x) => cmd.startsWith(x, i) && !(x === '|' && (cmd[i + 1] === '|' || cmd[i - 1] === '|')));
+    if (sep) { parts.push([cur.trim(), sep]); cur = ''; i += sep.length - 1; continue; }
+    cur += c;
   }
-  return app.install_note ? `<p class="install-note">${esc(app.install_note)}</p>` : '';
+  if (cur.trim()) parts.push([cur.trim(), '']);
+  return parts;
+}
+
+// A long line keeps its longest token (usually the URL) on the first line
+// and moves the arguments after it to a "\" continuation, so short but
+// important bits such as "-- <YOURNUMBER>" stay in view.
+function foldTail([text, op]) {
+  if (text.length <= 72) return [[text, op]];
+  const tokens = splitTop(text, [' ']).map(([t]) => t);
+  let longest = 0;
+  tokens.forEach((t, i) => { if (t.length > tokens[longest].length) longest = i; });
+  if (longest === tokens.length - 1) return [[text, op]];
+  return [[tokens.slice(0, longest + 1).join(' '), '\\'], [tokens.slice(longest + 1).join(' '), op]];
+}
+
+// One command per line instead of soft wrapping. Every line stays valid
+// shell: "&&" and "|" end a line and the next one continues it.
+function shellLines(cmd, prompt) {
+  const out = [];
+  let cont = false;
+  for (const [text, op] of splitTop(cmd, ['&&', ';'])) {
+    const pieces = (text.length > 72 ? splitTop(text, ['|']) : [[text, '']]).flatMap(foldTail);
+    pieces.forEach(([piece, pop], j) => {
+      const last = j === pieces.length - 1;
+      const tail = pop === '|' || pop === '\\' ? ` ${pop}` : (last && op === '&&' ? ' &&' : '');
+      const lead = !cont && j === 0 ? `${prompt} ` : '  ';
+      const body = esc(piece).replace(/&lt;[A-Za-z_-]+&gt;/g, (m) => `<mark>${m}</mark>`);
+      out.push(`<span class="ps">${lead}</span>${body}${tail}`);
+    });
+    cont = op === '&&';
+  }
+  return out.join('\n');
+}
+
+function term(cmd, label, prompt = '#') {
+  return `<div class="term"><div class="term-bar"><span>${esc(label)}</span><button class="term-copy" type="button" data-copy="${esc(cmd)}">${UI.copy}<span>Copy</span></button></div><pre><code>${shellLines(cmd, prompt)}</code></pre></div>`;
+}
+
+const shortModel = (d) => d.replace(/\s*\(.*\)/, '');
+function requirements(app) {
+  const bits = [];
+  if (app.devices?.length) {
+    const names = app.devices.slice(0, 5).map(shortModel).join(', ');
+    bits.push(`<b>Works on</b> ${esc(names)}${app.devices.length > 5 ? ` and ${app.devices.length - 5} more` : ''}`);
+  }
+  if (app.firmware) bits.push(`<b>Firmware</b> ${esc(app.firmware)}`);
+  return bits.length ? `<p class="req">${bits.join(' · ')}</p>` : '';
 }
 
 // ── prepare ──────────────────────────────────────────────────
@@ -656,7 +751,7 @@ chips.addEventListener('click', (e) => {
 function card(app) {
   const ver = app.version ? `<span class="pill ver">${esc(app.version)}</span>` : '';
   const ready = app.readiness && app.readiness !== 'stable' ? `<span class="pill ${esc(app.readiness)}">${esc(app.readiness[0].toUpperCase() + app.readiness.slice(1))}</span>` : '';
-  const devices = app.devices?.length ? `<span class="pill mute">${app.devices.length === 1 ? esc(app.devices[0].replace(/\s*\(.*\)/, '')) : `${app.devices.length} models`}</span>` : '';
+  const devices = app.devices?.length ? `<span class="pill mute">${app.devices.length === 1 ? esc(shortModel(app.devices[0])) : `${app.devices.length} models`}</span>` : '';
   return `<article class="card">
     <div class="card-head">${tile(app, 'lg')}
       <div class="heading"><h3><button type="button" data-open="${app.id}">${esc(app.name)}</button></h3><p class="by">by ${esc(app.author)}</p></div>
@@ -665,28 +760,29 @@ function card(app) {
     <p class="tagline">${esc(app.tagline)}</p>
     <p class="desc">${esc(app.description)}</p>
     <div class="meta">${ver}${ready}<span class="pill type">${esc(TYPE_LABEL[app.type] || app.type)}</span>${devices}</div>
-    ${installBlock(app)}
-    <div class="card-foot"><button class="details" type="button" data-open="${app.id}">Details</button><a href="https://github.com/${ORG}/${esc(app.repo)}">GitHub ↗</a><span class="updated">Updated ${ago(app.updated)}</span></div>
+    <div class="card-foot"><button class="btn-install" type="button" data-install="${app.id}">Install</button><button class="btn-soft" type="button" data-open="${app.id}">Details</button><span class="updated" title="Last updated ${longDate(app.updated)}">${UI.clock}${ago(app.updated)}</span></div>
   </article>`;
 }
 
-function featured() {
-  const top = [...tools].sort((a, b) => b.stars - a.stars).slice(0, 3);
-  return `<section class="section" aria-labelledby="h-popular">
-    <div class="section-head"><h2 id="h-popular">Most popular</h2><span class="count">by GitHub stars</span></div>
-    <div class="featured">${top.map((app, i) => `
-      <a class="feature" href="#${app.id}" data-open="${app.id}" style="background:linear-gradient(150deg, ${app.gradient[0]}, ${app.gradient[1]})">
-        <span class="rank">No. ${i + 1} in ${esc(CATEGORIES.find((c) => c.id === app.category)?.title || '')}</span>
-        <span class="top">${tile(app, 'lg')}<span><h3>${esc(app.name)}</h3><span class="by">by ${esc(app.author)}</span></span></span>
-        <p class="desc">${esc(app.tagline)} ${esc(app.description.split('. ')[0].replace(/\.$/, ''))}.</p>
-        <span class="foot"><span>${UI.star}${fmt(app.stars)}</span>${app.version ? `<span>${esc(app.version)}</span>` : ''}<span>Updated ${ago(app.updated)}</span></span>
-      </a>`).join('')}
-    </div></section>`;
+const catTitle = (app) => CATEGORIES.find((c) => c.id === app.category)?.title || '';
+function chartRow(app, lead, sub) {
+  return `<li>${lead}${tile(app, 'sm')}<div class="text"><button class="name" type="button" data-open="${app.id}">${esc(app.name)}</button><span class="tl">${esc(app.tagline)}</span><span class="sub">${sub}</span></div><button class="btn-install soft" type="button" data-install="${app.id}" aria-label="Install ${esc(app.name)}">Install</button></li>`;
+}
+function charts() {
+  const popular = [...tools].sort(sorters.stars).slice(0, 5);
+  const recent = [...tools].sort(sorters.updated).slice(0, 5);
+  const when = (iso) => { const d = new Date(iso); return `<span class="lead-col when" title="${longDate(iso)}"><b>${d.getDate()}</b>${d.toLocaleDateString('en-GB', { month: 'short' })}</span>`; };
+  return `<div class="charts">
+    <section class="chart" aria-labelledby="h-popular"><div class="chart-head"><h2 id="h-popular">Most popular</h2><span class="count">by GitHub stars</span></div>
+      <ol>${popular.map((a, i) => chartRow(a, `<span class="lead-col rank">${i + 1}</span>`, `<span class="stars">${UI.star}${fmt(a.stars)}</span><span>${esc(catTitle(a))}</span>`)).join('')}</ol></section>
+    <section class="chart" aria-labelledby="h-recent"><div class="chart-head"><h2 id="h-recent">Recently updated</h2><span class="count">by last change</span></div>
+      <ol>${recent.map((a) => chartRow(a, when(a.updated), `<span>${ago(a.updated)}</span>${a.version ? `<span class="mono">${esc(a.version)}</span>` : ''}`)).join('')}</ol></section>
+  </div>`;
 }
 
 const sorters = {
   stars: (a, b) => b.stars - a.stars || a.name.localeCompare(b.name),
-  updated: (a, b) => Date.parse(b.updated) - Date.parse(a.updated),
+  updated: (a, b) => Date.parse(b.updated) - Date.parse(a.updated) || b.stars - a.stars,
   name: (a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }),
 };
 
@@ -708,7 +804,7 @@ function render() {
     out.innerHTML = `<section class="section"><div class="section-head"><h2>${esc(c.title)}</h2><span class="count">${list.length} apps</span></div><p class="intro">${esc(c.intro)}</p><div class="grid">${list.map(card).join('')}</div></section>`;
     return;
   }
-  out.innerHTML = featured() + usedCats.map((c) => {
+  out.innerHTML = charts() + usedCats.map((c) => {
     const items = list.filter((a) => a.category === c.id);
     return `<section class="section" id="cat-${c.id}" aria-labelledby="h-${c.id}"><div class="section-head"><h2 id="h-${c.id}">${esc(c.title)}</h2><span class="count">${items.length} app${items.length === 1 ? '' : 's'}</span></div><p class="intro">${esc(c.intro)}</p><div class="grid">${items.map(card).join('')}</div></section>`;
   }).join('');
@@ -723,18 +819,20 @@ document.getElementById('official-rows').innerHTML = official.sort(sorters.stars
     <div class="right">${site ? `<a href="${esc(site.url)}">${esc(site.label)} ↗</a>` : ''}<span class="stars">${UI.star}${fmt(app.stars)}</span></div></li>`;
 }).join('');
 
-// ── detail sheet ─────────────────────────────────────────────
+// ── detail sheet and install sheet ───────────────────────────
 const sheet = document.getElementById('sheet');
-function openSheet(id, push = true) {
-  const app = APPS.find((a) => a.id === id);
-  if (!app) return;
+const repoUrl = (app) => `https://github.com/${ORG}/${app.repo}`;
+const isMirror = (app) => app.upstream.toLowerCase() !== `${ORG}/${app.repo}`.toLowerCase();
+
+function detailsView(app) {
   const devs = app.devices?.length ? `<div><h4>Supported models</h4><div class="dev">${app.devices.map((d) => `<span>${esc(d)}</span>`).join('')}</div>${app.firmware ? `<p class="hint">Firmware: ${esc(app.firmware)}</p>` : ''}</div>` : (app.firmware ? `<div><h4>Requirements</h4><p>Firmware: ${esc(app.firmware)}</p></div>` : '');
   const links = [
-    `<a class="primary" href="https://github.com/${ORG}/${esc(app.repo)}">Open on GitHub ↗</a>`,
-    app.upstream.toLowerCase() !== `${ORG}/${app.repo}`.toLowerCase() ? `<a href="https://github.com/${esc(app.upstream)}">Original repository ↗</a>` : '',
+    app.kind === 'tool' ? `<button class="btn-install lg" type="button" data-install="${app.id}">Install</button>` : '',
+    `<a href="${repoUrl(app)}">Open on GitHub ↗</a>`,
+    isMirror(app) ? `<a href="https://github.com/${esc(app.upstream)}">Original repository ↗</a>` : '',
     ...(app.links || []).map((l) => `<a href="${esc(l.url)}">${esc(l.label)} ↗</a>`),
   ].join('');
-  sheet.innerHTML = `<div class="sheet">
+  return `<div class="sheet" tabindex="-1">
     <div class="sheet-head">${tile(app, 'xl')}<div class="heading"><h2 id="sheet-title">${esc(app.name)}</h2><p class="tagline">${esc(app.tagline)}</p><p class="by">by ${esc(app.author)} · ${esc(TYPE_LABEL[app.type] || app.type)}</p></div>
       <button class="close" type="button" data-close aria-label="Close">${UI.close}</button></div>
     <div class="kv">
@@ -745,40 +843,87 @@ function openSheet(id, push = true) {
     </div>
     <p class="lead">${esc(app.description)}</p>
     ${app.features?.length ? `<div><h4>Features</h4><ul class="features">${app.features.map((f) => `<li>${UI.tick}<span>${esc(f)}</span></li>`).join('')}</ul></div>` : ''}
-    ${app.install || app.install_note ? `<div><h4>Install</h4>${installBlock(app)}${app.install ? '<p class="hint">Run this on the router after logging in via SSH.</p>' : ''}</div>` : ''}
     ${devs}
     ${app.notes ? `<div class="note">${UI.warn}<p>${esc(app.notes)}</p></div>` : ''}
     <div class="sheet-links">${links}</div>
     <p class="credit">${app.kind === 'tool' ? `Made by <a href="https://github.com/${esc(app.author)}">${esc(app.author)}</a>. This organization keeps a synced copy; the author keeps ownership and credit.` : 'Published by GL.iNet. Mirrored in this organization for reference.'}${app.tech?.length ? ` Built with ${app.tech.map(esc).join(', ')}.` : ''}</p>
   </div>`;
-  if (!sheet.open) sheet.showModal();
-  if (push) setHash(`#${app.id}`);
 }
-function closeSheet() {
-  if (sheet.open) sheet.close();
+
+function installView(app) {
+  const where = RUNS_ON[app.type] || 'router';
+  const readme = `https://github.com/${app.upstream}#readme`;
+  const placeholder = /<[A-Za-z_-]+>/.test(app.install || '');
+  let body;
+  if (app.install && where === 'router') {
+    const finish = app.install_note && !placeholder;
+    body = `<ol class="isteps">
+      <li class="istep"><h3>Log in to your router</h3><p>Open a terminal on your computer and connect via SSH. The password is the one you use for the admin panel.</p>${term('ssh root@192.168.8.1', 'your computer', '$')}</li>
+      <li class="istep"><h3>Run the installer</h3><p>Paste the command into the SSH session and press Enter. Copy puts it on your clipboard exactly as the project's README shows it.</p>${term(app.install, 'root@router')}${placeholder ? `<p class="hint">${esc(app.install_note)}</p>` : ''}</li>
+      <li class="istep"><h3>${finish ? 'Finish the setup' : 'Follow the prompts'}</h3><p>${finish ? esc(app.install_note) : 'Answer the questions the script asks. The README lists all options and explains how to undo the changes.'}</p></li>
+    </ol>`;
+  } else if (app.install) {
+    body = `<div class="manual"><h3>Run it on a server</h3><p>This runs on a machine with Docker, not on the router.${app.install_note ? ` ${esc(app.install_note)}` : ''}</p>${term(app.install, 'server', '$')}</div>`;
+  } else {
+    const heading = { computer: 'Install on your computer', server: 'Run it on a server', modem: 'Get the files', router: 'Manual installation' }[where];
+    const releases = /release/i.test(app.install_note || '') ? `<a class="btn-install lg" href="https://github.com/${esc(app.upstream)}/releases/latest">Download from GitHub Releases ↗</a>` : '';
+    body = `<div class="manual"><h3>${heading}</h3><p>${esc(app.install_note || 'There is no install command. Follow the steps in the README.')}</p>${releases}</div>`;
+  }
+  return `<div class="sheet" tabindex="-1">
+    <div class="sheet-head">${tile(app, 'lg')}<div class="heading"><h2 id="sheet-title">Install ${esc(app.name)}</h2><p class="sub-head">by ${esc(app.author)}${app.version ? ` · ${esc(app.version)}` : ''} · ${RUNS_ON_LABEL[where]}</p></div>
+      <button class="close" type="button" data-close aria-label="Close">${UI.close}</button></div>
+    ${requirements(app)}
+    ${beforeYouStart(app.notes)}
+    ${body}
+    <div class="sheet-links"><button class="btn-soft" type="button" data-open="${app.id}">View details</button><a href="${readme}">Read the README ↗</a><a href="${repoUrl(app)}">Open on GitHub ↗</a></div>
+  </div>`;
+}
+
+function beforeYouStart(notes) {
+  if (!notes) return '';
+  const cut = notes.length > 170 ? notes.search(/\.\s/) + 1 : 0;
+  const head = cut > 0 ? notes.slice(0, cut) : notes;
+  const rest = cut > 0 ? notes.slice(cut).trim() : '';
+  return `<div class="note">${UI.warn}<div><p><b>Before you start.</b> ${esc(head)}</p>${rest ? `<details><summary>All notes</summary><p>${esc(rest)}</p></details>` : ''}</div></div>`;
+}
+
+function openApp(id, view = 'details', push = true) {
+  const app = APPS.find((a) => a.id === id);
+  if (!app) return;
+  sheet.innerHTML = view === 'install' ? installView(app) : detailsView(app);
+  if (!sheet.open) sheet.showModal();
+  sheet.querySelector('.sheet').focus();
+  sheet.scrollTop = 0;
+  if (push) setHash(view === 'install' ? `#install-${app.id}` : `#${app.id}`);
 }
 function setHash(h) {
   try { history.replaceState(null, '', h || location.pathname + location.search); } catch { /* sandboxed frame */ }
 }
 sheet.addEventListener('close', () => setHash(''));
 sheet.addEventListener('click', (e) => {
-  if (e.target === sheet || e.target.closest('[data-close]')) closeSheet();
+  if (e.target === sheet || e.target.closest('[data-close]')) sheet.close();
 });
+document.getElementById('ssh-term').innerHTML = term('ssh root@192.168.8.1', 'your computer', '$');
 
 // ── global events ────────────────────────────────────────────
 document.addEventListener('click', (e) => {
+  const installer = e.target.closest('[data-install]');
+  if (installer) { openApp(installer.dataset.install, 'install'); return; }
   const opener = e.target.closest('[data-open]');
-  if (opener) { e.preventDefault(); openSheet(opener.dataset.open); return; }
+  if (opener) { e.preventDefault(); openApp(opener.dataset.open); return; }
   const copy = e.target.closest('[data-copy]');
   if (copy) {
-    const text = copy.dataset.copy;
-    const ok = () => { copy.innerHTML = UI.check; copy.classList.add('done'); setTimeout(() => { copy.innerHTML = UI.copy; copy.classList.remove('done'); }, 1600); };
-    const fallback = () => {
-      const code = copy.parentElement.querySelector('code');
-      const r = document.createRange(); r.selectNodeContents(code);
-      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    const original = copy.innerHTML;
+    const ok = () => {
+      copy.innerHTML = `${UI.check}<span>Copied</span>`;
+      setTimeout(() => { copy.innerHTML = original; }, 1600);
     };
-    try { navigator.clipboard.writeText(text).then(ok, fallback); } catch { fallback(); }
+    const fallback = () => {
+      const code = copy.closest('.term').querySelector('code');
+      const r = document.createRange(); r.selectNodeContents(code);
+      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    };
+    try { navigator.clipboard.writeText(copy.dataset.copy).then(ok, fallback); } catch { fallback(); }
   }
 });
 const q = document.getElementById('q');
@@ -795,7 +940,8 @@ document.addEventListener('keydown', (e) => {
 });
 
 render();
-if (location.hash.length > 1) openSheet(location.hash.slice(1), false);
+const hash = location.hash.slice(1);
+if (hash) hash.startsWith('install-') ? openApp(hash.slice(8), 'install', false) : openApp(hash, 'details', false);
 </script>
 </body>
 </html>
