@@ -1,0 +1,23 @@
+---
+import AppCard from './AppCard.astro';
+import type { App, Category } from '../lib/content';
+
+interface Props {
+  category: Category;
+  apps: App[];
+  org: string;
+}
+
+const { category, apps, org } = Astro.props;
+---
+
+<section class="section" id={`cat-${category.id}`} aria-labelledby={`h-${category.id}`}>
+  <div class="section-head">
+    <h2 id={`h-${category.id}`}>{category.title}</h2>
+    <span class="count">{apps.length} app{apps.length === 1 ? '' : 's'}</span>
+  </div>
+  <p class="intro">{category.intro}</p>
+  <div class="grid">
+    {apps.map((app) => <AppCard app={app} org={org} />)}
+  </div>
+</section>

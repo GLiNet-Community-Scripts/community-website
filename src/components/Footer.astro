@@ -1,0 +1,38 @@
+---
+import type { Site } from '../lib/content';
+import { stamp } from '../lib/format';
+
+interface Props {
+  site: Site;
+  generatedAt: string;
+}
+
+const { site, generatedAt } = Astro.props;
+---
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="cols">
+      <nav class="col" aria-label="Community">
+        <h4>Community</h4>
+        <a href={`https://github.com/${site.org}`}>GitHub organization</a>
+        <a href={`https://github.com/${site.org}/Issues/issues`}>Issues and requests</a>
+        <a href="#submit">Add your project</a>
+        <a href={`https://github.com/${site.org}/community-website`}>Source of this site</a>
+      </nav>
+      <nav class="col" aria-label="Maintainer">
+        <h4>Maintained by {site.maintainer.name}</h4>
+        {site.maintainer.links.map((l) => <a href={l.url}>{l.label}</a>)}
+      </nav>
+      <nav class="col" aria-label="Official GL.iNet resources">
+        <h4>Official GL.iNet resources</h4>
+        {site.official.map((l) => <a href={l.url}>{l.label}</a>)}
+      </nav>
+    </div>
+    <p class="disclaimer">{site.disclaimer.long}</p>
+    <div class="bottom">
+      <p>Data refreshed nightly · last run {stamp(generatedAt)}</p>
+      <p>No cookies · No tracking · No external fonts</p>
+    </div>
+  </div>
+</footer>

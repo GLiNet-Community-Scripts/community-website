@@ -1,0 +1,51 @@
+# Global settings: metadata, hero, disclaimer, maintainer.
+title: Community Apps for GL.iNet routers (unofficial)
+description: >-
+  Scripts, add-ons and companion tools for GL.iNet routers, built by the
+  community. An unofficial community project, not affiliated with GL.iNet.
+url: https://gl-i.net
+org: GLiNet-Community-Scripts
+
+hero:
+  eyebrow: Unofficial · Built and maintained by the community
+  heading: Apps for your GL.iNet router.
+  sub: >-
+    Scripts, add-ons and companion tools written by GL.iNet users. See what
+    each one does, which routers it runs on and how to install it.
+  suggestions: [Tailscale, Flint 2, SMS, VLAN, AdGuard]
+
+# Shown as a bar above the navigation on every page view and in full in
+# the About section and the footer. The domain resembles the
+# manufacturer's, so this must stay impossible to miss.
+disclaimer:
+  short: >-
+    Community project. Not affiliated with, endorsed by or operated by GL.iNet.
+  long: >-
+    gl-i.net is an independent, community-run site. It is not affiliated
+    with, endorsed by or operated by GL.iNet, and it is not an official
+    GL.iNet product, store or support channel. GL.iNet is a trademark of
+    its owner and is used here only to describe which routers these
+    projects work with. Every project belongs to its author and keeps its
+    own licence.
+  official:
+    { label: Official GL.iNet website, url: "https://www.gl-inet.com" }
+
+maintainer:
+  name: Admon
+  links:
+    - { label: GL.iNet forum, url: "https://forum.gl-inet.com/u/admon/" }
+    - { label: GitHub, url: "https://github.com/admonstrator" }
+
+official:
+  - { label: GL.iNet website, url: "https://www.gl-inet.com" }
+  - { label: GL.iNet documentation, url: "https://docs.gl-inet.com" }
+  - { label: Firmware downloads, url: "https://dl.gl-inet.com" }
+  - { label: GL.iNet forum, url: "https://forum.gl-inet.com" }
+
+# Public repositories in the organization that are intentionally not shown.
+# Any other repository without an entry in apps.yaml triggers a warning in
+# the nightly build.
+ignore:
+  - .github
+  - community-website
+  - Issues

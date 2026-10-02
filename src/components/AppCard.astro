@@ -1,0 +1,52 @@
+---
+import Tile from './Tile.astro';
+import { TYPE_LABEL, type App } from '../lib/content';
+import { ago, fmt, longDate } from '../lib/format';
+import { UI } from '../lib/ui';
+
+interface Props {
+  app: App;
+  org: string;
+}
+
+const { app, org } = Astro.props;
+const repoUrl = `https://github.com/${org}/${app.repo}`;
+const readme = `https://github.com/${app.upstream}#readme`;
+const shortModel = (d: string) => d.replace(/\s*\(.*\)/, '');
+---
+
+<article
+  class="card"
+  data-cat={app.category}
+  data-stars={app.stars}
+  data-updated={app.updated ?? ''}
+  data-name={app.name.toLowerCase()}
+  data-search={app.search}
+>
+  <div class="card-head">
+    <Tile icon={app.icon} gradient={app.gradient} />
+    <div class="heading">
+      <h3><a href={repoUrl} data-open={app.id}>{app.name}</a></h3>
+      <p class="by">by {app.author}</p>
+    </div>
+    <span class="stars" title={`${app.stars} stars on GitHub`}><Fragment set:html={UI.star} />{fmt(app.stars)}</span>
+  </div>
+  <p class="tagline">{app.tagline}</p>
+  <p class="desc">{app.description}</p>
+  <div class="meta">
+    {app.version && <span class="pill ver">{app.version}</span>}
+    {app.readiness !== 'stable' && <span class={`pill ${app.readiness}`}>{app.readiness[0].toUpperCase() + app.readiness.slice(1)}</span>}
+    {app.archived && <span class="pill mute">Archived</span>}
+    <span class="pill type">{TYPE_LABEL[app.type]}</span>
+    {app.devices.length > 0 && (
+      <span class="pill mute">{app.devices.length === 1 ? shortModel(app.devices[0]) : `${app.devices.length} models`}</span>
+    )}
+  </div>
+  <div class="card-foot">
+    <a class="btn-install" href={readme} data-install={app.id}>Install</a>
+    <a class="btn-soft" href={repoUrl} data-open={app.id}>Details</a>
+    {app.updated && (
+      <span class="updated" title={`Last updated ${longDate(app.updated)}`}><Fragment set:html={UI.clock} /><span data-ago={app.updated}>{ago(app.updated)}</span></span>
+    )}
+  </div>
+</article>

@@ -14,7 +14,7 @@
 #   icon:         tile glyph name
 #   notes:        caveats shown in the detail view
 #
-# Draft extracted from the READMEs on 2 Oct 2026. Please review before launch.
+# Texts were drafted from each project's README (Oct 2026); keep them factual.
 
 - repo: glinet-tailscale-updater
   upstream: admonstrator/glinet-tailscale-updater

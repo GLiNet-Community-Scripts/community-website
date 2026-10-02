@@ -1,0 +1,30 @@
+---
+import type { Content, Site } from '../lib/content';
+import { fmt } from '../lib/format';
+import { UI } from '../lib/ui';
+
+interface Props {
+  hero: Site['hero'];
+  stats: Content['stats'];
+}
+
+const { hero, stats } = Astro.props;
+---
+
+<header class="container hero">
+  <p class="eyebrow">{hero.eyebrow}</p>
+  <h1>{hero.heading}</h1>
+  <p class="sub">{hero.sub}</p>
+  <div class="search" role="search">
+    <Fragment set:html={UI.search} />
+    <input id="q" type="search" placeholder="Search apps, features or router models" aria-label="Search apps" autocomplete="off" />
+    <kbd>/</kbd>
+  </div>
+  <div class="suggest" id="suggest">Try {hero.suggestions.map((s) => <button type="button">{s}</button>)}</div>
+  <p class="stats">
+    <span><b>{stats.apps}</b> community apps</span>
+    <span><b>{stats.authors}</b> authors</span>
+    <span><b>{fmt(stats.stars)}</b> GitHub stars</span>
+    <span>Refreshed nightly</span>
+  </p>
+</header>

@@ -1,0 +1,34 @@
+---
+import Terminal from './Terminal.astro';
+---
+
+<section class="section" id="install" aria-labelledby="h-install">
+  <div class="section-head"><h2 id="h-install">How installing works</h2></div>
+  <p class="intro">
+    Most apps here are shell scripts that run on the router itself. You need SSH access, which every
+    GL.iNet router has out of the box.
+  </p>
+  <div class="steps">
+    <div class="step">
+      <h3>Connect via SSH</h3>
+      <p>Open a terminal and log in with your admin password. The default router address is 192.168.8.1.</p>
+      <Terminal command="ssh root@192.168.8.1" label="your computer" prompt="$" />
+    </div>
+    <div class="step">
+      <h3>Run the installer</h3>
+      <p>Press Install on any app. You get its command with a copy button, plus what to check before you run it.</p>
+    </div>
+    <div class="step">
+      <h3>Follow the prompts</h3>
+      <p>Most scripts ask before they change anything and explain how to undo it. Details are in each project's README.</p>
+    </div>
+  </div>
+  <div class="callout">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"></path><path d="M12 10v4.5"></path><path d="M12 17.3h.01"></path></svg>
+    <p>
+      These are community projects, not GL.iNet software, and GL.iNet support can't help with them. Read
+      a script before you run it, keep a configuration backup, and expect a firmware update to undo some
+      changes.
+    </p>
+  </div>
+</section>

@@ -1,0 +1,257 @@
+{
+  "generatedAt": "2026-10-01T11:36:00Z",
+  "repos": {
+    "glinet-tailscale-updater": {
+      "stars": 751,
+      "updated": "2026-09-27T12:00:00Z",
+      "version": "v1.102.5",
+      "archived": false
+    },
+    "gl-tailscale-fix": {
+      "stars": 127,
+      "updated": "2026-09-04T12:00:00Z",
+      "version": "v1.0.21",
+      "archived": false
+    },
+    "wg-udp-relay": {
+      "stars": 13,
+      "updated": "2026-08-27T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "glinet-tailscale-exitnode-switch": {
+      "stars": 11,
+      "updated": "2026-03-25T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "GL.iNet-Tailscale-Enable-SSL": {
+      "stars": 5,
+      "updated": "2026-03-11T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "Tailscale-on-AP-mode": {
+      "stars": 2,
+      "updated": "2026-08-27T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "GL.iNet-TS-ZT-AW": {
+      "stars": 0,
+      "updated": "2026-08-17T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "glinet-adguard-updater": {
+      "stars": 151,
+      "updated": "2026-04-20T12:00:00Z",
+      "version": "v0.107.79",
+      "archived": false
+    },
+    "GL.iNet-VLAN-Wizard": {
+      "stars": 3,
+      "updated": "2026-05-30T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "GL.iNET-Toggle-Switch": {
+      "stars": 2,
+      "updated": "2026-08-17T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "flint2-vlan-tools": {
+      "stars": 1,
+      "updated": "2026-05-01T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "GL.iNet-DHCP-Options-Wizard": {
+      "stars": 1,
+      "updated": "2026-08-17T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "GL.iNet-WiFi-Cellular-Timer": {
+      "stars": 1,
+      "updated": "2026-08-17T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "OpenSpeedTestServer": {
+      "stars": 1,
+      "updated": "2026-09-01T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "Glinet-Bandwidth-script": {
+      "stars": 0,
+      "updated": "2026-09-13T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "glinet-wifi-calling-fix": {
+      "stars": 0,
+      "updated": "2026-08-23T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "RM520N-GL": {
+      "stars": 253,
+      "updated": "2026-09-12T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "openwrt-starwatch": {
+      "stars": 9,
+      "updated": "2026-09-13T12:00:00Z",
+      "version": "v0.1.8",
+      "archived": false
+    },
+    "GL.iNet-CellularModels-SMSonBoot": {
+      "stars": 3,
+      "updated": "2026-06-24T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "GL.iNet-SMS-Tool-WebApp": {
+      "stars": 3,
+      "updated": "2026-08-17T12:00:00Z",
+      "version": "v1.0.2",
+      "archived": false
+    },
+    "luci-app-mobilenetwork": {
+      "stars": 1,
+      "updated": "2026-08-17T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "glinet-spitz-ax-signal-stats": {
+      "stars": 0,
+      "updated": "2026-02-28T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "openwrt-flint3": {
+      "stars": 51,
+      "updated": "2026-09-16T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "GL.iNet-CrossModel-BackupRestoreUtility": {
+      "stars": 7,
+      "updated": "2026-09-26T12:00:00Z",
+      "version": "v2.0.0-17",
+      "archived": false
+    },
+    "GL-iNet_utils": {
+      "stars": 4,
+      "updated": "2026-09-27T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "GL.iNet-ExternalUSB-Logs": {
+      "stars": 2,
+      "updated": "2026-08-27T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "Gl.inet-Tools": {
+      "stars": 0,
+      "updated": "2026-08-17T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "gl-e5800-dashboard": {
+      "stars": 22,
+      "updated": "2026-09-14T12:00:00Z",
+      "version": "v3.2.1",
+      "archived": false
+    },
+    "RouterPilot": {
+      "stars": 12,
+      "updated": "2026-09-16T12:00:00Z",
+      "version": "v2.4.6",
+      "archived": false
+    },
+    "glinet-panel-ui": {
+      "stars": 7,
+      "updated": "2026-09-28T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "Glinet_discord_bot": {
+      "stars": 1,
+      "updated": "2026-08-17T12:00:00Z",
+      "version": "v0.1.7",
+      "archived": false
+    },
+    "Overlook": {
+      "stars": 61,
+      "updated": "2026-09-13T12:00:00Z",
+      "version": "v1.0.0",
+      "archived": false
+    },
+    "glikvm-macos": {
+      "stars": 1,
+      "updated": "2026-09-22T12:00:00Z",
+      "version": "v0.1.0-beta",
+      "archived": false
+    },
+    "glikvm-mod": {
+      "stars": 0,
+      "updated": "2026-09-12T12:00:00Z",
+      "version": "v0.1.10",
+      "archived": false
+    },
+    "glikvm-linux": {
+      "stars": 0,
+      "updated": "2026-09-22T12:00:00Z",
+      "version": "v0.1.3-beta",
+      "archived": false
+    },
+    "glkvm-cloud": {
+      "stars": 330,
+      "updated": "2026-08-27T12:00:00Z",
+      "version": "v2.8.0",
+      "archived": false
+    },
+    "glkvm": {
+      "stars": 237,
+      "updated": "2026-08-27T12:00:00Z",
+      "version": "v1.5.0",
+      "archived": false
+    },
+    "gl-image": {
+      "stars": 8,
+      "updated": "2026-09-28T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "docs4.x": {
+      "stars": 133,
+      "updated": "2026-09-19T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "docs-kvm": {
+      "stars": 20,
+      "updated": "2026-09-16T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "docs-iot": {
+      "stars": 4,
+      "updated": "2026-09-13T12:00:00Z",
+      "version": null,
+      "archived": false
+    },
+    "docs-astrowarp": {
+      "stars": 0,
+      "updated": "2026-08-27T12:00:00Z",
+      "version": null,
+      "archived": false
+    }
+  }
+}

@@ -1,0 +1,120 @@
+---
+import Tile from './Tile.astro';
+import Terminal from './Terminal.astro';
+import type { App } from '../lib/content';
+import { hasPlaceholder } from '../lib/shell';
+import { UI } from '../lib/ui';
+
+interface Props {
+  app: App;
+  org: string;
+}
+
+const { app, org } = Astro.props;
+
+const RUNS_ON = {
+  'router-script': 'router',
+  'luci-app': 'router',
+  'router-service': 'router',
+  firmware: 'router',
+  'desktop-app': 'computer',
+  docker: 'server',
+  bot: 'server',
+  'module-tools': 'modem',
+  docs: 'router',
+} as const;
+const RUNS_ON_LABEL = {
+  router: 'Runs on your router',
+  computer: 'Runs on your computer',
+  server: 'Runs on a server',
+  modem: 'For the modem module',
+};
+const MANUAL_HEADING = {
+  router: 'Manual installation',
+  computer: 'Install on your computer',
+  server: 'Run it on a server',
+  modem: 'Get the files',
+};
+
+const where = RUNS_ON[app.type];
+const placeholder = app.install ? hasPlaceholder(app.install) : false;
+const finish = Boolean(app.install_note) && !placeholder;
+const releases = /release/i.test(app.install_note ?? '');
+
+// Long caveats: first sentence visible, the rest behind a toggle.
+const notes = app.notes ?? '';
+const cut = notes.length > 170 ? notes.search(/\.\s/) + 1 : 0;
+const notesHead = cut > 0 ? notes.slice(0, cut) : notes;
+const notesRest = cut > 0 ? notes.slice(cut).trim() : '';
+
+const shortModel = (d: string) => d.replace(/\s*\(.*\)/, '');
+const models = app.devices.slice(0, 5).map(shortModel).join(', ');
+const more = app.devices.length > 5 ? ` and ${app.devices.length - 5} more` : '';
+---
+
+<div class="sheet" tabindex="-1">
+  <div class="sheet-head">
+    <Tile icon={app.icon} gradient={app.gradient} size="lg" />
+    <div class="heading">
+      <h2 class="sheet-title">Install {app.name}</h2>
+      <p class="sub-head">by {app.author}{app.version && ` · ${app.version}`} · {RUNS_ON_LABEL[where]}</p>
+    </div>
+    <button class="close" type="button" data-close aria-label="Close" set:html={UI.close} />
+  </div>
+
+  {(app.devices.length > 0 || app.firmware) && (
+    <p class="req">
+      {app.devices.length > 0 && <Fragment><b>Works on</b> {models}{more}</Fragment>}
+      {app.devices.length > 0 && app.firmware && ' · '}
+      {app.firmware && <Fragment><b>Firmware</b> {app.firmware}</Fragment>}
+    </p>
+  )}
+
+  {notes && (
+    <div class="note">
+      <Fragment set:html={UI.warn} />
+      <div>
+        <p><b>Before you start.</b> {notesHead}</p>
+        {notesRest && <details><summary>All notes</summary><p>{notesRest}</p></details>}
+      </div>
+    </div>
+  )}
+
+  {app.install && where === 'router' ? (
+    <ol class="isteps">
+      <li class="istep">
+        <h3>Log in to your router</h3>
+        <p>Open a terminal on your computer and connect via SSH. The password is the one you use for the admin panel.</p>
+        <Terminal command="ssh root@192.168.8.1" label="your computer" prompt="$" />
+      </li>
+      <li class="istep">
+        <h3>Run the installer</h3>
+        <p>Paste the command into the SSH session and press Enter. Copy puts it on your clipboard exactly as the project's README shows it.</p>
+        <Terminal command={app.install} label="root@router" />
+        {placeholder && app.install_note && <p class="hint">{app.install_note}</p>}
+      </li>
+      <li class="istep">
+        <h3>{finish ? 'Finish the setup' : 'Follow the prompts'}</h3>
+        <p>{finish ? app.install_note : 'Answer the questions the script asks. The README lists all options and explains how to undo the changes.'}</p>
+      </li>
+    </ol>
+  ) : app.install ? (
+    <div class="manual">
+      <h3>Run it on a server</h3>
+      <p>This runs on a machine with Docker, not on the router.{app.install_note && ` ${app.install_note}`}</p>
+      <Terminal command={app.install} label="server" prompt="$" />
+    </div>
+  ) : (
+    <div class="manual">
+      <h3>{MANUAL_HEADING[where]}</h3>
+      <p>{app.install_note ?? 'There is no install command. Follow the steps in the README.'}</p>
+      {releases && <a class="btn-install lg" href={`https://github.com/${app.upstream}/releases/latest`}>Download from GitHub Releases ↗</a>}
+    </div>
+  )}
+
+  <div class="sheet-links">
+    <a class="btn-soft" href={`https://github.com/${org}/${app.repo}`} data-open={app.id}>View details</a>
+    <a href={`https://github.com/${app.upstream}#readme`}>Read the README ↗</a>
+    <a href={`https://github.com/${org}/${app.repo}`}>Open on GitHub ↗</a>
+  </div>
+</div>

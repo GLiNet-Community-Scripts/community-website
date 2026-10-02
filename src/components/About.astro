@@ -1,0 +1,52 @@
+---
+import type { Content, Site } from '../lib/content';
+import { stamp } from '../lib/format';
+import { UI } from '../lib/ui';
+
+interface Props {
+  site: Site;
+  stats: Content['stats'];
+  repos: number;
+  generatedAt: string;
+}
+
+const { site, stats, repos, generatedAt } = Astro.props;
+const issues = `https://github.com/${site.org}/Issues/issues`;
+---
+
+<section class="section" id="submit" aria-labelledby="h-submit">
+  <div class="section-head"><h2 id="h-submit">Add your project</h2></div>
+  <div class="duo">
+    <div class="panel">
+      <h3>Built something for your GL.iNet router?</h3>
+      <p>
+        Open an issue in the community Issues repository with a link to your project. The maintainers
+        fork it into the organization and keep the fork in sync with your repository. Once a short
+        description is added, it appears here. You keep ownership and credit.
+      </p>
+      <ul>
+        <li><Fragment set:html={UI.tick} /><span>Open-source licence and a public repository</span></li>
+        <li><Fragment set:html={UI.tick} /><span>README with install steps and supported models</span></li>
+        <li><Fragment set:html={UI.tick} /><span>A way to undo what the script changes</span></li>
+        <li><Fragment set:html={UI.tick} /><span>Tested on real hardware, with the firmware version noted</span></li>
+      </ul>
+      <a class="btn" href={issues}>Suggest a project ↗</a>
+    </div>
+    <div class="panel" id="about">
+      <h3>About this site</h3>
+      <p>{site.disclaimer.long}</p>
+      <dl class="facts">
+        <dt>Run by</dt>
+        <dd>{site.maintainer.name}, on behalf of the community</dd>
+        <dt>Contact</dt>
+        <dd>{site.maintainer.links.map((l, i) => <Fragment>{i > 0 && ' · '}<a href={l.url}>{l.label}</a></Fragment>)}</dd>
+        <dt>Data</dt>
+        <dd>{repos} repositories, {stats.apps} community apps, refreshed nightly from GitHub</dd>
+        <dt>Last refresh</dt>
+        <dd>{stamp(generatedAt)}</dd>
+        <dt>Privacy</dt>
+        <dd>No cookies, no tracking, no third-party requests</dd>
+      </dl>
+    </div>
+  </div>
+</section>

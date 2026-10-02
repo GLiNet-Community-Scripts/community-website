@@ -1,0 +1,20 @@
+---
+import { shellLines } from '../lib/shell';
+import { UI } from '../lib/ui';
+
+interface Props {
+  command: string;
+  label: string;
+  prompt?: string;
+}
+
+const { command, label, prompt = '#' } = Astro.props;
+---
+
+<div class="term">
+  <div class="term-bar">
+    <span>{label}</span>
+    <button class="term-copy" type="button" data-copy={command}><Fragment set:html={UI.copy} /><span>Copy</span></button>
+  </div>
+  <pre><code set:html={shellLines(command, prompt)} /></pre>
+</div>

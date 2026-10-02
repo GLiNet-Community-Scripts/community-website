@@ -1,0 +1,56 @@
+---
+import Tile from './Tile.astro';
+import type { App } from '../lib/content';
+import { ago, fmt, longDate } from '../lib/format';
+import { UI } from '../lib/ui';
+
+interface Props {
+  popular: App[];
+  recent: App[];
+  categoryTitle: Record<string, string>;
+  org: string;
+}
+
+const { popular, recent, categoryTitle, org } = Astro.props;
+const repoUrl = (app: App) => `https://github.com/${org}/${app.repo}`;
+const readme = (app: App) => `https://github.com/${app.upstream}#readme`;
+const day = (iso: string) => new Date(iso).getUTCDate();
+const month = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' });
+---
+
+<div class="charts">
+  <section class="chart" aria-labelledby="h-popular">
+    <div class="chart-head"><h2 id="h-popular">Most popular</h2><span class="count">by GitHub stars</span></div>
+    <ol>
+      {popular.map((app, i) => (
+        <li>
+          <span class="lead-col rank">{i + 1}</span>
+          <Tile icon={app.icon} gradient={app.gradient} size="sm" />
+          <div class="text">
+            <a class="name" href={repoUrl(app)} data-open={app.id}>{app.name}</a>
+            <span class="tl">{app.tagline}</span>
+            <span class="sub"><span class="stars"><Fragment set:html={UI.star} />{fmt(app.stars)}</span><span>{categoryTitle[app.category]}</span></span>
+          </div>
+          <a class="btn-install soft" href={readme(app)} data-install={app.id} aria-label={`Install ${app.name}`}>Install</a>
+        </li>
+      ))}
+    </ol>
+  </section>
+  <section class="chart" aria-labelledby="h-recent">
+    <div class="chart-head"><h2 id="h-recent">Recently updated</h2><span class="count">by last commit</span></div>
+    <ol>
+      {recent.map((app) => (
+        <li>
+          <span class="lead-col when" title={longDate(app.updated!)}><b>{day(app.updated!)}</b>{month(app.updated!)}</span>
+          <Tile icon={app.icon} gradient={app.gradient} size="sm" />
+          <div class="text">
+            <a class="name" href={repoUrl(app)} data-open={app.id}>{app.name}</a>
+            <span class="tl">{app.tagline}</span>
+            <span class="sub"><span data-ago={app.updated}>{ago(app.updated!)}</span>{app.version && <span class="mono">{app.version}</span>}</span>
+          </div>
+          <a class="btn-install soft" href={readme(app)} data-install={app.id} aria-label={`Install ${app.name}`}>Install</a>
+        </li>
+      ))}
+    </ol>
+  </section>
+</div>

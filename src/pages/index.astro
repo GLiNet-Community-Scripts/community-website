@@ -1,0 +1,96 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Charts from '../components/Charts.astro';
+import CategorySection from '../components/CategorySection.astro';
+import OfficialSection from '../components/OfficialSection.astro';
+import HowTo from '../components/HowTo.astro';
+import About from '../components/About.astro';
+import Footer from '../components/Footer.astro';
+import DetailSheet from '../components/DetailSheet.astro';
+import InstallSheet from '../components/InstallSheet.astro';
+import { loadContent } from '../lib/content';
+import { UI } from '../lib/ui';
+
+const { site, sections, tools, official, popular, recent, stats, generatedAt } = loadContent();
+const categoryTitle = Object.fromEntries(sections.map((s) => [s.category.id, s.category.title]));
+---
+
+<Layout title={site.title} description={site.description} url={site.url}>
+  <p class="disclaimer-bar">
+    <b>Community project.</b> Not affiliated with, endorsed by or operated by GL.iNet.
+    Looking for the manufacturer? <a href={site.disclaimer.official.url}>gl-inet.com ↗</a>
+  </p>
+
+  <nav class="nav" aria-label="Main">
+    <div class="container nav-inner">
+      <a class="brand" href="#top">
+        <span class="logo" set:html={UI.logo} />
+        <span>Community Apps<small>Unofficial · for GL.iNet routers</small></span>
+      </a>
+      <div class="nav-links">
+        <a href="#browse">Browse</a>
+        <a href="#install">How to install</a>
+        <a href="#submit">Add your project</a>
+        <a class="keep" href="#about">About</a>
+        <a class="keep" href={`https://github.com/${site.org}`}>GitHub ↗</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <Hero hero={site.hero} stats={stats} />
+
+    <div class="filters" id="browse">
+      <div class="container filters-inner">
+        <div class="chips" id="chips" role="toolbar" aria-label="Categories">
+          <button class="chip-btn" type="button" data-cat="all" aria-pressed="true">All<span>{tools.length}</span></button>
+          {sections.map(({ category, apps }) => (
+            <button class="chip-btn" type="button" data-cat={category.id} data-title={category.title} data-intro={category.intro} aria-pressed="false">
+              {category.title}<span>{apps.length}</span>
+            </button>
+          ))}
+        </div>
+        <label class="sort" for="sort"><span>Sort</span>
+          <select id="sort">
+            <option value="stars">Most stars</option>
+            <option value="updated">Recently updated</option>
+            <option value="name">Name</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="container">
+      <div id="catalog">
+        <Charts popular={popular} recent={recent} categoryTitle={categoryTitle} org={site.org} />
+        {sections.map(({ category, apps }) => <CategorySection category={category} apps={apps} org={site.org} />)}
+      </div>
+
+      <section class="section" id="results" aria-live="polite" hidden>
+        <div class="section-head"><h2 id="results-title">Results</h2><span class="count" id="results-count"></span></div>
+        <p class="intro" id="results-intro" hidden></p>
+        <div class="grid"></div>
+        <p class="empty" hidden>No app matches your search. Try a router model like “Flint 2” or a feature like “VPN”.</p>
+      </section>
+
+      <OfficialSection apps={official} org={site.org} />
+      <HowTo />
+      <About site={site} stats={stats} repos={tools.length + official.length} generatedAt={generatedAt} />
+    </div>
+  </main>
+
+  <Footer site={site} generatedAt={generatedAt} />
+
+  <dialog id="sheet" aria-labelledby="sheet-title"></dialog>
+  {tools.map((app) => (
+    <Fragment>
+      <template id={`tpl-details-${app.id}`}><DetailSheet app={app} org={site.org} /></template>
+      <template id={`tpl-install-${app.id}`}><InstallSheet app={app} org={site.org} /></template>
+    </Fragment>
+  ))}
+
+  <script>
+    import '../scripts/app.ts';
+  </script>
+</Layout>

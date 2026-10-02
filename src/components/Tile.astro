@@ -1,0 +1,16 @@
+---
+import { ICONS } from '../lib/icons';
+
+interface Props {
+  icon: string;
+  gradient: [string, string];
+  size?: 'sm' | 'lg' | 'xl';
+}
+
+const { icon, gradient, size = 'lg' } = Astro.props;
+---
+
+<span
+  class={`tile ${size}`}
+  style={`background:linear-gradient(160deg, ${gradient[0]}, ${gradient[1]})`}
+  aria-hidden="true"><svg viewBox="0 0 24 24" set:html={ICONS[icon]} /></span>

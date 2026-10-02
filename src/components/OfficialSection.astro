@@ -1,0 +1,40 @@
+---
+import Tile from './Tile.astro';
+import type { App } from '../lib/content';
+import { fmt } from '../lib/format';
+import { UI } from '../lib/ui';
+
+interface Props {
+  apps: App[];
+  org: string;
+}
+
+const { apps, org } = Astro.props;
+const docsLink = (app: App) => app.links.find((l) => /docs|documentation|site/i.test(l.label));
+---
+
+<section class="section" id="official" aria-labelledby="h-official">
+  <div class="section-head"><h2 id="h-official">From GL.iNet, mirrored here</h2><span class="count">{apps.length} repositories</span></div>
+  <p class="intro">
+    Official GL.iNet code and documentation, kept in sync in this organization for reference. These are
+    not community projects; report issues to GL.iNet.
+  </p>
+  <ul class="rows">
+    {apps.map((app) => {
+      const site = docsLink(app);
+      return (
+        <li class="row">
+          <Tile icon={app.icon} gradient={app.gradient} size="sm" />
+          <div class="text">
+            <a class="name" href={`https://github.com/${org}/${app.repo}`}>{app.name}</a>
+            <span class="tl">{app.tagline}</span>
+          </div>
+          <div class="right">
+            {site && <a href={site.url}>{site.label} ↗</a>}
+            <span class="stars"><Fragment set:html={UI.star} />{fmt(app.stars)}</span>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+</section>

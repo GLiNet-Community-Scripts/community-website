@@ -1,0 +1,20 @@
+{
+  "name": "glinet-community-apps",
+  "description": "gl-i.net: community app overview for GL.iNet routers (unofficial)",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "prebuild": "node scripts/fetch-github.mjs",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^7.3.5",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.5"
+  }
+}

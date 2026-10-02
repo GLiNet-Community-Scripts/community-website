@@ -1,0 +1,28 @@
+# Sections of the page, in display order. Every community app in apps.yaml
+# references one of these ids. GL.iNet's own repositories (kind: official
+# or docs) are listed separately and don't need a category from this file.
+- id: vpn
+  title: VPN & remote access
+  intro: Tailscale, WireGuard and ZeroTier, adjusted to the quirks of GL.iNet firmware.
+
+- id: network
+  title: Network, DNS & Wi-Fi
+  intro: AdGuard Home, VLANs, QoS, DHCP options and Wi-Fi schedules without hand-editing UCI files.
+
+- id: cellular
+  title: Cellular & WAN
+  intro: >-
+    For 4G/5G models such as Spitz, Mudi and Puli, plus Starlink: SMS tools,
+    modem settings, signal data.
+
+- id: system
+  title: System & firmware
+  intro: Toolkits, logging, backups and alternative firmware for the router itself.
+
+- id: apps
+  title: Dashboards & companion apps
+  intro: Touchscreen interfaces, desktop apps and bots that work alongside your router.
+
+- id: kvm
+  title: KVM
+  intro: Clients and patches for GL.iNet Comet and other GLKVM devices.
