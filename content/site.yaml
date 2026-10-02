@@ -30,9 +30,9 @@ disclaimer:
   official:
     { label: Official GL.iNet website, url: "https://www.gl-inet.com" }
 
-# Issue form for suggesting a new project (lives in the org .github repo
-# as ISSUE_TEMPLATE/new-project.yml).
-submit: https://github.com/GLiNet-Community-Scripts/Issues/issues/new?template=new-project.yml
+# Issue form for suggesting a new project
+# (.github/ISSUE_TEMPLATE/new-project.yml in this repository).
+submit: https://github.com/GLiNet-Community-Scripts/community-website/issues/new?template=new-project.yml
 
 maintainer:
   name: Admon

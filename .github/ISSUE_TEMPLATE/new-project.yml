@@ -1,0 +1,153 @@
+name: Add a project
+description: Suggest a GL.iNet project for the organization and the community app overview at gl-i.net.
+title: "[New project]: "
+labels: ["new project"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a project! Approved projects are forked into this organization, kept in sync with the original repository, and listed on [gl-i.net](https://gl-i.net). The author keeps ownership and credit.
+
+        Your answers become the project's entry on the site, so please write them in English and keep them factual. This is an unofficial community project, not affiliated with GL.iNet.
+
+  - type: input
+    id: repository
+    attributes:
+      label: Repository
+      description: Link to the public GitHub repository.
+      placeholder: https://github.com/your-name/your-project
+    validations:
+      required: true
+
+  - type: dropdown
+    id: relationship
+    attributes:
+      label: Who are you?
+      options:
+        - I am the author or a maintainer
+        - I am suggesting someone else's project
+    validations:
+      required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: Project name
+      description: Short display name, without a "GL.iNet" prefix.
+      placeholder: VLAN Wizard
+    validations:
+      required: true
+
+  - type: input
+    id: tagline
+    attributes:
+      label: Tagline
+      description: One short line, at most 8 words.
+      placeholder: Interactive VLAN setup with per-VLAN Wi-Fi
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What does it do?
+      description: One to three sentences. Say what it changes on the router and who it is for.
+    validations:
+      required: true
+
+  - type: textarea
+    id: features
+    attributes:
+      label: Key features
+      description: Three to five short bullet points.
+      placeholder: |
+        - Creates VLANs with their own SSID and firewall zone
+        - Guided prompts, no UCI editing
+        - Uninstall restores the previous configuration
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - VPN & remote access
+        - Network, DNS & Wi-Fi
+        - Cellular & WAN
+        - System & firmware
+        - Dashboards & companion apps
+        - KVM
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options:
+        - Router script
+        - LuCI app
+        - Router service
+        - Desktop app
+        - Docker
+        - Bot
+        - Firmware
+        - Modem tools
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: install
+    attributes:
+      label: Install command
+      description: The one-liner from your README, exactly as users should run it. Leave empty if there is none and describe the steps under "Notes".
+      render: shell
+
+  - type: textarea
+    id: devices
+    attributes:
+      label: Tested models and firmware
+      description: Every model you tested on, with model number and firmware version.
+      placeholder: |
+        Flint 2 (GL-MT6000), firmware 4.8.1
+        Beryl AX (GL-MT3000), firmware 4.7.0
+    validations:
+      required: true
+
+  - type: input
+    id: license
+    attributes:
+      label: Licence
+      placeholder: MIT
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes and caveats
+      description: Requirements (free space, packages), known limitations, anything that could break, and how to undo the changes.
+
+  - type: input
+    id: links
+    attributes:
+      label: Forum thread or documentation
+      description: Optional link to a GL.iNet forum thread or your docs.
+      placeholder: https://forum.gl-inet.com/t/...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: The repository is public and has an open-source licence.
+          required: true
+        - label: The README explains installation and lists supported models.
+          required: true
+        - label: There is a way to undo what the project changes.
+          required: true
+        - label: It was tested on real GL.iNet hardware.
+          required: true
+        - label: The project may be forked into this organization and listed on gl-i.net, with credit to its author.
+          required: true
