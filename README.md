@@ -78,15 +78,19 @@ One-time setup:
 
 1. **Settings → Pages:** Source **GitHub Actions**, custom domain
    `gl-i.net`, then **Enforce HTTPS** once the certificate is issued.
-   Runs before this step fail at "Configure Pages"; start one again via
-   Actions → Deploy to GitHub Pages → Run workflow.
-2. **DNS for `gl-i.net`** (apex domain):
+2. **Settings → Environments → github-pages → Deployment branches and
+   tags:** allow the default branch (currently
+   `claude/modest-hopper-pgumt2`), or choose "No restriction". Otherwise
+   the deploy job stops with "not allowed to deploy to github-pages due to
+   environment protection rules". Then re-run the workflow
+   (Actions → Deploy to GitHub Pages → Run workflow).
+3. **DNS for `gl-i.net`** (apex domain):
    - `A` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`,
      `185.199.111.153`
    - `AAAA` → `2606:50c0:8000::153`, `2606:50c0:8001::153`,
      `2606:50c0:8002::153`, `2606:50c0:8003::153`
    - optional `CNAME www` → `glinet-community-scripts.github.io`
-3. Recommended: verify `gl-i.net` for the organization
+4. Recommended: verify `gl-i.net` for the organization
    (Organization settings → Pages → Add a domain) so no other account can
    claim it.
 
