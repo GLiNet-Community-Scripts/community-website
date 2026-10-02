@@ -70,20 +70,17 @@ the workflow run, so new projects don't go unnoticed.
 
 GitHub Pages is published by GitHub Actions, there is no `gh-pages`
 branch. `.github/workflows/deploy.yml` builds and publishes the site on
-every push to the default branch (whatever it is called), every night at
-04:41 UTC and on manual dispatch. `.github/workflows/ci.yml` runs the same
+every push to `main`, every night at 04:41 UTC and on manual dispatch. `.github/workflows/ci.yml` runs the same
 build on pull requests.
 
 One-time setup:
 
-1. **Settings → Pages:** Source **GitHub Actions**, custom domain
+1. **Settings → General → Default branch:** `main`. Scheduled runs only
+   happen on the default branch. If a deploy stops with "not allowed to
+   deploy to github-pages due to environment protection rules", allow
+   `main` under Settings → Environments → github-pages.
+2. **Settings → Pages:** Source **GitHub Actions**, custom domain
    `gl-i.net`, then **Enforce HTTPS** once the certificate is issued.
-2. **Settings → Environments → github-pages → Deployment branches and
-   tags:** allow the default branch (currently
-   `claude/modest-hopper-pgumt2`), or choose "No restriction". Otherwise
-   the deploy job stops with "not allowed to deploy to github-pages due to
-   environment protection rules". Then re-run the workflow
-   (Actions → Deploy to GitHub Pages → Run workflow).
 3. **DNS for `gl-i.net`** (apex domain):
    - `A` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`,
      `185.199.111.153`
