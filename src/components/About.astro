@@ -11,7 +11,6 @@ interface Props {
 }
 
 const { site, stats, repos, generatedAt } = Astro.props;
-const issues = `https://github.com/${site.org}/Issues/issues`;
 ---
 
 <section class="section" id="submit" aria-labelledby="h-submit">
@@ -20,9 +19,10 @@ const issues = `https://github.com/${site.org}/Issues/issues`;
     <div class="panel">
       <h3>Built something for your GL.iNet router?</h3>
       <p>
-        Open an issue in the community Issues repository with a link to your project. The maintainers
-        fork it into the organization and keep the fork in sync with your repository. Once a short
-        description is added, it appears here. You keep ownership and credit.
+        Fill in the short project form on GitHub. It asks for exactly what appears here: what the
+        project does, how to install it and which models you tested. The maintainers fork it into the
+        organization, keep the fork in sync with your repository and list it here. You keep ownership
+        and credit.
       </p>
       <ul>
         <li><Fragment set:html={UI.tick} /><span>Open-source licence and a public repository</span></li>
@@ -30,7 +30,7 @@ const issues = `https://github.com/${site.org}/Issues/issues`;
         <li><Fragment set:html={UI.tick} /><span>A way to undo what the script changes</span></li>
         <li><Fragment set:html={UI.tick} /><span>Tested on real hardware, with the firmware version noted</span></li>
       </ul>
-      <a class="btn" href={issues}>Suggest a project ↗</a>
+      <a class="btn" href={site.submit}>Suggest a project ↗</a>
     </div>
     <div class="panel" id="about">
       <h3>About this site</h3>

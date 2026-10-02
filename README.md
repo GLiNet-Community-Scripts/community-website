@@ -33,7 +33,11 @@ All text lives in three YAML files. Changing the site never touches HTML.
   official GL.iNet links, and `ignore` for repositories that should not
   appear.
 
-Adding a project: fork it into the organization, then append a block to
+Adding a project: suggestions arrive through the
+[project form](https://github.com/GLiNet-Community-Scripts/Issues/issues/new?template=new-project.yml)
+(defined in the org `.github` repository as
+`ISSUE_TEMPLATE/new-project.yml`); its fields map one to one onto
+`apps.yaml`. Fork the project into the organization, then append a block to
 `apps.yaml`. Copy the install command verbatim from the project's README;
 the install sheet splits long commands into lines on its own, and the copy
 button always copies the original one-liner.

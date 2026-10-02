@@ -17,7 +17,7 @@ const { site, generatedAt } = Astro.props;
         <h4>Community</h4>
         <a href={`https://github.com/${site.org}`}>GitHub organization</a>
         <a href={`https://github.com/${site.org}/Issues/issues`}>Issues and requests</a>
-        <a href="#submit">Add your project</a>
+        <a href={site.submit}>Suggest a project</a>
         <a href={`https://github.com/${site.org}/community-website`}>Source of this site</a>
       </nav>
       <nav class="col" aria-label="Maintainer">
