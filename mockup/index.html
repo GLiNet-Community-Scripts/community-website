@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GL.iNet Community Apps</title>
+<meta name="description" content="Scripts, add-ons and companion tools for GL.iNet routers, built by the community.">
+</head>
+<body>
+<style>
+/*
+ * Layout: Apple-style quiet surfaces from apps.admon.me, one green accent
+ * taken from the community banner. App-store grammar: search, category
+ * shelves, cards with an icon tile, a detail sheet per app.
+ * No web fonts: the system stack keeps the page free of third-party requests.
+ */
+:root {
+  --bg: #f4f6f5;
+  --surface: #ffffff;
+  --surface-2: #edf1ef;
+  --text: #17201c;
+  --text-2: #5d6a64;
+  --accent: #16774c;
+  --accent-soft: rgba(22, 119, 76, 0.11);
+  --brand: #1f4d3a;
+  --border: rgba(16, 40, 30, 0.09);
+  --nav-bg: rgba(244, 246, 245, 0.78);
+  --card-shadow: 0 1px 2px rgba(10, 30, 20, 0.04), 0 10px 30px rgba(10, 30, 20, 0.05);
+  --card-shadow-hover: 0 2px 6px rgba(10, 30, 20, 0.05), 0 18px 44px rgba(10, 30, 20, 0.1);
+  --warn: #9a5b00;
+  --warn-bg: rgba(255, 159, 10, 0.13);
+  --info: #0a66c2;
+  --info-bg: rgba(0, 122, 255, 0.1);
+  --mute-bg: rgba(93, 106, 100, 0.12);
+  --tile-ring: rgba(0, 0, 0, 0.07);
+  --overlay: rgba(10, 20, 15, 0.38);
+
+  --radius-card: 18px;
+  --radius-tile: 22.5%;
+  --radius-pill: 980px;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a0c0b;
+    --surface: #161a18;
+    --surface-2: #212623;
+    --text: #f1f4f2;
+    --text-2: #9ba6a1;
+    --accent: #4cc38a;
+    --accent-soft: rgba(76, 195, 138, 0.14);
+    --brand: #2c6b51;
+    --border: rgba(255, 255, 255, 0.11);
+    --nav-bg: rgba(10, 12, 11, 0.74);
+    --card-shadow: none;
+    --card-shadow-hover: none;
+    --warn: #ffb340;
+    --warn-bg: rgba(255, 159, 10, 0.15);
+    --info: #64b5ff;
+    --info-bg: rgba(10, 132, 255, 0.17);
+    --mute-bg: rgba(155, 166, 161, 0.15);
+    --tile-ring: rgba(255, 255, 255, 0.09);
+    --overlay: rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a0c0b;
+  --surface: #161a18;
+  --surface-2: #212623;
+  --text: #f1f4f2;
+  --text-2: #9ba6a1;
+  --accent: #4cc38a;
+  --accent-soft: rgba(76, 195, 138, 0.14);
+  --brand: #2c6b51;
+  --border: rgba(255, 255, 255, 0.11);
+  --nav-bg: rgba(10, 12, 11, 0.74);
+  --card-shadow: none;
+  --card-shadow-hover: none;
+  --warn: #ffb340;
+  --warn-bg: rgba(255, 159, 10, 0.15);
+  --info: #64b5ff;
+  --info-bg: rgba(10, 132, 255, 0.17);
+  --mute-bg: rgba(155, 166, 161, 0.15);
+  --tile-ring: rgba(255, 255, 255, 0.09);
+  --overlay: rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 130px; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 1120px; margin: 0 auto; padding-inline: 24px; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -0.02em; text-wrap: balance; }
+p { margin: 0; }
+code { font-family: var(--font-mono); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+::selection { background: color-mix(in srgb, var(--accent) 25%, transparent); }
+
+/* ── mockup ribbon ─────────────────────────────────────────── */
+.ribbon {
+  background: var(--warn-bg);
+  color: var(--warn);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  padding: 7px 16px;
+}
+
+/* ── nav ───────────────────────────────────────────────────── */
+.nav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--nav-bg);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner { display: flex; align-items: center; gap: 20px; height: 56px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--text); font-weight: 650; font-size: 16px; letter-spacing: -0.01em; }
+.brand:hover { text-decoration: none; }
+.brand small { display: block; font-size: 11.5px; font-weight: 500; color: var(--text-2); letter-spacing: 0; margin-top: -2px; }
+.logo { width: 32px; height: 32px; border-radius: 9px; background: var(--brand); display: grid; place-items: center; flex: none; }
+.logo svg { width: 20px; height: 20px; }
+.nav-links { margin-left: auto; display: flex; gap: 22px; font-size: 14px; font-weight: 500; }
+.nav-links a { color: var(--text-2); }
+.nav-links a:hover { color: var(--accent); text-decoration: none; }
+
+/* ── hero ──────────────────────────────────────────────────── */
+.hero { text-align: center; padding-block: 76px 8px; }
+.eyebrow { font-size: 14px; font-weight: 600; color: var(--accent); }
+.hero h1 { margin-top: 10px; font-size: clamp(40px, 7.4vw, 70px); letter-spacing: -0.035em; line-height: 1.05; }
+.hero .sub { margin: 18px auto 0; max-width: 640px; font-size: 19px; color: var(--text-2); text-wrap: balance; }
+.search { margin: 32px auto 0; max-width: 560px; position: relative; }
+.search svg { position: absolute; left: 18px; top: 50%; translate: 0 -50%; width: 19px; height: 19px; color: var(--text-2); pointer-events: none; }
+.search input {
+  width: 100%;
+  font: inherit;
+  font-size: 17px;
+  padding: 15px 52px 15px 48px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--card-shadow);
+}
+.search input::placeholder { color: var(--text-2); }
+.search input:focus { outline: 2px solid var(--accent); outline-offset: 0; }
+.search kbd {
+  position: absolute; right: 14px; top: 50%; translate: 0 -50%;
+  font-family: var(--font-mono); font-size: 12px; color: var(--text-2);
+  border: 1px solid var(--border); border-radius: 6px; padding: 2px 7px;
+}
+.suggest { margin-top: 12px; font-size: 13.5px; color: var(--text-2); display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 10px; }
+.suggest button { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; font-weight: 500; }
+.suggest button:hover { text-decoration: underline; }
+.stats { margin-top: 26px; display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 28px; font-size: 14px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.stats b { color: var(--text); font-weight: 650; }
+
+/* ── filter bar ────────────────────────────────────────────── */
+.filters {
+  position: sticky;
+  top: calc(env(safe-area-inset-top, 0px) + 56px);
+  z-index: 15;
+  background: var(--nav-bg);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-bottom: 1px solid var(--border);
+  margin-top: 44px;
+}
+.filters-inner { display: flex; align-items: center; gap: 14px; padding-block: 10px; }
+.chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; min-width: 0; flex: 1; }
+.chips::-webkit-scrollbar { display: none; }
+.chip-btn {
+  flex: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius-pill);
+  padding: 6px 13px;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  color: var(--text);
+}
+.chip-btn span { color: var(--text-2); font-variant-numeric: tabular-nums; margin-left: 3px; }
+.chip-btn:hover { border-color: var(--accent); }
+.chip-btn[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.chip-btn[aria-pressed="true"] span { color: inherit; opacity: 0.7; }
+.sort { flex: none; display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--text-2); }
+.sort select {
+  width: auto;
+  font: inherit; font-size: 13.5px; font-weight: 500; color: var(--text);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 6px 10px;
+}
+
+/* ── sections ──────────────────────────────────────────────── */
+.section { margin-top: 64px; }
+.section-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
+.section h2 { font-size: 28px; }
+.count { font-size: 14px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.intro { margin-top: 6px; max-width: 660px; font-size: 16px; color: var(--text-2); }
+.grid { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+.empty { margin-top: 40px; padding: 48px 24px; text-align: center; color: var(--text-2); background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-card); }
+
+/* ── featured ──────────────────────────────────────────────── */
+.featured { margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.feature {
+  position: relative;
+  border-radius: var(--radius-card);
+  padding: 24px;
+  color: #fff;
+  overflow: hidden;
+  display: flex; flex-direction: column; gap: 14px;
+  cursor: pointer;
+  text-align: left;
+  border: 0;
+  min-height: 236px;
+  transition: transform .3s cubic-bezier(.2,.6,.2,1);
+}
+.feature:hover { transform: translateY(-3px); text-decoration: none; }
+.feature::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,.28)); pointer-events: none; }
+.feature > * { position: relative; z-index: 1; }
+.feature .rank { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
+.feature .top { display: flex; align-items: center; gap: 14px; }
+.feature .tile { box-shadow: inset 0 0 0 1px rgba(255,255,255,.25); background: rgba(255,255,255,.16) !important; }
+.feature h3 { font-size: 21px; }
+.feature .by { font-size: 13.5px; color: inherit; opacity: .85; }
+.feature p.desc { font-size: 15px; line-height: 1.5; color: inherit; opacity: .93; }
+.feature .foot { margin-top: auto; display: flex; gap: 14px; font-size: 13.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.feature .foot span { display: inline-flex; align-items: center; gap: 5px; }
+.feature .foot svg { width: 14px; height: 14px; fill: currentColor; }
+
+/* ── card ──────────────────────────────────────────────────── */
+.card {
+  display: flex; flex-direction: column; gap: 13px;
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
+  padding: 22px;
+  min-width: 0;
+  transition: transform .3s cubic-bezier(.2,.6,.2,1), box-shadow .3s cubic-bezier(.2,.6,.2,1), background .3s;
+}
+.card:hover { transform: translateY(-3px); box-shadow: var(--card-shadow-hover); }
+.card-head { display: flex; align-items: center; gap: 15px; }
+.card-head .heading { min-width: 0; }
+.card h3 { font-size: 18px; line-height: 1.25; }
+.card h3 button { all: unset; cursor: pointer; }
+.card h3 button:hover { color: var(--accent); }
+.card h3 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.by { font-size: 13.5px; color: var(--text-2); margin-top: 1px; }
+.stars { margin-left: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; color: var(--text-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.stars svg { width: 13px; height: 13px; fill: currentColor; }
+.tagline { font-size: 15px; font-weight: 600; }
+.desc { font-size: 15px; line-height: 1.55; color: var(--text-2); }
+.card .desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.feature p.desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.pill { font-size: 12px; font-weight: 600; line-height: 1; padding: 5px 9px; border-radius: var(--radius-pill); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pill.ver { color: var(--accent); background: var(--accent-soft); font-family: var(--font-mono); font-weight: 600; }
+.pill.beta, .pill.experimental { color: var(--warn); background: var(--warn-bg); }
+.pill.type { color: var(--info); background: var(--info-bg); }
+.pill.mute { color: var(--text-2); background: var(--mute-bg); font-weight: 500; }
+.install { display: flex; align-items: stretch; background: var(--surface-2); border-radius: 10px; min-width: 0; }
+.install code { flex: 1; min-width: 0; font-size: 12.5px; line-height: 1.4; padding: 9px 4px 9px 12px; white-space: nowrap; overflow-x: auto; scrollbar-width: none; }
+.install code::-webkit-scrollbar { display: none; }
+.install-note { font-size: 13.5px; color: var(--text-2); background: var(--surface-2); border-radius: 10px; padding: 8px 12px; }
+.card .install-note { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.copy { flex: none; border: 0; background: none; padding: 0 11px; cursor: pointer; color: var(--text-2); display: grid; place-items: center; border-radius: 0 10px 10px 0; }
+.copy:hover { color: var(--accent); }
+.copy svg { width: 16px; height: 16px; }
+.copy.done { color: var(--accent); }
+.card-foot { margin-top: auto; display: flex; align-items: center; gap: 16px; font-size: 14px; font-weight: 500; padding-top: 2px; }
+.card-foot .details { border: 0; background: var(--accent-soft); color: var(--accent); font-weight: 600; font-size: 13.5px; border-radius: var(--radius-pill); padding: 6px 14px; cursor: pointer; }
+.card-foot .details:hover { filter: brightness(1.08); }
+.card-foot .updated { margin-left: auto; font-size: 12.5px; color: var(--text-2); font-weight: 400; }
+
+/* ── tile ──────────────────────────────────────────────────── */
+.tile { display: grid; place-items: center; border-radius: var(--radius-tile); flex: none; box-shadow: inset 0 0 0 1px var(--tile-ring); }
+.tile svg { fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tile.lg { width: 60px; height: 60px; } .tile.lg svg { width: 32px; height: 32px; }
+.tile.xl { width: 84px; height: 84px; } .tile.xl svg { width: 44px; height: 44px; }
+.tile.sm { width: 42px; height: 42px; } .tile.sm svg { width: 23px; height: 23px; }
+
+/* ── compact rows (official sources) ───────────────────────── */
+.rows { margin-top: 24px; padding: 4px 22px; list-style: none; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--card-shadow); }
+.row { display: flex; align-items: center; gap: 15px; padding-block: 14px; }
+.row + .row { border-top: 1px solid var(--border); }
+.row .text { display: flex; flex-direction: column; min-width: 0; }
+.row .name { color: var(--text); font-weight: 600; font-size: 15.5px; }
+.row .name:hover { color: var(--accent); text-decoration: none; }
+.row .tl { font-size: 13.5px; color: var(--text-2); }
+.row .right { margin-left: auto; display: flex; align-items: center; gap: 14px; font-size: 13.5px; font-weight: 500; white-space: nowrap; }
+.row .right .stars { margin: 0; align-self: center; }
+
+/* ── how-to ────────────────────────────────────────────────── */
+.steps { margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: step; }
+.step { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--card-shadow); padding: 22px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.step::before { counter-increment: step; content: counter(step); width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 14px; display: grid; place-items: center; }
+.step h3 { font-size: 17px; }
+.step p { font-size: 15px; color: var(--text-2); }
+.callout { margin-top: 20px; display: flex; gap: 12px; align-items: flex-start; padding: 16px 18px; border-radius: 14px; background: var(--warn-bg); color: var(--text); font-size: 15px; }
+.callout svg { flex: none; width: 20px; height: 20px; stroke: var(--warn); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-top: 2px; }
+
+/* ── two-column panels ─────────────────────────────────────── */
+.duo { margin-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--card-shadow); padding: 26px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.panel h3 { font-size: 19px; }
+.panel p { font-size: 15.5px; color: var(--text-2); }
+.panel ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
+.panel li { display: flex; gap: 10px; align-items: flex-start; }
+.panel li svg { flex: none; width: 17px; height: 17px; margin-top: 3px; stroke: var(--accent); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.panel .btn { align-self: flex-start; margin-top: 6px; background: var(--accent); color: var(--bg); font-weight: 600; font-size: 14.5px; padding: 9px 18px; border-radius: var(--radius-pill); }
+.panel .btn:hover { text-decoration: none; filter: brightness(1.08); }
+.facts { display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; font-size: 14.5px; }
+.facts dt { color: var(--text-2); }
+.facts dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+/* ── detail sheet ──────────────────────────────────────────── */
+dialog {
+  width: min(720px, calc(100% - 32px));
+  max-height: calc(100% - 48px);
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 30px 80px rgba(0,0,0,.25);
+}
+dialog::backdrop { background: var(--overlay); backdrop-filter: blur(4px); }
+.sheet { padding: 28px; display: flex; flex-direction: column; gap: 22px; }
+.sheet-head { display: flex; gap: 18px; align-items: center; }
+.sheet-head .heading { min-width: 0; flex: 1; }
+.sheet-head h2 { font-size: 26px; line-height: 1.15; }
+.sheet-head .tagline { font-weight: 500; color: var(--text-2); margin-top: 3px; }
+.close { flex: none; align-self: flex-start; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--surface-2); cursor: pointer; display: grid; place-items: center; color: var(--text-2); }
+.close svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.2; fill: none; stroke-linecap: round; }
+.close:hover { color: var(--text); }
+.kv { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--border); border-radius: 14px; }
+.kv div { padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kv div + div { border-left: 1px solid var(--border); }
+.kv span { font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-2); font-weight: 600; }
+.kv b { font-size: 15px; font-weight: 650; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.sheet h4 { font-size: 13px; text-transform: uppercase; letter-spacing: .07em; color: var(--text-2); margin-bottom: 10px; }
+.sheet .lead { font-size: 16px; line-height: 1.6; }
+.features { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; font-size: 15px; }
+.features li { display: flex; gap: 10px; }
+.features svg { flex: none; width: 17px; height: 17px; margin-top: 3px; stroke: var(--accent); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.sheet .install code { font-size: 13px; padding: 12px 4px 12px 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.sheet .hint { margin-top: 8px; font-size: 13.5px; color: var(--text-2); }
+.sheet .note { display: flex; gap: 10px; padding: 12px 14px; border-radius: 12px; background: var(--warn-bg); font-size: 14.5px; }
+.sheet .note svg { flex: none; width: 18px; height: 18px; stroke: var(--warn); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-top: 2px; }
+.dev { display: flex; flex-wrap: wrap; gap: 6px; }
+.dev span { font-size: 13px; border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 4px 11px; }
+.sheet-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.sheet-links a { font-size: 14px; font-weight: 600; border-radius: var(--radius-pill); padding: 8px 15px; background: var(--surface-2); color: var(--text); }
+.sheet-links a.primary { background: var(--accent); color: var(--bg); }
+.sheet-links a:hover { text-decoration: none; filter: brightness(1.06); }
+.credit { font-size: 13.5px; color: var(--text-2); border-top: 1px solid var(--border); padding-top: 16px; }
+
+/* ── footer ────────────────────────────────────────────────── */
+.footer { margin-top: 96px; border-top: 1px solid var(--border); }
+.footer-inner { padding-block: 40px 48px; display: flex; flex-direction: column; gap: 32px; }
+.cols { display: flex; flex-wrap: wrap; gap: 32px 88px; }
+.col { display: flex; flex-direction: column; gap: 9px; font-size: 13.5px; }
+.col h4 { font-size: 13.5px; font-weight: 600; letter-spacing: 0; }
+.col a { color: var(--text-2); }
+.col a:hover { color: var(--accent); }
+.disclaimer { font-size: 13px; color: var(--text-2); max-width: 760px; }
+.bottom { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+/* ── responsive ────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .featured { grid-template-columns: 1fr; }
+  .feature { min-height: 0; }
+  .steps, .duo { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+  .container { padding-inline: 16px; }
+  .nav-links a:not(.keep) { display: none; }
+  .hero { padding-top: 52px; }
+  .hero .sub { font-size: 17px; }
+  .section h2 { font-size: 24px; }
+  .grid { grid-template-columns: 1fr; }
+  .sort span { display: none; }
+  .sheet-head { gap: 14px; }
+  .sheet-head .tile.xl { width: 60px; height: 60px; }
+  .sheet-head .tile.xl svg { width: 32px; height: 32px; }
+  .sheet-head h2 { font-size: 22px; }
+  .kv { grid-template-columns: 1fr 1fr; }
+  .kv div:nth-child(3) { border-left: 0; }
+  .kv div:nth-child(n+3) { border-top: 1px solid var(--border); }
+  .features { grid-template-columns: 1fr; }
+  .sheet { padding: 22px; }
+  .row { flex-wrap: wrap; }
+  .row .right { margin-left: 57px; }
+  .search kbd { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+
+<div class="ribbon">Mockup with real data from the GLiNet-Community-Scripts organization, snapshot of 1 Oct 2026, 13:36 CEST</div>
+
+<nav class="nav" aria-label="Main">
+  <div class="container nav-inner">
+    <a class="brand" href="#top">
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4.5 10.5a10.6 10.6 0 0 1 15 0"/><path d="M7.6 13.6a6.2 6.2 0 0 1 8.8 0"/><circle cx="12" cy="17.2" r="1.4" fill="#fff" stroke="none"/></svg></span>
+      <span>Community Apps<small>for GL.iNet routers</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="#browse">Browse</a>
+      <a href="#install">How to install</a>
+      <a href="#submit">Add your project</a>
+      <a class="keep" href="https://github.com/GLiNet-Community-Scripts">GitHub ↗</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+  <header class="container hero">
+    <p class="eyebrow">Unofficial · Built and maintained by the community</p>
+    <h1>Apps for your GL.iNet router.</h1>
+    <p class="sub">Scripts, add-ons and companion tools written by GL.iNet users. See what each one does, which routers it runs on and how to install it.</p>
+    <div class="search" role="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
+      <input id="q" type="search" placeholder="Search apps, features or router models" aria-label="Search apps" autocomplete="off">
+      <kbd>/</kbd>
+    </div>
+    <div class="suggest" id="suggest">Try <button type="button">Tailscale</button><button type="button">Flint 2</button><button type="button">SMS</button><button type="button">VLAN</button><button type="button">AdGuard</button></div>
+    <p class="stats" id="stats"></p>
+  </header>
+
+  <div class="filters" id="browse">
+    <div class="container filters-inner">
+      <div class="chips" id="chips" role="toolbar" aria-label="Categories"></div>
+      <label class="sort" for="sort"><span>Sort</span>
+        <select id="sort">
+          <option value="stars">Most stars</option>
+          <option value="updated">Recently updated</option>
+          <option value="name">Name</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="container" id="results"></div>
+
+  <div class="container">
+    <section class="section" id="official" aria-labelledby="h-official">
+      <div class="section-head"><h2 id="h-official">From GL.iNet, mirrored here</h2><span class="count" id="official-count"></span></div>
+      <p class="intro">Official GL.iNet code and documentation, kept in sync in this organization for reference. These are not community projects; report issues upstream.</p>
+      <ul class="rows" id="official-rows"></ul>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="h-install">
+      <div class="section-head"><h2 id="h-install">How installing works</h2></div>
+      <p class="intro">Most apps here are shell scripts that run on the router itself. You need SSH access, which every GL.iNet router has out of the box.</p>
+      <div class="steps">
+        <div class="step"><h3>Connect via SSH</h3><p>Open a terminal and log in with your admin password. The default router address is 192.168.8.1.</p><div class="install"><code>ssh root@192.168.8.1</code><button class="copy" type="button" data-copy="ssh root@192.168.8.1" aria-label="Copy command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2.2"/><path d="M15.5 8.5V6.7a2.2 2.2 0 0 0-2.2-2.2H6.7a2.2 2.2 0 0 0-2.2 2.2v6.6a2.2 2.2 0 0 0 2.2 2.2h1.8"/></svg></button></div></div>
+        <div class="step"><h3>Paste the install command</h3><p>Copy the command from the app's card. It downloads the script from GitHub and starts it.</p></div>
+        <div class="step"><h3>Follow the prompts</h3><p>Most scripts ask before they change anything and explain how to undo it. Details are in each project's README.</p></div>
+      </div>
+      <div class="callout">
+        <svg viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5"/><path d="M12 17.3h.01"/></svg>
+        <p>These are community projects, not GL.iNet software. Read a script before you run it, keep a configuration backup, and expect a firmware update to undo some changes.</p>
+      </div>
+    </section>
+
+    <section class="section" id="submit" aria-labelledby="h-submit">
+      <div class="section-head"><h2 id="h-submit">Add your project</h2></div>
+      <div class="duo">
+        <div class="panel">
+          <h3>Built something for your GL.iNet router?</h3>
+          <p>Open an issue in the community Issues repository with a link to your project. The maintainers fork it into the organization and keep the fork in sync with your repository. Once a short description is added, it appears here. You keep ownership and credit.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Open-source licence and a public repository</span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>README with install steps and supported models</span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>A way to undo what the script changes</span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Tested on real hardware, with the firmware version noted</span></li>
+          </ul>
+          <a class="btn" href="https://github.com/GLiNet-Community-Scripts/Issues/issues">Suggest a project ↗</a>
+        </div>
+        <div class="panel">
+          <h3>How this page stays current</h3>
+          <p>A scheduled GitHub Action rebuilds this site every night. It reads star counts, the latest release and the last commit of every repository in the organization, so nothing here is maintained by hand except the short descriptions.</p>
+          <dl class="facts">
+            <dt>Last refresh</dt><dd>1 Oct 2026, 13:36 CEST</dd>
+            <dt>Repositories</dt><dd id="fact-repos"></dd>
+            <dt>Cookies, tracking</dt><dd>None</dd>
+            <dt>Fonts, icons</dt><dd>Served from this site, no third-party requests</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="cols">
+      <nav class="col" aria-label="Community">
+        <h4>Community</h4>
+        <a href="https://github.com/GLiNet-Community-Scripts">GitHub organization</a>
+        <a href="https://github.com/GLiNet-Community-Scripts/Issues/issues">Issues and requests</a>
+        <a href="https://forum.gl-inet.com">GL.iNet forum</a>
+      </nav>
+      <nav class="col" aria-label="Official resources">
+        <h4>Official resources</h4>
+        <a href="https://docs.gl-inet.com">GL.iNet documentation</a>
+        <a href="https://dl.gl-inet.com">Firmware downloads</a>
+      </nav>
+      <nav class="col" aria-label="This site">
+        <h4>This site</h4>
+        <a href="https://github.com/GLiNet-Community-Scripts/community-website">Source code</a>
+        <a href="#submit">Add your project</a>
+        <a href="#top">Imprint &amp; privacy</a>
+      </nav>
+    </div>
+    <p class="disclaimer">This is an unofficial, community-maintained site. It is not affiliated with, endorsed by or operated by GL.iNet. GL.iNet is a trademark of its owner. Every project belongs to its author and keeps its own licence.</p>
+    <div class="bottom">
+      <p>Data refreshed nightly · last run 1 Oct 2026, 13:36 CEST</p>
+      <p>No cookies · No tracking · No external fonts</p>
+    </div>
+  </div>
+</footer>
+
+<dialog id="sheet" aria-labelledby="sheet-title"></dialog>
+
+<script>
+const SNAPSHOT = '2026-10-01T13:36:00+02:00';
+const APPS = [{"repo": "gl-tailscale-fix", "upstream": "RemoteToHome-io/gl-tailscale-fix", "author": "RemoteToHome-io", "name": "Tailscale Fix", "kind": "tool", "category": "vpn", "type": "router-service", "tagline": "Kill switch and exit-node controls for Tailscale", "description": "An .ipk plugin that adds controls to the Tailscale page of the GL.iNet admin panel: a kernel-level kill switch for IPv4 and IPv6, exit node advertising, guest network routing through the exit node, a Tailscale SSH toggle and a Tailscale version manager. No GL.iNet scripts or binaries are modified, and on firmware 4.9+ it hides the features GL.iNet now provides natively.", "features": ["Routing-level kill switch for IPv4 and IPv6", "One-click toggle to advertise as exit node", "Guest network routing through the exit node", "Tailscale version manager using compact binaries", "Survives firmware upgrades; clean removal via opkg"], "install": "wget -q https://github.com/RemoteToHome-io/gl-tailscale-fix/releases/latest/download/install-gl-tailscale-fix.sh -O install-gl-tailscale-fix.sh && sh install-gl-tailscale-fix.sh", "install_note": null, "devices": ["Slate AX (GL-AXT1800)", "Beryl AX (GL-MT3000)", "Flint (GL-AX1800)", "Brume 2 (GL-MT2500)", "Flint 2 (GL-MT6000)", "Slate 7 (GL-BE3600)", "Flint 3e (GL-BE6500)", "Brume 3 (GL-MT5000)", "Beryl 7 (GL-MT3600BE)", "Puli AX (GL-XE3000)", "Slate Plus (GL-A1300)", "Mudi 7 (GL-E5800)"], "firmware": "GL.iNet 4.x (tested 4.5.22 to 4.9.0)", "license": "GPL-3.0", "tech": ["Lua", "POSIX sh", "JavaScript", "nginx/OpenResty", "UCI"], "version": "v1.0.21", "links": [{"label": "Setup guide", "url": "https://remotetohome.io/gl-tailscale-fix"}, {"label": "Blog post", "url": "https://remotetohome.io/blog/gl-tailscale-fix/"}, {"label": "Forum thread", "url": "https://forum.gl-inet.com/t/enhanced-tailscale-for-gl-inet-routers-proper-ts-killswitch-one-click-exit-node/67565"}], "readiness": "beta", "icon": "shield", "notes": "The README says the plugin should be considered beta because GL.iNet's Tailscale integration can change with firmware updates; check for a new plugin release before upgrading firmware. Do not run `tailscale update` or the Tailscale web dashboard update: the ~52 MB upstream binaries can fill the flash overlay and potentially brick the router (use the plugin's Version Manager instead). The kill switch covers LAN/guest to WAN traffic; do not run another VPN client on the same network segment. Testing depth varies by model (some only install/remove verified; version manager unsupported on Slate Plus).", "stars": 127, "updated": "2026-09-04"}, {"repo": "glinet-tailscale-updater", "upstream": "admonstrator/glinet-tailscale-updater", "author": "admonstrator", "name": "Tailscale Updater", "kind": "tool", "category": "vpn", "type": "router-script", "tagline": "Latest Tailscale on GL.iNet, using compact binaries", "description": "Shell script that downloads and installs the latest Tailscale release on GL.iNet routers with firmware 4.x and on Comet / Comet Pro KVMs, using size-reduced \"tiny\" binaries by default. It can also install a specific version, enable Tailscale SSH, and restore the original firmware binaries.", "features": ["Installs latest Tailscale using space-saving tiny binaries", "Choose a specific release with --select-release", "Optional Tailscale SSH setup via --ssh", "Restore original firmware binaries with --restore", "Sets --stateful-filtering=false for exit node use"], "install": "wget -q https://get.admon.me/tailscale -O update-tailscale.sh ; sh update-tailscale.sh", "install_note": null, "devices": ["Flint 3 (GL-BE9300)", "Comet (GL-RM1)", "Comet Pro (GL-RM10)"], "firmware": "GL.iNet 4.x", "license": "MIT", "tech": ["POSIX sh", "UPX"], "version": "v1.102.5", "links": [{"label": "Forum thread", "url": "https://forum.gl-inet.com/t/how-to-update-tailscale-on-arm64/37582"}, {"label": "GL.iNet Toolbox", "url": "https://github.com/Admonstrator/glinet-toolbox"}, {"label": "Tailscale SSH docs", "url": "https://tailscale.com/kb/1193/tailscale-ssh"}], "readiness": "stable", "icon": "tailscale", "notes": "Enable Tailscale in the GL.iNet router settings before running. Needs at least 15 MB free space and should not be run as a cron job. Supported architectures: arm64, armv7, mips, mipsle, x86_64. README says it is tested on nearly all GL.iNet routers with firmware 4.x; KVM support (firmware V1.9.1 and 1.10) is based on community reports, and --restore is not available on KVMs.", "stars": 751, "updated": "2026-09-27"}, {"repo": "GL.iNet-Tailscale-Enable-SSL", "upstream": "techrelay/GL.iNet-Tailscale-Enable-SSL", "author": "techrelay", "name": "Tailscale SSL Enabler", "kind": "tool", "category": "vpn", "type": "router-script", "tagline": "Trusted Tailscale HTTPS certificate for the admin UI", "description": "Two shell scripts that request a Tailscale-issued HTTPS certificate for the device's tailnet name (*.ts.net) and install it into a GL.iNet router's nginx or a GL-KVM's kvmd, replacing the self-signed certificate. They back up the existing certificates and check that the new one is served.", "features": ["Detects the device's tailnet domain automatically", "Generates the certificate with tailscale cert", "Backs up existing HTTPS certificates first", "Separate scripts for routers (nginx) and KVMs (kvmd)", "Verifies the new certificate is being served"], "install": "wget -q https://raw.githubusercontent.com/techrelay/GL.iNet-Tailscale-Enable-SSL/main/tailscale-ssl-router.sh -O tailscale-ssl-router.sh ; sh tailscale-ssl-router.sh", "install_note": null, "devices": ["Flint 3 (GL-BE9300)", "Slate 7 (GL-BE3600)", "Spitz AX (GL-X3000)", "Puli AX (GL-XE3000)", "Slate 7 Pro (GL-BE10000)", "Comet (GL-RM1)", "Comet Pro (GL-RM10)"], "firmware": null, "license": null, "tech": ["POSIX sh", "tailscale cert", "nginx", "kvmd"], "version": null, "links": [{"label": "Tailscale Updater (recommended first)", "url": "https://github.com/admonstrator/glinet-tailscale-updater"}], "readiness": "stable", "icon": "lock", "notes": "Manual process: re-run about every 90 days to renew the certificate (or set up your own cron job). The certificate is valid only for the tailnet hostname, not the LAN IP. Requires HTTPS and MagicDNS enabled in the tailnet admin settings and an up-to-date Tailscale version. The install command above is the router script; on Comet / Comet Pro KVMs run tailscale-ssl-kvm.sh instead (command in README). No LICENSE file in the repo.", "stars": 5, "updated": "2026-03-11"}, {"repo": "glinet-tailscale-exitnode-switch", "upstream": "nsouto/glinet-tailscale-exitnode-switch", "author": "nsouto", "name": "Tailscale Exit Node Switch", "kind": "tool", "category": "vpn", "type": "router-script", "tagline": "Side switch toggles the Tailscale exit node", "description": "Patches GL.iNet's gl_tailscale wrapper and adds a background monitor so the router's physical side switch turns use of the exit node selected in the GL.iNet UI on or off. Tailscale itself stays enabled; the switch only controls whether traffic goes through the exit node.", "features": ["Physical side switch enables or disables exit node", "Backs up gl_tailscale before patching", "Install, status and uninstall commands", "Switch does nothing if no exit node selected", "Background monitor restarts Tailscale on switch change"], "install": "curl -fsSL https://raw.githubusercontent.com/nsouto/glinet-tailscale-exitnode-switch/main/glinet-tailscale-exitnode-switch.sh | sh -s -- install", "install_note": null, "devices": ["Beryl AX (GL-MT3000)", "Slate 7 (GL-BE3600)"], "firmware": "GL.iNet 4.x (tested 4.8.1 and 4.8.x)", "license": "MIT", "tech": ["POSIX sh", "UCI"], "version": null, "links": [{"label": "Forum thread", "url": "https://forum.gl-inet.com/t/side-toggle-switch-for-tailscale-exit-node/64947/10"}], "readiness": "stable", "icon": "toggle", "notes": "Modifies the system file /usr/bin/gl_tailscale (backups are created) and adds a startup entry to /etc/rc.local; the uninstall command restores the original. Other 4.x models are \"likely\" to work if they have the expected GL.iNet files; otherwise the installer fails safely. Unofficial; developed with AI assistance.", "stars": 11, "updated": "2026-03-25"}, {"repo": "Tailscale-on-AP-mode", "upstream": "GLiNet-Community-Scripts/Tailscale-on-AP-mode", "author": "GLiNet-Community-Scripts", "name": "Tailscale on AP Mode", "kind": "tool", "category": "vpn", "type": "router-script", "tagline": "Keep GL.iNet's Tailscale running in AP mode", "description": "GL.iNet firmware stops its built-in Tailscale client whenever the device is not in router mode. This installs a small, reversible patch to /usr/bin/gl_tailscale so Access Point mode is treated as router mode for that check only, keeping the stock Tailscale package and binaries.", "features": ["One-line patch treats AP mode as router mode", "Stock Tailscale binaries stay untouched", "Re-patches the new wrapper after firmware upgrades", "status, apply and restore helper commands", "Validates the patched script before replacing it"], "install": "wget -qO- https://raw.githubusercontent.com/GLiNet-Community-Scripts/Tailscale-on-AP-mode/main/install.sh | sh", "install_note": null, "devices": [], "firmware": "GL.iNet 4.x", "license": "MIT", "tech": ["POSIX sh", "OpenWrt init.d", "UCI"], "version": "v1.0.0", "links": [{"label": "Forum thread", "url": "https://forum.gl-inet.com/t/tailscale-app-no-longer-running-in-ap-mode/35493"}, {"label": "GL.iNet Tailscale docs", "url": "https://docs.gl-inet.com/router/en/4/interface_guide/tailscale/"}], "readiness": "stable", "icon": "antenna", "notes": "Unofficial workaround: GL.iNet does not support its Tailscale GUI integration in Access Point mode. Only AP mode is covered (Extender/Relay modes are left alone). It does not advertise the LAN as a subnet route; a never-authenticated router needs `tailscale up --accept-dns=false` once. Requires a model with GL.iNet's native Tailscale package. Version is the helper script's VERSION variable.", "stars": 2, "updated": "2026-08-27"}, {"repo": "GL.iNet-TS-ZT-AW", "upstream": "zippyy/GL.iNet-TS-ZT-AW", "author": "zippyy", "name": "Tailscale & ZeroTier Watchdog", "kind": "tool", "category": "vpn", "type": "router-service", "tagline": "Keeps Tailscale and ZeroTier up alongside AstroWarp", "description": "A watchdog service for GL.iNet routers where enabling AstroWarp can disable or interrupt Tailscale or ZeroTier. Every 30 seconds it checks that tailscale0 and the zt* interface have an IPv4 address and, if not, re-enables the service in UCI and restarts it.", "features": ["Checks Tailscale and ZeroTier IPv4 every 30 seconds", "Restores GL.iNet UCI settings and restarts services", "Leaves the AstroWarp tunnel (mptun0) alone", "Logs recoveries to the system log", "Starts at boot via an init service"], "install": "wget -qO- https://raw.githubusercontent.com/zippyy/GL.iNet-TS-ZT-AW/main/install.sh | sh", "install_note": null, "devices": [], "firmware": null, "license": null, "tech": ["POSIX sh", "procd", "UCI"], "version": null, "links": [], "readiness": "stable", "icon": "radar", "notes": "When recovering Tailscale it sets enabled, lan_enabled, wan_enabled and masq to 1 in tailscale.settings. Package/service names and UCI paths can vary by firmware; the README advises checking them before deploying on a substantially different device or firmware. No LICENSE file in the repo.", "stars": 0, "updated": "2026-08-17"}, {"repo": "wg-udp-relay", "upstream": "RemoteToHome-io/wg-udp-relay", "author": "RemoteToHome-io", "name": "WireGuard UDP Relay", "kind": "tool", "category": "vpn", "type": "docker", "tagline": "Bounce VPN traffic through a VPS relay", "description": "A Go UDP relay you run on a VPS with Docker Compose to forward WireGuard (or other UDP VPN) traffic to a self-hosted server, such as a GL.iNet router at home on a DDNS address. It re-resolves the DDNS hostname and migrates sessions when the home IP changes, and never decrypts the tunnel.", "features": ["Listens on multiple ports, e.g. 51820 and 443", "Re-resolves DDNS and migrates sessions on IP change", "Works with WireGuard, AmneziaWG, OpenVPN UDP, Hysteria2", "Forwards encrypted packets without needing VPN keys", "Docker Compose deployment with .env configuration"], "install": null, "install_note": "Runs on a VPS, not on the router: clone the repo, copy .env.example to .env, set LISTEN_PORTS, ENDPOINT_DDNS and ENDPOINT_PORT, then run `docker compose up -d`. Can also be built from source with Go 1.20+.", "devices": [], "firmware": null, "license": "GPL-3.0", "tech": ["Go", "Docker Compose"], "version": null, "links": [], "readiness": "stable", "icon": "route", "notes": "Requires a VPS. UDP buffer tuning on the relay VPS is needed for high throughput (README: 30-60 Mbps untuned vs 200-300+ Mbps tuned). The relay is not transparent: the VPN server sees all clients as the relay's IP. For glddns.com hostnames, keep the DNS check interval at 5 minutes or more.", "stars": 13, "updated": "2026-08-27"}, {"repo": "glinet-adguard-updater", "upstream": "admonstrator/glinet-adguard-updater", "author": "admonstrator", "name": "AdGuard Home Updater", "kind": "tool", "category": "network", "type": "router-script", "tagline": "Latest AdGuard Home on GL.iNet routers", "description": "Shell script that updates the AdGuard Home build bundled with GL.iNet firmware 4.x to the latest or a chosen release, using pre-compressed binaries (about 6 MB instead of 32 MB). It backs up the original files and can make the update persist across firmware upgrades.", "features": ["Installs latest AdGuard Home with compressed binaries", "Pick a specific release with --select-release", "Backs up original files before updating", "Optional persistence across firmware upgrades", "Optional query logging to file"], "install": "wget -q https://get.admon.me/adguard -O update-adguardhome.sh ; sh update-adguardhome.sh", "install_note": null, "devices": ["Flint 2 (GL-MT6000)", "Flint 3 (GL-BE9300)"], "firmware": "GL.iNet 4.x", "license": "MIT", "tech": ["POSIX sh"], "version": "v0.107.79", "links": [{"label": "Forum thread", "url": "https://forum.gl-inet.com/t/script-update-adguard-home/39398"}, {"label": "GL.iNet Toolbox", "url": "https://github.com/Admonstrator/glinet-toolbox"}], "readiness": "stable", "icon": "shield", "notes": "Needs at least 15 MB free space and should not be run as a cron job. A persistent installation is not reverted by a factory reset; reverting takes the manual steps listed in the README. --ignore-free-space also disables the backup and can break the router if space runs out.", "stars": 151, "updated": "2026-04-20"}, {"repo": "GL.iNet-VLAN-Wizard", "upstream": "zippyy/GL.iNet-VLAN-Wizard", "author": "zippyy", "name": "VLAN Wizard", "kind": "tool", "category": "network", "type": "router-script", "tagline": "Interactive VLAN setup with per-VLAN Wi-Fi", "description": "Interactive shell wizard for GL.iNet / OpenWrt routers that creates VLANs, each with its own 192.168.<VLAN>.1/24 interface, DHCP server, isolated firewall zone with internet access and an optional Wi-Fi SSID on all radios. A LuCI web GUI version is available on a separate branch.", "features": ["Per-VLAN subnet, DHCP and isolated firewall zone", "Optional Wi-Fi SSID per VLAN on all radios", "Optional client isolation", "Validates VLAN IDs and port conflicts", "Backup, rollback and saved profiles"], "install": "sh -c \"$(curl -fsSL https://raw.githubusercontent.com/zippyy/GL.iNet-VLAN-Wizard/main/install.sh)\"", "install_note": null, "devices": [], "firmware": null, "license": "MIT", "tech": ["POSIX sh", "UCI", "LuCI", "rpcd"], "version": null, "links": [], "readiness": "stable", "icon": "vlan", "notes": "LAN4 is always the tagged trunk port; other LAN ports are access ports. Assumes 192.168.<VLAN>.0/24 subnets. The LuCI GUI installs from the feature/luci-plugin branch (command in README) and appears under Network -> VLAN Wizard. No specific router models are named as tested.", "stars": 3, "updated": "2026-05-30"}, {"repo": "flint2-vlan-tools", "upstream": "DJKatastrof/flint2-vlan-tools", "author": "DJKatastrof", "name": "Flint 2 VLAN Tools", "kind": "tool", "category": "network", "type": "router-script", "tagline": "VLAN wizard and client dashboard for Flint 2", "description": "Two independent tools for the Flint 2 (GL-MT6000) on stock firmware 4.8.x with DSA: a CLI wizard that adds, lists and removes VLANs (bridge, interface, DHCP, isolated firewall zone, Wi-Fi SSIDs) with backup and rollback, and a LuCI page that lists connected clients grouped by VLAN.", "features": ["Add, list and remove VLANs from the CLI", "Attach tagged or untagged LAN ports to VLANs", "Automatic config backup with one-command rollback", "LuCI page listing clients grouped by VLAN", "Dashboard search, filters and custom device labels"], "install": null, "install_note": "No one-line installer: copy vlan-wizard.sh (or the dashboard script) to the router with scp, make it executable and run it over SSH, as shown in each tool's README.", "devices": ["Flint 2 (GL-MT6000)"], "firmware": "GL.iNet 4.8.x (OpenWrt 21.02-SNAPSHOT)", "license": null, "tech": ["POSIX sh", "UCI", "LuCI", "DSA"], "version": null, "links": [{"label": "Flint 2 VLAN guide (basis for the wizard)", "url": "https://ryan-pope.com/posts/flint2-vlans/"}], "readiness": "stable", "icon": "layers", "notes": "Every VLAN change reboots the router (about 1-2 minutes of downtime). Developed with AI assistance; take a backup before making changes. The dashboard README says to copy vlan-clients-dashboard.sh, but the file in the repo is vlan-dashboard/vlan-dashboard.sh. No LICENSE file in the repo.", "stars": 1, "updated": "2026-05-01"}, {"repo": "Glinet-Bandwidth-script", "upstream": "wickedyoda/Glinet-Bandwidth-script", "author": "wickedyoda", "name": "Bandwidth Script", "kind": "tool", "category": "network", "type": "router-script", "tagline": "Per-VLAN WAN priority with HTB and CAKE", "description": "Shell scripts that shape WAN traffic on recent GL.iNet routers so LAN and Tailscale get priority over IoT and guest networks, using an HTB root with CAKE leaf queues. An interactive setup wizard chooses QoS or SQM (CAKE) mode, bandwidth limits and persistence.", "features": ["QoS mode: per-VLAN priority classes at WAN", "SQM mode: single WAN CAKE diffserv qdisc", "Auto-detects model and all br-* VLAN bridges", "Interactive setup wizard with persistence options", "Installer verifies SHA256 checksums"], "install": "curl -fsSL https://raw.githubusercontent.com/wickedyoda/Glinet-Bandwidth-script/master/install.sh | sh", "install_note": null, "devices": ["Flint 2 (GL-MT6000)", "Flint 3 (GL-BE9300)", "Flint 4 (GL-BE14000)", "Slate 7 (GL-BE3600)", "Slate 7 Pro (GL-BE10000)", "Beryl 7 (GL-MT3600BE)", "Flint 3e (GL-BE6500)"], "firmware": "OpenWrt 21.02+", "license": "GPL-3.0", "tech": ["POSIX sh", "tc (HTB + CAKE)", "nftables"], "version": null, "links": [{"label": "Supported models", "url": "https://github.com/wickedyoda/Glinet-Bandwidth-script/wiki/Supported-Models"}, {"label": "Setup wizard", "url": "https://github.com/wickedyoda/Glinet-Bandwidth-script/wiki/Setup-Wizard"}, {"label": "QoS vs SQM", "url": "https://github.com/wickedyoda/Glinet-Bandwidth-script/wiki/QoS-vs-SQM"}, {"label": "Troubleshooting", "url": "https://github.com/wickedyoda/Glinet-Bandwidth-script/wiki/Troubleshooting"}], "readiness": "stable", "icon": "speed", "notes": "Requires tc-full or tc-tiny, kmod-sched-cake and sqm-scripts. After installing, run /usr/local/sbin/glinet-vlan-qos-setup.sh to configure. Per the project wiki, Beryl 7, Flint 3e and Flint 4 were only inspected read-only rather than live-tested (tested firmware 4.8.4 to 4.9.1).", "stars": 0, "updated": "2026-09-13"}, {"repo": "GL.iNet-DHCP-Options-Wizard", "upstream": "zippyy/GL.iNet-DHCP-Options-Wizard", "author": "zippyy", "name": "DHCP Options Wizard", "kind": "tool", "category": "network", "type": "luci-app", "tagline": "Build DHCP option entries without memorizing codes.", "description": "Adds a LuCI page (Network → DHCP Options Wizard) that edits the DHCP options of each dhcp section and writes them straight to /etc/config/dhcp via UCI. A companion shell CLI on the router, plus a Node.js CLI for workstations, instead prints paste-ready uci commands or a config snippet.", "features": ["LuCI page under Network → DHCP Options Wizard", "Guided gateway, DNS, domain, NTP, TFTP, bootfile, WPAD options", "Custom mode for any DHCP code/value pair", "CLI prints paste-ready uci commands or config snippets", "Node.js CLI for laptops and desktops"], "install": "wget -O- https://raw.githubusercontent.com/zippyy/GL.iNet-DHCP-Options-Wizard/feature/luci-plugin/install-luci.sh | sh", "install_note": "Installs the LuCI page; afterwards open LuCI → Network → DHCP Options Wizard. The shell-only CLI installs with 'wget -O- https://raw.githubusercontent.com/zippyy/GL.iNet-DHCP-Options-Wizard/main/install.sh | sh' and runs as glinet-dhcp-wizard.", "devices": [], "firmware": null, "license": null, "tech": ["POSIX sh", "LuCI", "JavaScript", "Node.js", "UCI"], "version": null, "links": [], "readiness": "stable", "icon": "puzzle", "notes": "The LuCI installer pulls its files from the feature/luci-plugin branch, while the CLI installer uses main. Some DHCP options need the exact raw value format dnsmasq expects (use custom mode). No LICENSE file in the repo; package.json and the Makefile declare MIT.", "stars": 1, "updated": "2026-08-17"}, {"repo": "GL.iNet-WiFi-Cellular-Timer", "upstream": "zippyy/GL.iNet-WiFi-Cellular-Timer", "author": "zippyy", "name": "Wi-Fi & Cellular Timer", "kind": "tool", "category": "network", "type": "router-service", "tagline": "Timed Wi-Fi and cellular shutoff and restore.", "description": "Installs a radio-timer command and procd service that turns Wi-Fi off at a chosen time, together with any cellular interfaces it detects on modem-equipped models, and can turn them back on at a second time. Status, clear and run-now commands let you check or override the timer over SSH.", "features": ["Interactive or one-command off/on time setup", "Shuts off Wi-Fi and detected cellular interfaces", "Optional automatic turn-back-on time", "Status shows remaining time and last action", "Runs as procd service with persistent config"], "install": "sh -c \"$(curl -fsSL https://raw.githubusercontent.com/zippyy/GL.iNet-WiFi-Cellular-Timer/main/install.sh)\"", "install_note": null, "devices": [], "firmware": null, "license": null, "tech": ["POSIX sh", "procd", "UCI"], "version": null, "links": [], "readiness": "stable", "icon": "clock", "notes": "Times use the router's local timezone. Judging from the script, each timer fires once and then clears itself; the README does not describe it as a recurring daily schedule. The README calls the tool \"GL.iNet Radio Timer\".", "stars": 1, "updated": "2026-08-17"}, {"repo": "glinet-wifi-calling-fix", "upstream": "mikeyjmatthews/glinet-wifi-calling-fix", "author": "mikeyjmatthews", "name": "Wi-Fi Calling Fix", "kind": "tool", "category": "network", "type": "router-script", "tagline": "SIP helper and offloading tweaks for Wi-Fi calling.", "description": "A single shell script that installs kmod-nf-nathelper-extra, comments out the nf_conntrack_sip and nf_nat_sip entries in /etc/modules.d so they are not autoloaded, disables software and hardware flow offloading in the firewall, restarts the firewall and reboots the router.", "features": ["Installs kmod-nf-nathelper-extra via opkg", "Comments out SIP helper module autoload entries", "Disables software and hardware flow offloading", "Restarts firewall, then reboots automatically"], "install": null, "install_note": "The README has no install instructions; the repo only contains wifi-calling-fix.sh, which is meant to be run on the router.", "devices": [], "firmware": null, "license": null, "tech": ["POSIX sh", "opkg", "UCI"], "version": null, "links": [], "readiness": "stable", "icon": "phone", "notes": "The README is a placeholder, so everything here is taken from the script itself. The script reboots the router 5 seconds after finishing and turns off flow offloading.", "stars": 0, "updated": "2026-08-23"}, {"repo": "OpenSpeedTestServer", "upstream": "phantasm22/OpenSpeedTestServer", "author": "phantasm22", "name": "OpenSpeedTest Server", "kind": "tool", "category": "network", "type": "router-service", "tagline": "Host a LAN speed test on your router.", "description": "Interactive installer that sets up NGINX on port 8888 to serve OpenSpeedTest from the router, using its own NGINX config so it does not clash with the GL.iNet web UI. It checks free space, can place the files on USB or SD storage, and includes diagnostics and a full uninstall.", "features": ["Installs NGINX and OpenSpeedTest on port 8888", "Separate NGINX config avoids GL.iNet UI conflicts", "Detects free space; can symlink to USB/SD", "Optional persistence across firmware updates", "Built-in diagnostics and clean uninstall"], "install": "wget -O install_openspeedtest.sh https://raw.githubusercontent.com/phantasm22/OpenSpeedTestServer/main/install_openspeedtest.sh && chmod +x install_openspeedtest.sh", "install_note": "This downloads the script. Then run ./install_openspeedtest.sh, choose Install, and open http://<router-ip>:8888.", "devices": ["Flint 3 (GL-BE9300)", "Slate 7 (GL-BE3600)", "Beryl AX (GL-MT3000)", "Beryl (GL-MT1300)", "Spitz AX (GL-X3000)", "Puli AX (GL-XE3000)"], "firmware": null, "license": "GPL-3.0", "tech": ["POSIX sh", "NGINX", "OpenSpeedTest"], "version": "2026-02-07", "links": [{"label": "OpenSpeedTest", "url": "https://openspeedtest.com/"}], "readiness": "stable", "icon": "speed", "notes": "The script requires about 64 MB of free space and offers external USB/SD storage if internal space is short (the README notes the GL-MT1300 was tested with an SD card). The script's self-update is marked beta.", "stars": 1, "updated": "2026-09-01"}, {"repo": "GL.iNet-CellularModels-SMSonBoot", "upstream": "techrelay/GL.iNet-CellularModels-SMSonBoot", "author": "techrelay", "name": "SMS on Boot", "kind": "tool", "category": "cellular", "type": "router-script", "tagline": "Get an SMS when the router boots.", "description": "Sends a text message every time a GL.iNet cellular router boots, using the firmware's built-in sendsms tool, so you find out about power outages and unexpected reboots. Textbelt and combined variants cover routers without a modem, and an optional webhook can receive a JSON payload.", "features": ["Sends an SMS on every boot via sendsms", "Auto-detects the active cellular WAN interface", "Cooldown (default 300 s) prevents SMS spam", "Textbelt variant for routers without a modem", "Optional webhook POST with JSON payload"], "install": "sh -c \"$(curl -fsSL https://raw.githubusercontent.com/techrelay/GL.iNet-CellularModels-SMSonBoot/main/install.sh)\" -- <YOURNUMBER>", "install_note": "Replace <YOURNUMBER> with the recipient's number including country code (e.g. +13038675309). The README also lists Textbelt and combined (interactive) installers.", "devices": ["Puli AX (GL-XE3000)", "Spitz AX (GL-X3000)"], "firmware": null, "license": "GPL-3.0", "tech": ["POSIX sh", "sendsms", "Textbelt API", "curl"], "version": null, "links": [], "readiness": "stable", "icon": "message", "notes": "The sendsms version needs GL.iNet firmware that ships sendsms; the Textbelt version needs a Textbelt API key.", "stars": 3, "updated": "2026-06-24"}, {"repo": "GL.iNet-SMS-Tool-WebApp", "upstream": "zippyy/GL.iNet-SMS-Tool-WebApp", "author": "zippyy", "name": "SMS Tool Web App", "kind": "tool", "category": "cellular", "type": "router-service", "tagline": "Read and send SMS from a browser.", "description": "A lightweight web page at http://ROUTER-IP/sms/ for GL.iNet cellular routers that lists messages from the smsd/smstools spool folders (incoming, storage, sent, failed) and queues outgoing SMS for smsd to send. It also exposes a simple CGI API for listing and sending messages.", "features": ["Browse incoming, stored, sent and failed messages", "Queues outgoing SMS in the smsd spool", "GMS1/GMS2 modem picker for dual-modem setups", "Simple CGI API for listing and sending", "One-line install, update and removal"], "install": "curl -4 -fsSL https://raw.githubusercontent.com/zippyy/GL.iNet-SMS-Tool-WebApp/main/install.sh | sh", "install_note": null, "devices": [], "firmware": null, "license": null, "tech": ["POSIX sh", "CGI", "JavaScript", "smstools"], "version": "v1.0.2", "links": [], "readiness": "stable", "icon": "chat", "notes": "This page can send SMS: keep it on your LAN or a trusted VPN (e.g. Tailscale or WireGuard) and do not publish it to the internet. Removing the app leaves your SMS data intact. The VERSION file says 1.0.1, while package/Makefile says 1.0.2.", "stars": 3, "updated": "2026-08-17"}, {"repo": "luci-app-mobilenetwork", "upstream": "genusmig/luci-app-mobilenetwork", "author": "genusmig", "name": "Mobile Network", "kind": "tool", "category": "cellular", "type": "luci-app", "tagline": "Scan and pick a mobile operator in LuCI.", "description": "Adds a LuCI page under Network → Mobile Network that scans for available mobile networks (AT+COPS=?) through the GL.iNet RPC API and lets you connect manually to a chosen operator or switch back to automatic network selection. Scan results appear as a selectable table with signal bars.", "features": ["Scans available networks with AT+COPS=?", "Manual connect to a selected operator (PLMN)", "Auto Select Network returns to automatic mode", "Shows signal bars per scanned network"], "install": null, "install_note": "Per README.txt, copy the usr/ and www/ folders to the router root (for example 'scp -r usr www root@<router-ip>:/'), then run '/etc/init.d/uhttpd restart' and open Network → Mobile Network.", "devices": [], "firmware": null, "license": null, "tech": ["LuCI", "Lua", "JavaScript", "AT commands"], "version": null, "links": [], "readiness": "stable", "icon": "antenna", "notes": "The repo's two READMEs disagree. README.md lists 'opkg install luci-app-mobilenetwork' and features such as RSRP/RSRQ/SINR display, APN management, data usage and 2G-5G mode selection, but the repo has no package build and the code only does network scan and connect, as README.txt describes. README.md mentions Quectel EC25, RM500Q and RM520N modules. The modem defaults (bus 1-1.2, port /dev/ttyUSB2) may need editing, and the page needs curl.", "stars": 1, "updated": "2026-08-17"}, {"repo": "glinet-spitz-ax-signal-stats", "upstream": "zippyy/glinet-spitz-ax-signal-stats", "author": "zippyy", "name": "Spitz AX Signal Stats", "kind": "tool", "category": "cellular", "type": "router-service", "tagline": "Live carrier-aggregation stats for antenna aiming.", "description": "A small HTTP server for the Spitz AX (GL-X3000) and Puli AX (GL-XE3000) that serves an auto-refreshing page of carrier-aggregation (CA) stats, useful while positioning the router and its antennas. This fork adds an installer that asks for the port, finds the local IP and prints the URL.", "features": ["Auto-refreshing page with carrier-aggregation stats", "Helps position router and antennas for best signal", "Installer asks for port and prints the URL", "Runs as an OpenWrt init.d service"], "install": "sh -c \"$(wget -qO- https://raw.githubusercontent.com/zippyy/glinet-spitz-ax-signal-stats/main/install.sh)\"", "install_note": null, "devices": ["Spitz AX (GL-X3000)", "Puli AX (GL-XE3000)"], "firmware": null, "license": "MIT", "tech": ["Go", "POSIX sh", "AT commands"], "version": null, "links": [{"label": "Original project (rwasef1830)", "url": "https://github.com/rwasef1830/glinet-spitz-ax-signal-stats"}], "readiness": "stable", "icon": "signal", "notes": "The page has no access control. Do not open its port (default 8080) in the firewall, or anyone can see your location and signal levels.", "stars": 0, "updated": "2026-02-28"}, {"repo": "RM520N-GL", "upstream": "4IceG/RM520N-GL", "author": "4IceG", "name": "RM520N-GL", "kind": "tool", "category": "cellular", "type": "module-tools", "tagline": "Firmware, drivers and manuals for Quectel RM520N-GL.", "description": "A resource repository for the Quectel RM520N-GL 5G modem module, not a router script. It collects stock firmware download links, Windows and Linux drivers and flashing tools, AT command manuals, and step-by-step firmware update guides (QFlash on Windows, qfirehose on OpenWrt).", "features": ["Stock R03 and R01 firmware download links", "Windows and Linux drivers, QFlash, QFirehose, QLog", "Firmware update guides for Windows and OpenWrt", "AT command manuals and CA/EN-DC combination sheet", "Antenna connection diagram and module specifications"], "install": null, "install_note": "Nothing to install as an app. Download firmware, drivers and tools from the README; on OpenWrt, flash with qfirehose (opkg install qfirehose).", "devices": ["Quectel RM520N-GL"], "firmware": null, "license": "GPL-3.0", "tech": ["QFlash", "QFirehose", "AT commands"], "version": null, "links": [], "readiness": "stable", "icon": "chip", "notes": "Most downloads are Google Drive links; for some QFlash archives the password is the filename. Newer firmware cannot be downgraded to versions released before RM520NGLAAR01A07M4G_01.200.01.200, and the README recommends the R03 baseline. Parts of the README are bilingual (English/Polish).", "stars": 253, "updated": "2026-09-12"}, {"repo": "GL.iNet-ExternalUSB-Logs", "upstream": "zippyy/GL.iNet-ExternalUSB-Logs", "author": "zippyy", "name": "External USB Logs", "kind": "tool", "category": "system", "type": "router-service", "tagline": "Keep a persistent log copy on USB.", "description": "Runs a service that writes a second copy of the system log to USB or SD storage, so logs survive reboots while logd and logread keep working as usual. It auto-detects the mount point, retries until storage appears and rotates files by size.", "features": ["Mirrors logread output to USB/SD storage", "Leaves logd and logread behavior unchanged", "Waits and retries until storage is mounted", "Size-based rotation (default 5 MB, 5 files)", "One-line install and uninstall"], "install": "sh -c \"$(curl -fsSL https://raw.githubusercontent.com/zippyy/GL.iNet-ExternalUSB-Logs/main/install.sh)\"", "install_note": null, "devices": ["Puli (GL-XE300)"], "firmware": null, "license": null, "tech": ["POSIX sh", "procd"], "version": null, "links": [], "readiness": "stable", "icon": "usb", "notes": "Logs go to <mount>/gl-usb-logs/system.log by default. The config falls back to a local /logs-backup folder on the router when no USB/SD storage is found.", "stars": 2, "updated": "2026-08-27"}, {"repo": "GL.iNET-Toggle-Switch", "upstream": "zippyy/GL.iNET-Toggle-Switch", "author": "zippyy", "name": "WDS / Router Toggle", "kind": "tool", "category": "network", "type": "router-script", "tagline": "Flip the side switch between Router and WDS.", "description": "Uses the physical side switch on GL.iNet routers to swap between two saved full-config backups, one for Router mode and one for WDS mode. Flipping the switch restores the matching backup with sysupgrade and reboots, and an interactive installer creates the profiles and can keep them across firmware upgrades.", "features": ["Uses the hardware side toggle switch", "Saves separate Router and WDS config profiles", "Restores the matching profile and reboots on flip", "Optional persistence across firmware upgrades", "Interactive one-line installer"], "install": "sh -c \"$(curl -fsSL https://raw.githubusercontent.com/zippyy/GL.iNET-Toggle-Switch/main/install.sh)\"", "install_note": null, "devices": [], "firmware": "GL.iNet 4.x", "license": null, "tech": ["POSIX sh", "sysupgrade"], "version": null, "links": [], "readiness": "stable", "icon": "toggle", "notes": "Every flip restores a full config backup and reboots the router. Both profiles must come from the same router, and the WDS profile should be saved only after WDS is fully working. Needs firmware with toggle-switch scripting support (/etc/gl-switch.d/).", "stars": 2, "updated": "2026-08-17"}, {"repo": "GL-iNet_utils", "upstream": "phantasm22/GL-iNet_utils", "author": "phantasm22", "name": "GL.iNet Utilities", "kind": "tool", "category": "system", "type": "router-script", "tagline": "Menu-driven toolkit for tuning and inspecting routers.", "description": "An interactive shell script you run over SSH on a GL.iNet router. It shows hardware details, manages AdGuard Home, tunes zram and fan settings, runs benchmarks and speed tests, and adds VPN MTU, bandwidth-limit and SSH-key tools.", "features": ["Hardware info: CPU, RAM, temperatures, fan speeds", "AdGuard Home control center with backup and recovery", "Zram swap, fan control and web-UI terminal", "VPN/crypto, disk, memory and DNS benchmarks", "WireGuard/OpenVPN MTU optimizer and bandwidth limiter"], "install": "wget -O glinet_utils.sh https://raw.githubusercontent.com/phantasm22/GL-iNet_utils/main/glinet_utils.sh && chmod +x glinet_utils.sh", "install_note": "Then start it with ./glinet_utils.sh. System Tweaks → Toolkit Management can install it as the glinet_utils command.", "devices": ["Beryl", "Beryl AX", "Beryl 7 (GL-MT3600BE)", "Slate 7", "Flint 3", "Flint 3e", "Flint 4"], "firmware": null, "license": "GPL-3.0", "tech": ["POSIX sh"], "version": "2026-09-26_21:20", "links": [], "readiness": "stable", "icon": "terminal", "notes": "Applying a bandwidth limit turns off hardware acceleration. Some features install extra packages (e.g. ttyd, zram-swap, stress) that must be removed manually when uninstalling.", "stars": 4, "updated": "2026-09-27"}, {"repo": "Gl.inet-Tools", "upstream": "wickedyoda/Gl.inet-Tools", "author": "wickedyoda", "name": "Mudi 7 Auto Power On/Off", "kind": "tool", "category": "system", "type": "router-script", "tagline": "Presence-check script for Mudi 7 power automation.", "description": "A small collection repo whose only tool is a shell script for power on/off automation on the Mudi 7, credited to Reddit user u/steven807196. It pings a configured device IP (a car in the script comments) and checks the ARP table to record whether that device is currently connected.", "features": ["Pings a configurable target IP (TARGET_IP)", "Checks ARP table, ignoring stale incomplete entries", "Tracks presence and disconnect time in /tmp files"], "install": null, "install_note": "No install or scheduling instructions; copy mudi-7/autopoweron-off.sh to the router and set TARGET_IP.", "devices": ["Mudi 7 (GL-E5800)"], "firmware": null, "license": "GPL-3.0", "tech": ["POSIX sh"], "version": null, "links": [], "readiness": "experimental", "icon": "toggle", "notes": "The published script looks incomplete: it only handles the \"device connected\" case and contains no power-off action (the if block is never closed). The script header says use at your own risk.", "stars": 0, "updated": "2026-08-17"}, {"repo": "GL.iNet-CrossModel-BackupRestoreUtility", "upstream": "zippyy/GL.iNet-CrossModel-BackupRestoreUtility", "author": "zippyy", "name": "Cross-Model Backup & Restore", "kind": "tool", "category": "system", "type": "luci-app", "tagline": "Back up and migrate configs across router models.", "description": "A LuCI app and CLI that creates integrity-checked backup archives and restores them on the same router, another unit of the same model, or a different GL.iNet/OpenWrt model. It can also act as a controller that backs up and restores other routers over SSH without installing anything on them.", "features": ["Four strategies: Portable Profile, Clone, Remote-Safe Clone, Device Snapshot", "SHA-256 checked archives with pre-restore rollback snapshot", "Maps Wi-Fi by band, not radio names", "Controller mode manages remote routers over SSH", "Package Review flags missing and kernel packages"], "install": "curl -fsSL -o /tmp/luci-app-glinet-crossmodel-backup.ipk https://github.com/zippyy/GL.iNet-CrossModel-BackupRestoreUtility/releases/latest/download/luci-app-glinet-crossmodel-backup_2.0.0-17_all.ipk && opkg install /tmp/luci-app-glinet-crossmodel-backup.ipk", "install_note": "This is the opkg (GL.iNet 4.x) command; OpenWrt 25.x / apk firmware uses the signed .apk one-liner in the README. Afterwards open LuCI → System → Backup & Recovery.", "devices": [], "firmware": "GL.iNet 4.x; OpenWrt 25.x (apk-tools)", "license": null, "tech": ["POSIX sh", "Lua", "LuCI", "JavaScript"], "version": "v2.0.0-17", "links": [], "readiness": "beta", "icon": "backup", "notes": "README says it is still in beta testing and lists real-hardware validation items that are not yet certified. No LICENSE file in the repo; the package Makefile declares MIT. The install one-liner embeds the release filename and changes with each release.", "stars": 7, "updated": "2026-09-26"}, {"repo": "openwrt-starwatch", "upstream": "keithah/openwrt-starwatch", "author": "keithah", "name": "Starwatch", "kind": "tool", "category": "cellular", "type": "router-service", "tagline": "Local Starlink dish monitoring dashboard on the router.", "description": "A Go daemon for OpenWrt and GL.iNet routers that reads a Starlink dish's local gRPC API, combines it with WAN probes, keeps history and serves a dashboard on port 9633, also linked from LuCI and the GL.iNet admin panel. It works without a cloud account, sends alerts via webhook or ntfy, and exposes a token-protected REST/WebSocket API.", "features": ["Dish telemetry graphs with tiered SQLite history", "WAN probes, outage timeline and optional mwan3 failover assist", "Webhook and ntfy alerts with configurable thresholds", "Token-authenticated REST and WebSocket API", "Launchers in LuCI and GL.iNet admin panel"], "install": "wget -qO- https://keithah.github.io/openwrt-packages/install-starwatch.sh | sh", "install_note": "Then open http://<router-address>:9633, Services → Starwatch in LuCI, or Applications → Starwatch in the GL.iNet panel.", "devices": [], "firmware": "GL.iNet 4.x (SDK4) or OpenWrt", "license": "AGPL-3.0-or-later", "tech": ["Go", "SQLite", "Preact", "LuCI"], "version": "v0.1.8", "links": [{"label": "Product page", "url": "https://keithah.com/products/starwatch"}], "readiness": "stable", "icon": "satellite", "notes": "The public package feed currently supports aarch64_cortex-a53 routers only. The README's install text mentions the 0.1.4 feed, while the package Makefile and changelog are at 0.1.8.", "stars": 9, "updated": "2026-09-13"}, {"repo": "glinet-panel-ui", "upstream": "blogic/glinet-panel-ui", "author": "blogic", "name": "Front Panel UI", "kind": "tool", "category": "apps", "type": "router-service", "tagline": "Touchscreen front-panel interface for BE10000 and BE14000.", "description": "A ucode application built on ucode-mod-lvgl that drives the 320x240 touchscreen on the GL.iNet BE10000 and BE14000. It shows an idle clock with weather and link rate, plus swipeable pages for traffic, Wi-Fi, radios, join QR codes, clients, interfaces, ports, system gauges, brightness and reboot.", "features": ["Idle clock with weather and link rate", "Swipeable pages for traffic, Wi-Fi, clients, ports", "QR codes to join the wireless networks", "System gauges, brightness control and reboot", "Rows open detail sub-pages"], "install": null, "install_note": "Packaged as glinet-panel-ui in the feed-blogic OpenWrt feed; the README gives no install command.", "devices": ["GL.iNet BE10000", "GL.iNet BE14000"], "firmware": null, "license": "GPL-2.0-only", "tech": ["ucode", "LVGL"], "version": null, "links": [{"label": "Package feed (feed-blogic)", "url": "https://github.com/blogic/feed-blogic"}, {"label": "ucode-mod-lvgl", "url": "https://github.com/blogic/ucode-mod-lvgl"}], "readiness": "stable", "icon": "monitor", "notes": "Requires ucode-mod-lvgl. The README does not say which firmware (stock GL.iNet or plain OpenWrt) it targets.", "stars": 7, "updated": "2026-09-28"}, {"repo": "gl-e5800-dashboard", "upstream": "robavionix/gl-e5800-dashboard", "author": "robavionix", "name": "E5800 Touch Dashboard", "kind": "tool", "category": "apps", "type": "router-service", "tagline": "Custom touchscreen dashboard for the GL-E5800.", "description": "A pure-Python replacement for the stock gl_screen UI on the GL-E5800's built-in 240x320 touchscreen, drawn with Pillow straight to the framebuffer. Swipeable panels cover clocks, SIM and cellular controls with band info, an SMS inbox, WireGuard peers, a bandwidth monitor with speed test, weather, currency rates, OpenClash and games.", "features": ["SIM panel: bands, signal, cellular/data/roaming toggles", "Read-only SMS inbox with CJK support", "WireGuard peer switching via GL.iNet AutoVPN", "Bandwidth monitor and capped Cloudflare speed test", "Hold power button to switch to stock UI"], "install": "opkg install gl-e5800-dashboard_*.ipk", "install_note": "Download the .ipk from the GitHub Releases page first (or upload it in LuCI under System → Software). Switch the screen over with /root/dashboard/toggle.sh on.", "devices": ["Mudi 7 (GL-E5800)"], "firmware": "GL.iNet 4.8.x / 4.10.0 (OpenWrt 23.05.4)", "license": "MIT", "tech": ["Python", "Pillow", "POSIX sh"], "version": "v3.2.1", "links": [], "readiness": "stable", "icon": "dashboard", "notes": "Built and tested only on the GL-E5800; it will very likely not work unmodified on other models. The stock gl_screen UI stays installed, and a crash guard switches back to it if the dashboard keeps failing.", "stars": 22, "updated": "2026-09-14"}, {"repo": "RouterPilot", "upstream": "TCDemo777/RouterPilot", "author": "TCDemo777", "name": "RouterPilot", "kind": "tool", "category": "apps", "type": "desktop-app", "tagline": "Windows companion app for GL.iNet and AdGuard Home.", "description": "A Windows tray app that connects to a GL.iNet router over SSH and shows status, clients, analytics and AdGuard Home DNS activity in one dashboard. It also manages Wi-Fi, DHCP reservations, port forwards, VPN profiles, SQM and plug-ins, and handles firmware, AdGuard Home and Tailscale maintenance plus portable .rpb backups.", "features": ["Router overview, client inventory and network map", "AdGuard Home protection controls, filters and DNS rewrites", "Wi-Fi, DHCP reservation and port-forward management", "GL.iNet VPN profiles with status and schedules", "Portable .rpb backup and restore"], "install": null, "install_note": "Download the Windows x64 MSI or portable ZIP from GitHub Releases.", "devices": [], "firmware": null, "license": "GPL-3.0-only", "tech": ["C#", ".NET 9", "WPF"], "version": "v2.4.6", "links": [], "readiness": "stable", "icon": "desktop", "notes": "Windows 10 (version 2004 or later) or Windows 11 only. Needs SSH access to the router; DNS features need AdGuard Home on the router. Backups are integrity-checked but not encrypted. Available features vary by router model and firmware.", "stars": 12, "updated": "2026-09-16"}, {"repo": "Glinet_discord_bot", "upstream": "wickedyoda/Glinet_discord_bot", "author": "wickedyoda", "name": "Discord Bot", "kind": "tool", "category": "apps", "type": "bot", "tagline": "Community Discord bot with a web admin panel.", "description": "A self-hosted Discord bot for GL.iNet community servers with invite/code-based role access, moderation, tag responses and search commands for the GL.iNet and OpenWrt forums, Reddit and docs. It also posts firmware, YouTube, LinkedIn, Reddit and GL.iNet beta-program updates and includes a multi-guild web admin GUI.", "features": ["Role access via invite links and 6-digit codes", "Search GL.iNet forum, OpenWrt forum, Reddit, docs", "Firmware, YouTube, Reddit and beta-program monitors", "Moderation commands with event logging", "Secured multi-guild web admin GUI"], "install": "docker compose up -d --build", "install_note": "Run in a clone of the repo after copying .env.example to .env and setting DISCORD_TOKEN, GUILD_ID and WEB_ADMIN_DEFAULT_PASSWORD. The hosted bot can instead be added via the invite link.", "devices": [], "firmware": null, "license": "GPL-3.0", "tech": ["Python", "discord.py", "Flask", "SQLite", "Docker"], "version": "v0.1.7", "links": [{"label": "Add the bot to your server", "url": "https://discord.com/oauth2/authorize?client_id=1390519966050291734"}, {"label": "Wiki", "url": "https://github.com/wickedyoda/Glinet_discord_bot/wiki"}, {"label": "Project site", "url": "http://discord.glinet.wickedyoda.com/"}, {"label": "Support Discord", "url": "https://discord.gg/m6UjX6UhKe"}], "readiness": "stable", "icon": "chat", "notes": "Runs on a Docker host (amd64 or arm64), not on the router. Code is GPL-3.0; branded media and logos are all rights reserved per LICENSE.md.", "stars": 1, "updated": "2026-08-17"}, {"repo": "openwrt-flint3", "upstream": "perceival/openwrt-flint3", "author": "perceival", "name": "OpenWrt for Flint 3", "kind": "tool", "category": "system", "type": "firmware", "tagline": "Mainline OpenWrt port for Flint 3 (GL-BE9300).", "description": "A complete, buildable OpenWrt tree (target qualcommbe/ipq53xx, kernel 6.18) that adds mainline OpenWrt support for the GL.iNet Flint 3. LAN, 2.5G WAN, VLANs, tri-band Wi-Fi 7 with MLO, DFS and eMMC sysupgrade are reported working, and pre-built vanilla, ap and router images are published on the Releases page.", "features": ["Tri-band Wi-Fi 7 with MLO across bands", "RTL8372N switch via DSA, 2.5G WAN", "eMMC sysupgrade and return to stock", "Pre-built vanilla, ap and router image flavours"], "install": null, "install_note": "From stock firmware, flash the factory image from Releases with sysupgrade -F -n as described on the OpenWrt device page, or build from source.", "devices": ["Flint 3 (GL-BE9300)"], "firmware": null, "license": "GPL-2.0-only", "tech": ["OpenWrt", "Linux 6.18", "ath12k"], "version": null, "links": [{"label": "Forum thread", "url": "https://forum.openwrt.org/t/gl-inet-flint-3-exploration-gl-be9300-ipq5332/250267"}, {"label": "OpenWrt device page", "url": "https://openwrt.org/toh/gl.inet/gl-be9300"}], "readiness": "stable", "icon": "chip", "notes": "Unofficial port, not supported by GL.iNet or OpenWrt; flashing can brick the router and may void the warranty. Back up the eMMC first, since the ART partition (radio calibration, MACs) cannot be recovered elsewhere. Known issues: ath12k firmware hang under sustained load, small WAN packet loss at high throughput, and 802.11r must not be enabled on MLO SSIDs.", "stars": 51, "updated": "2026-09-16"}, {"repo": "gl-image", "upstream": "gl-inet/gl-image", "author": "gl-inet", "name": "GL-MT3600BE Firmware Source", "kind": "official", "category": "firmware", "type": "firmware", "tagline": "Official OpenWrt-based source for Beryl 7 firmware.", "description": "GL.iNet's published source tree for the GL-MT3600BE firmware 4.8.7 and 4.9.0, with a build guide and Docker build environment for each version. The open-source configuration builds a clean image without GL.iNet's proprietary apps and web UI; baseline and CCS-validation configs are included for audit.", "features": ["Source trees for firmware 4.8.7 and 4.9.0", "Open-source, baseline and CCS-validation build configs", "Docker build environment based on Ubuntu 22.04", "Flash via GL.iNet web UI or sysupgrade"], "install": null, "install_note": "Build with versions/<version>/GL-MT3600BE_FIRMWARE_GUIDE.md, then flash the sysupgrade image via System > Upgrade > Local Upgrade or sysupgrade -n.", "devices": ["Beryl 7 (GL-MT3600BE)"], "firmware": "GL.iNet 4.8.7 / 4.9.0", "license": "GPL-2.0-only", "tech": ["OpenWrt", "Linux 5.4", "Docker"], "version": "v4.9.0", "links": [{"label": "OpenWrt build system setup", "url": "https://openwrt.org/docs/guide-developer/build-system/install-buildsystem"}], "readiness": "stable", "icon": "layers", "notes": "The open-source build has no LuCI or GL.iNet web UI and omits proprietary GL apps; do not keep settings when flashing from stock. Building needs a 64-bit Linux host with at least 8 GiB RAM and 30 GiB free disk.", "stars": 8, "updated": "2026-09-28"}, {"repo": "glkvm", "upstream": "gl-inet/glkvm", "author": "gl-inet", "name": "GLKVM KVMD", "kind": "official", "category": "kvm", "type": "firmware", "tagline": "Core KVMD daemon source for GLKVM devices", "description": "Source code and configuration of KVMD, the core daemon of GL.iNet's GLKVM devices, derived from the open-source PiKVM project. Aimed at developers who want to modify kvmd and push the changes to their own device; firmware images are downloaded separately from GL.iNet's download server.", "features": ["Derivative of the open-source PiKVM KVMD", "Contains KVMD code and configuration", "apply_to_glkvm.sh syncs the kvmd folder to a device", "Links stable firmware downloads on dl.gl-inet.com"], "install": null, "install_note": "Not an end-user install. For firmware, use https://dl.gl-inet.com/kvm/rm1/stable. Developers run apply_to_glkvm.sh on the same LAN as the device, then restart the device.", "devices": [], "firmware": null, "license": "GPL-3.0", "tech": ["Python", "JavaScript", "Pug", "PiKVM KVMD"], "version": "v1.5.0", "links": [{"label": "Firmware downloads", "url": "https://dl.gl-inet.com/kvm/rm1/stable"}, {"label": "PiKVM (upstream project)", "url": "https://github.com/pikvm/pikvm"}, {"label": "Issue tracker", "url": "https://github.com/gl-inet/glkvm/issues"}], "readiness": "stable", "icon": "chip", "notes": "This is the source of a firmware component (the KVMD daemon), not a flashable firmware image. apply_to_glkvm.sh logs in as root over SSH to glkvm.local and deletes the existing kvmd directory on the device before copying the local one. Version numbers disagree: kvmd/__init__.py says 4.82, while setup.py, PKGBUILD and .bumpversion.cfg say 4.16 (PiKVM-style kvmd numbering, not the GLKVM firmware version). The README names no device models; its firmware link points to the \"rm1\" directory.", "stars": 237, "updated": "2026-08-27"}, {"repo": "glkvm-cloud", "upstream": "gl-inet/glkvm-cloud", "author": "gl-inet", "name": "GLKVM Cloud", "kind": "official", "category": "kvm", "type": "docker", "tagline": "Self-hosted cloud platform for managing KVM devices", "description": "Self-hosted remote management platform for GL.iNet KVM devices, built on rttys and aimed at individuals and small businesses. Devices are added with a script, and the platform provides web SSH, browser-based remote desktop control and batch commands while keeping all data on your own server.", "features": ["Web SSH and remote desktop in the browser", "User groups assigned to device groups", "Batch command execution across devices", "LDAP and OIDC login for enterprise users", "Web proxy for OpenWrt, Raspberry Pi, Linux hosts"], "install": "( command -v curl >/dev/null 2>&1 && curl -fsSL https://kvm-cloud.gl-inet.com/selfhost/install.sh || wget -qO- https://kvm-cloud.gl-inet.com/selfhost/install.sh ) | sudo bash", "install_note": "Run as root. The one-line installer is Docker-based and supports x86_64 (amd64) only; for arm64 use the Docker Compose setup in docker-compose/README.md. Ports 443, 10443, 5912 and 3478 must be free and open.", "devices": [], "firmware": "KVM device firmware v1.5.0 or later", "license": "BUSL-1.1", "tech": ["Go", "Vue 3", "Docker Compose", "coturn"], "version": "v2.8.0", "links": [{"label": "Docker Compose guide", "url": "https://github.com/gl-inet/glkvm-cloud/blob/main/docker-compose/README.md"}, {"label": "rttys (upstream project)", "url": "https://github.com/zhaojh329/rttys"}], "readiness": "stable", "icon": "dashboard", "notes": "Business Source License 1.1: free for non-production use (development, testing, personal, academic); production, commercial or SaaS use needs a separate commercial license from GL.iNet. The license changes to GPLv3 on 2030-01-01. Tested server OSes: Ubuntu 18.04-24.04, Debian 11/12, AlmaLinux and Rocky Linux 8/9, CentOS Stream 9. Access by IP shows a browser certificate warning until you install your own (wildcard) certificate. Version taken from KVMCloudVersion in internal/server/version.go.", "stars": 330, "updated": "2026-08-27"}, {"repo": "glikvm-mod", "upstream": "emaspa/glikvm-mod", "author": "emaspa", "name": "GLiKVM Mod", "kind": "tool", "category": "kvm", "type": "desktop-app", "tagline": "Tabs, windows and clipboard paste for GLKVM", "description": "Patch tool for GL.iNet's GLKVM desktop client on Windows that builds a side-by-side \"GLKVM (mod)\" copy with sessions in separate windows, browser-style tab management, local clipboard paste into the remote machine and 1:1 window sizing. The stock install is left untouched and no admin rights are needed.", "features": ["Open each KVM session in its own window", "Drag tabs to reorder, tear out or merge", "Paste local clipboard with Ctrl+Alt+V", "Resize window 1:1 to KVM resolution", "Optional saved passwords, encrypted with Windows DPAPI"], "install": null, "install_note": "Requires Windows 10/11, the stock GLKVM client and Bun. Clone the repo, then run `bun install` and `bun patch.ts install`.", "devices": ["Comet (RM1)", "RM10"], "firmware": "KVM firmware V1.10.0 (tested)", "license": "MIT", "tech": ["TypeScript", "Bun", "Electron"], "version": "v0.1.10", "links": [{"label": "GLKVM desktop client", "url": "https://www.gl-inet.com/en-de/pages/app-rm"}, {"label": "Bun", "url": "https://bun.sh"}], "readiness": "stable", "icon": "layers", "notes": "Unofficial and not affiliated with GL-iNet. Tested with GLKVM client 1.5.0 and 1.5.1 (incl. r2); the patcher refuses client versions it does not list as supported (currently 1.5.1) unless --force is used. Re-run `bun patch.ts install` after the GLKVM client updates itself. Paste is typed as keystrokes (text only, keyboard layout must match the device keymap); copying from remote to local is not possible.", "stars": 0, "updated": "2026-09-12"}, {"repo": "glikvm-linux", "upstream": "emaspa/glikvm-linux", "author": "emaspa", "name": "GLiKVM Linux", "kind": "tool", "category": "kvm", "type": "desktop-app", "tagline": "Unofficial GLKVM desktop client for Linux", "description": "Community port of GL.iNet's GLKVM desktop client to Linux, built from the official macOS/Windows package with glikvm-mod applied. Ships as an AppImage or tarball with an in-app updater, or can be built locally from your own downloaded GLKVM package.", "features": ["AppImage and tar.gz releases for Linux x64", "Includes all glikvm-mod session and paste features", "In-app updater verifies downloads against SHA256SUMS", "Saved passwords stored via keyring/libsecret", "Build locally from official .dmg or .exe"], "install": null, "install_note": "Download the AppImage or tar.gz from GitHub Releases (the AppImage needs FUSE 2), or build from source with Node.js 24 and `node glikvm-linux.mjs install`.", "devices": ["Comet (RM1)", "RM10"], "firmware": null, "license": "MIT", "tech": ["Node.js", "Electron", "JavaScript"], "version": "v0.1.3-beta", "links": [{"label": "Releases", "url": "https://github.com/emaspa/glikvm-linux/releases"}, {"label": "glikvm-mod", "url": "https://github.com/emaspa/glikvm-mod"}, {"label": "GLKVM desktop client", "url": "https://www.gl-inet.com/en-de/pages/app-rm"}], "readiness": "beta", "icon": "desktop", "notes": "Unofficial and not affiliated with GL-iNet. The repository code is MIT, but release downloads contain GL-iNet's proprietary client code. Ported from GLKVM 1.5.1 release2. Tested on Ubuntu (GNOME) with a mock device; arm64 builds are untested. Under native Wayland, tab dragging and window merging do not track the cursor; GNOME needs an AppIndicator extension to show the tray icon.", "stars": 0, "updated": "2026-09-22"}, {"repo": "glikvm-macos", "upstream": "emaspa/glikvm-macos", "author": "emaspa", "name": "GLiKVM macOS", "kind": "tool", "category": "kvm", "type": "desktop-app", "tagline": "GLKVM macOS client with glikvm-mod patched in", "description": "Unofficial build of GL.iNet's GLKVM macOS client with glikvm-mod applied, shipped as a universal \"GLKVM (mod).app\" (macOS 11+) that installs next to the stock client and shares its login and device list. Includes an in-app updater and can also be built locally from the official .dmg.", "features": ["Universal app for Apple silicon and Intel", "Session windows, tab dragging and clipboard paste", "Saved passwords encrypted in the macOS Keychain", "In-app updater with SHA256SUMS verification", "Installs alongside the stock GLKVM client"], "install": null, "install_note": "Download the .dmg from GitHub Releases and drag GLKVM (mod) to Applications. The app is ad-hoc signed, so use right-click > Open on first start.", "devices": ["Comet (RM1)", "RM10"], "firmware": null, "license": "MIT", "tech": ["Node.js", "Electron", "JavaScript"], "version": "v0.1.0-beta", "links": [{"label": "Releases", "url": "https://github.com/emaspa/glikvm-macos/releases"}, {"label": "glikvm-mod", "url": "https://github.com/emaspa/glikvm-mod"}, {"label": "glikvm-linux", "url": "https://github.com/emaspa/glikvm-linux"}, {"label": "GLKVM desktop client", "url": "https://www.gl-inet.com/en-de/pages/app-rm"}], "readiness": "beta", "icon": "desktop", "notes": "Unofficial and not affiliated with GL-iNet. Ad-hoc signed and not notarized, so Gatekeeper warns on first launch (README also gives an xattr command to clear the quarantine flag). The repository code is MIT, but release downloads contain GL-iNet's proprietary client code. Built from GLKVM 1.5.1; only one of the stock and mod clients can run at a time.", "stars": 1, "updated": "2026-09-22"}, {"repo": "Overlook", "upstream": "rcawston/Overlook", "author": "rcawston", "name": "Overlook", "kind": "tool", "category": "kvm", "type": "desktop-app", "tagline": "Native macOS remote console for GLKVM devices", "description": "Native macOS app for controlling GL.iNet Comet/GLKVM devices, with low-latency WebRTC video and full keyboard and mouse capture. It pastes the Mac clipboard to the remote machine with ⌘V and copies text off the remote screen using on-device Apple Vision OCR.", "features": ["Low-latency WebRTC video via Janus signaling", "⌘V pastes the Mac clipboard to the remote", "Copy remote screen text with on-device OCR", "Device discovery via mDNS and network scan", "Video quality presets and EDID selection"], "install": null, "install_note": "No prebuilt download is documented in the README. Build from source: open Overlook.xcodeproj in Xcode, select the Overlook scheme, then Build + Run.", "devices": ["GL.iNet Comet"], "firmware": null, "license": "GPL-3.0", "tech": ["Swift", "SwiftUI", "WebRTC", "Apple Vision"], "version": "v1.0.0", "links": [], "readiness": "stable", "icon": "monitor", "notes": "Requires macOS 14+. Designed for local network or direct IP connections (for example over VPN) only. The app currently allows insecure TLS for device connections (for self-signed certificates). The repo has a GitHub Actions workflow that builds a signed, notarized .zip on version tags, but the README does not mention release downloads. Version is the Xcode MARKETING_VERSION setting.", "stars": 61, "updated": "2026-09-13"}, {"repo": "docs4.x", "upstream": "gl-inet/docs4.x", "author": "gl-inet", "name": "Router Docs 4.x", "kind": "docs", "category": "docs", "type": "docs", "tagline": "Source of GL.iNet router firmware 4.x docs", "description": "MkDocs source of GL.iNet's official router documentation for firmware 4.x, published at docs.gl-inet.com/router/en/4/. It contains per-model user guides, FAQ, tutorials, an interface guide, feature updates, a video library and download pages.", "features": ["Per-model user guides, FAQ and tutorials", "Interface guide, video library and downloads", "Language sites: en, de, es, ja, fr, it, pl", "Built with MkDocs and Material for MkDocs", "Local preview with mkdocs serve"], "install": null, "install_note": "Nothing to install; read the docs online. To preview locally: pip install -r requirements.txt, then mkdocs serve -f docs/en/mkdocs.yml", "devices": [], "firmware": "GL.iNet 4.x", "license": null, "tech": ["MkDocs", "Material for MkDocs", "Markdown", "Python"], "version": null, "links": [{"label": "Documentation (English)", "url": "https://docs.gl-inet.com/router/en/4/"}, {"label": "Documentation (German)", "url": "https://docs.gl-inet.com/router/de/4/"}, {"label": "Documentation (Spanish)", "url": "https://docs.gl-inet.com/router/es/4/"}, {"label": "Documentation (Japanese)", "url": "https://docs.gl-inet.com/router/ja/4/"}], "readiness": "stable", "icon": "book", "notes": "The README lists four languages (en, de, es, ja), but the repo also contains French, Italian and Polish sites with their own mkdocs.yml (site_url docs.gl-inet.com/router/fr|it|pl/4/). No LICENSE file.", "stars": 133, "updated": "2026-09-19"}, {"repo": "docs-kvm", "upstream": "gl-inet/docs-kvm", "author": "gl-inet", "name": "KVM Docs", "kind": "docs", "category": "docs", "type": "docs", "tagline": "Source of GL.iNet KVM documentation", "description": "MkDocs source of GL.iNet's official KVM documentation, published at docs.gl-inet.com/kvm/en/. It contains per-model user guides (for example GL-RM1 and GL-RM10), FAQ, tutorials, a video library and feature updates.", "features": ["User guides for each KVM model", "FAQ, tutorials and video library", "English, German and Japanese sites", "Built with MkDocs and Material for MkDocs", "Fast local preview config (mkdocs.fast.yml)"], "install": null, "install_note": "Nothing to install; read the docs online. To preview locally: pip install -r requirements.txt, then mkdocs serve -f docs/en/mkdocs.yml", "devices": [], "firmware": null, "license": null, "tech": ["MkDocs", "Material for MkDocs", "Markdown", "Python"], "version": null, "links": [{"label": "Documentation (English)", "url": "https://docs.gl-inet.com/kvm/en/"}, {"label": "Documentation (German)", "url": "https://docs.gl-inet.com/kvm/de/"}, {"label": "Documentation (Japanese)", "url": "https://docs.gl-inet.com/kvm/ja/"}], "readiness": "stable", "icon": "book", "notes": "No LICENSE file. The README names no device models; model names in the description come from the user_guide folders.", "stars": 20, "updated": "2026-09-16"}, {"repo": "docs-iot", "upstream": "gl-inet/docs-iot", "author": "gl-inet", "name": "IoT Docs", "kind": "docs", "category": "docs", "type": "docs", "tagline": "Source of GL.iNet IoT product documentation", "description": "MkDocs source of GL.iNet's IoT documentation, published at docs.gl-inet.com/iot/en/. It covers the GL-S10 BLE proxy, the GL-S20 and GL-S200 Thread border routers and the IoT dev board, including hardware details, flash guides, APIs and Home Assistant integration.", "features": ["GL-S10 BLE proxy guides incl. AWS setup", "GL-S20 and GL-S200 Thread border router manuals", "HTTP, BLE and OTBR API references", "Home Assistant integration guides", "Firmware compilation and flash guides"], "install": null, "install_note": "Nothing to install; read the docs online.", "devices": [], "firmware": null, "license": null, "tech": ["MkDocs", "Material for MkDocs", "Markdown"], "version": null, "links": [{"label": "Documentation", "url": "https://docs.gl-inet.com/iot/en/"}], "readiness": "stable", "icon": "book", "notes": "The README says the repo documents \"GL.iNet routers firmware 4.x\", which looks copied from the router docs; the actual content is IoT products (GL-S10, GL-S20, GL-S200, IoT dev board), so firmware is left null. An MQTT VPN page exists but only says \"Coming soon\" and is not in the navigation. No LICENSE file.", "stars": 4, "updated": "2026-09-13"}, {"repo": "docs-astrowarp", "upstream": "gl-inet/docs-astrowarp", "author": "gl-inet", "name": "AstroWarp Docs", "kind": "docs", "category": "docs", "type": "docs", "tagline": "Source of the AstroWarp documentation site", "description": "MkDocs source of the documentation for AstroWarp, a platform that connects multiple GL.iNet routers into one network for remote access. It covers a quick start, scenario guides, a security notice, FAQ and version history.", "features": ["Quick start with supported router list", "Guides: remote access, game streaming, home IP", "Work-from-home and remote desktop tutorials", "Security notice, FAQ and version history"], "install": null, "install_note": "Nothing to install; read the docs online.", "devices": [], "firmware": null, "license": null, "tech": ["MkDocs", "Material for MkDocs", "Markdown"], "version": null, "links": [{"label": "Documentation", "url": "https://docs.astrowarp.net/en/"}, {"label": "AstroWarp website", "url": "https://www.astrowarp.net/"}], "readiness": "stable", "icon": "book", "notes": "The README's \"Online View\" link points to https://docs.gl-inet.com/goodcloud/, which looks outdated; mkdocs.yml sets site_url to https://docs.astrowarp.net/en/. The quick start lists supported router models with minimum firmware 4.7.0-4.10.0 depending on model. No LICENSE file.", "stars": 0, "updated": "2026-08-27"}];
+const ORG = 'GLiNet-Community-Scripts';
+
+const CATEGORIES = [
+  { id: 'vpn', title: 'VPN & remote access', intro: 'Tailscale, WireGuard and ZeroTier, adjusted to the quirks of GL.iNet firmware.' },
+  { id: 'network', title: 'Network, DNS & Wi-Fi', intro: 'AdGuard Home, VLANs, QoS, DHCP options and Wi-Fi schedules without hand-editing UCI files.' },
+  { id: 'cellular', title: 'Cellular & WAN', intro: 'For 4G/5G models such as Spitz, Mudi and Puli, plus Starlink: SMS tools, modem settings, signal data.' },
+  { id: 'system', title: 'System & firmware', intro: 'Toolkits, logging, backups and alternative firmware for the router itself.' },
+  { id: 'apps', title: 'Dashboards & companion apps', intro: 'Touchscreen interfaces, desktop apps and bots that work alongside your router.' },
+  { id: 'kvm', title: 'KVM', intro: 'Clients and patches for GL.iNet Comet and other GLKVM devices.' },
+];
+
+const TYPE_LABEL = {
+  'router-script': 'Router script', 'luci-app': 'LuCI app', 'router-service': 'Router service',
+  'desktop-app': 'Desktop app', docker: 'Docker', bot: 'Bot', firmware: 'Firmware',
+  docs: 'Docs', 'module-tools': 'Modem tools',
+};
+
+const GRADIENTS = {
+  vpn: [['#4f8ff7', '#1d4ed8'], ['#38bdf8', '#2563eb'], ['#6366f1', '#1e40af']],
+  network: [['#2dd4bf', '#0f766e'], ['#22d3ee', '#0e7490'], ['#34d399', '#047857']],
+  dns: [['#4ade80', '#15803d']],
+  cellular: [['#fb923c', '#c2410c'], ['#fbbf24', '#d97706'], ['#f87171', '#b91c1c']],
+  system: [['#818cf8', '#4338ca'], ['#a78bfa', '#6d28d9'], ['#94a3b8', '#475569']],
+  apps: [['#f472b6', '#be185d'], ['#e879f9', '#a21caf'], ['#fb7185', '#be123c']],
+  kvm: [['#64748b', '#1e293b'], ['#a78bfa', '#5b21b6'], ['#38bdf8', '#0369a1']],
+  firmware: [['#fbbf24', '#b45309'], ['#f97316', '#9a3412']],
+  docs: [['#94a3b8', '#475569']],
+  meta: [['#94a3b8', '#475569']],
+};
+
+const ICONS = {"router": "<rect x=\"3.5\" y=\"13\" width=\"17\" height=\"6.5\" rx=\"2\"/><path d=\"M7.5 13V9\"/><path d=\"M16.5 13V9\"/><path d=\"M7.2 16.25h.1\"/><path d=\"M10.2 16.25h.1\"/>", "shield": "<path d=\"M12 3l7 2.8v5.4c0 4.6-3 7.7-7 9.3-4-1.6-7-4.7-7-9.3V5.8L12 3z\"/><path d=\"M9 11.8l2.1 2.1 4-4.3\"/>", "lock": "<path d=\"M8 10.5V8a4 4 0 0 1 8 0v2.5\"/><rect x=\"5.5\" y=\"10.5\" width=\"13\" height=\"9\" rx=\"2\"/><path d=\"M12 14v2\"/>", "chip": "<rect x=\"7\" y=\"7\" width=\"10\" height=\"10\" rx=\"1.5\"/><rect x=\"10.25\" y=\"10.25\" width=\"3.5\" height=\"3.5\"/><path d=\"M9.5 7V4.5\"/><path d=\"M14.5 7V4.5\"/><path d=\"M9.5 19.5V17\"/><path d=\"M14.5 19.5V17\"/><path d=\"M7 9.5H4.5\"/><path d=\"M7 14.5H4.5\"/><path d=\"M19.5 9.5H17\"/><path d=\"M19.5 14.5H17\"/>", "signal": "<path d=\"M12 12h.01\"/><path d=\"M8.5 15.5a5 5 0 0 1 0-7\"/><path d=\"M15.5 8.5a5 5 0 0 1 0 7\"/><path d=\"M5.7 18.3a9 9 0 0 1 0-12.6\"/><path d=\"M18.3 5.7a9 9 0 0 1 0 12.6\"/>", "route": "<circle cx=\"6\" cy=\"18.5\" r=\"2.5\"/><circle cx=\"18\" cy=\"5.5\" r=\"2.5\"/><path d=\"M8.5 18.5H17a3.25 3.25 0 0 0 0-6.5H7a3.25 3.25 0 0 1 0-6.5h8.5\"/>", "wave": "<path d=\"M3 9.5c2-2.4 4-2.4 6 0s4 2.4 6 0 4-2.4 6 0\"/><path d=\"M3 15.5c2-2.4 4-2.4 6 0s4 2.4 6 0 4-2.4 6 0\"/>", "radar": "<circle cx=\"12\" cy=\"12\" r=\"8.5\"/><path d=\"M12 12l5.5-5.5\"/><path d=\"M12 12h.01\"/><path d=\"M15.5 14.5h.01\"/><path d=\"M12 7.5a4.5 4.5 0 0 1 4.5 4.5\"/>", "book": "<path d=\"M12 6.5C10.5 5 8.5 4.5 3.5 4.5v14c5 0 7 .5 8.5 2 1.5-1.5 3.5-2 8.5-2v-14c-5 0-7 .5-8.5 2z\"/><path d=\"M12 6.5v14\"/>", "terminal": "<rect x=\"3\" y=\"4.5\" width=\"18\" height=\"15\" rx=\"2.5\"/><path d=\"M7 9.5l3 2.5-3 2.5\"/><path d=\"M12.5 15h4.5\"/>", "message": "<path d=\"M4 5h16a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 20 17h-9.5L6 20.5V17H4a1.5 1.5 0 0 1-1.5-1.5v-9A1.5 1.5 0 0 1 4 5z\"/><path d=\"M7 9.5h10\"/><path d=\"M7 13h6\"/>", "antenna": "<circle cx=\"12\" cy=\"9\" r=\"1.6\"/><path d=\"M12 10.6V21\"/><path d=\"M8.3 5.3a5.2 5.2 0 0 0 0 7.4\"/><path d=\"M15.7 5.3a5.2 5.2 0 0 1 0 7.4\"/><path d=\"M5.4 2.7a9 9 0 0 0 0 12.6\"/><path d=\"M18.6 2.7a9 9 0 0 1 0 12.6\"/>", "usb": "<rect x=\"8\" y=\"10\" width=\"8\" height=\"11\" rx=\"1.5\"/><path d=\"M9.5 10V3h5v7\"/><path d=\"M11 5.5h.01\"/><path d=\"M13 5.5h.01\"/>", "toggle": "<rect x=\"2.5\" y=\"7\" width=\"19\" height=\"10\" rx=\"5\"/><circle cx=\"16.5\" cy=\"12\" r=\"2.8\"/>", "gauge": "<path d=\"M4.2 17.5a9 9 0 1 1 15.6 0\"/><path d=\"M12 14l4-4.5\"/><circle cx=\"12\" cy=\"14\" r=\"1.3\"/>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"8.5\"/><path d=\"M12 7.5V12l3 2\"/>", "phone": "<rect x=\"6.5\" y=\"2.5\" width=\"11\" height=\"19\" rx=\"2.5\"/><path d=\"M10.5 18.5h3\"/><path d=\"M9.5 9.5a3.5 3.5 0 0 1 5 0\"/><path d=\"M11 11.4a1.4 1.4 0 0 1 2 0\"/>", "backup": "<path d=\"M4 12a8 8 0 1 0 2.4-5.7\"/><path d=\"M4 4v4.5h4.5\"/><path d=\"M12 8v4l2.8 1.8\"/>", "dashboard": "<rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"5\" rx=\"1.5\"/><rect x=\"13.5\" y=\"11.5\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"3.5\" y=\"15.5\" width=\"7\" height=\"5\" rx=\"1.5\"/>", "satellite": "<path d=\"M4.5 10.5l9 9a6.4 6.4 0 0 0-9-9z\"/><path d=\"M9 15l3.5-3.5\"/><circle cx=\"13.5\" cy=\"10.5\" r=\"1.1\"/><path d=\"M15.5 5.5a3.5 3.5 0 0 1 3 3\"/><path d=\"M15.5 2.5a6.5 6.5 0 0 1 6 6\"/>", "monitor": "<rect x=\"3\" y=\"4\" width=\"18\" height=\"12\" rx=\"2\"/><path d=\"M8.5 20h7\"/><path d=\"M12 16v4\"/>", "chat": "<rect x=\"4.5\" y=\"7.5\" width=\"15\" height=\"11\" rx=\"3\"/><path d=\"M12 7.5v-3\"/><path d=\"M12 4.5h.01\"/><path d=\"M9.2 12.5h.01\"/><path d=\"M14.8 12.5h.01\"/><path d=\"M9.5 15.5h5\"/><path d=\"M2.5 12v2.5\"/><path d=\"M21.5 12v2.5\"/>", "desktop": "<rect x=\"4.5\" y=\"5\" width=\"15\" height=\"10\" rx=\"1.5\"/><path d=\"M2.5 19h19\"/><path d=\"M4.5 15l-2 4\"/><path d=\"M19.5 15l2 4\"/>", "puzzle": "<path d=\"M9 6V4.5a2 2 0 0 1 4 0V6h4.5a1 1 0 0 1 1 1v4H17a2 2 0 0 0 0 4h1.5v4a1 1 0 0 1-1 1H13v-1.5a2 2 0 0 0-4 0V20H5.5a1 1 0 0 1-1-1v-4H6a2 2 0 0 0 0-4H4.5V7a1 1 0 0 1 1-1z\"/>", "layers": "<path d=\"M12 3.5l9 4.5-9 4.5-9-4.5z\"/><path d=\"M3 12l9 4.5 9-4.5\"/><path d=\"M3 16l9 4.5 9-4.5\"/>", "vlan": "<rect x=\"9.5\" y=\"3\" width=\"5\" height=\"4.5\" rx=\"1\"/><rect x=\"2.5\" y=\"16.5\" width=\"5\" height=\"4.5\" rx=\"1\"/><rect x=\"9.5\" y=\"16.5\" width=\"5\" height=\"4.5\" rx=\"1\"/><rect x=\"16.5\" y=\"16.5\" width=\"5\" height=\"4.5\" rx=\"1\"/><path d=\"M12 7.5v9\"/><path d=\"M5 16.5v-4.5h14v4.5\"/>", "speed": "<path d=\"M3.5 16.5a8.5 8.5 0 1 1 17 0\"/><path d=\"M12 16.5l4.5-5.5\"/><path d=\"M3.5 16.5h2\"/><path d=\"M18.5 16.5h2\"/>", "key": "<circle cx=\"8\" cy=\"15\" r=\"4\"/><path d=\"M10.8 12.2L20 3\"/><path d=\"M16.5 6.5l2.5 2.5\"/><path d=\"M14 9l2 2\"/>", "tailscale": "<circle cx=\"5.5\" cy=\"6\" r=\"2\"/><circle cx=\"18.5\" cy=\"6\" r=\"2\"/><circle cx=\"12\" cy=\"18\" r=\"2\"/><path d=\"M7.5 6h9\"/><path d=\"M6.6 7.7l4.4 8.6\"/><path d=\"M17.4 7.7L13 16.3\"/>", "globe": "<circle cx=\"12\" cy=\"12\" r=\"8.5\"/><path d=\"M3.5 12h17\"/><path d=\"M12 3.5c2.5 2.6 3.5 5.5 3.5 8.5s-1 5.9-3.5 8.5c-2.5-2.6-3.5-5.5-3.5-8.5s1-5.9 3.5-8.5z\"/>", "bug": "<rect x=\"7.5\" y=\"7.5\" width=\"9\" height=\"12\" rx=\"4.5\"/><path d=\"M9.5 7.5a2.5 2.5 0 0 1 5 0\"/><path d=\"M12 11v8.5\"/><path d=\"M7.5 12H4\"/><path d=\"M20 12h-3.5\"/><path d=\"M7.8 16.5l-3 1.5\"/><path d=\"M16.2 16.5l3 1.5\"/><path d=\"M8 9.5L5 8\"/><path d=\"M16 9.5l3-1.5\"/>"};
+const UI = {
+  star: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.3L12 17.1l-5.7 3.1 1.2-6.3-4.7-4.4 6.4-.8z"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2.2"/><path d="M15.5 8.5V6.7a2.2 2.2 0 0 0-2.2-2.2H6.7a2.2 2.2 0 0 0-2.2 2.2v6.6a2.2 2.2 0 0 0 2.2 2.2h1.8"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  tick: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  warn: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5"/><path d="M12 17.3h.01"/></svg>',
+};
+
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = (n) => n.toLocaleString('en-US');
+const day = 86400000;
+
+function ago(iso) {
+  const d = Math.round((Date.parse(SNAPSHOT) - Date.parse(iso)) / day);
+  if (d <= 0) return 'today';
+  if (d === 1) return 'yesterday';
+  if (d < 31) return `${d} days ago`;
+  const m = Math.round(d / 30.4);
+  return m < 12 ? `${m} month${m > 1 ? 's' : ''} ago` : 'over a year ago';
+}
+const longDate = (iso) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+function gradientFor(app, i) {
+  const set = GRADIENTS[app.category] || GRADIENTS.meta;
+  return set[i % set.length];
+}
+function tile(app, size) {
+  const [a, b] = app.gradient;
+  return `<span class="tile ${size}" style="background:linear-gradient(160deg, ${a}, ${b})" aria-hidden="true"><svg viewBox="0 0 24 24">${ICONS[app.icon] || ICONS.router}</svg></span>`;
+}
+function installBlock(app) {
+  if (app.install) {
+    return `<div class="install"><code>${esc(app.install)}</code><button class="copy" type="button" data-copy="${esc(app.install)}" aria-label="Copy install command">${UI.copy}</button></div>`;
+  }
+  return app.install_note ? `<p class="install-note">${esc(app.install_note)}</p>` : '';
+}
+
+// ── prepare ──────────────────────────────────────────────────
+const perCat = {};
+for (const app of APPS) {
+  app.id = app.repo.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  perCat[app.category] = (perCat[app.category] || 0) + 1;
+  app.gradient = gradientFor(app, perCat[app.category] - 1);
+  app.haystack = [app.name, app.repo, app.author, app.tagline, app.description, ...(app.features || []), ...(app.devices || []), ...(app.tech || []), TYPE_LABEL[app.type]]
+    .join(' ').toLowerCase();
+}
+const tools = APPS.filter((a) => a.kind === 'tool');
+const official = APPS.filter((a) => a.kind === 'official' || a.kind === 'docs');
+
+// ── stats ────────────────────────────────────────────────────
+const authors = new Set(tools.map((a) => a.author.toLowerCase()));
+const toolStars = tools.reduce((s, a) => s + a.stars, 0);
+document.getElementById('stats').innerHTML =
+  `<span><b>${tools.length}</b> community apps</span><span><b>${authors.size}</b> authors</span><span><b>${fmt(toolStars)}</b> GitHub stars</span><span>Refreshed nightly</span>`;
+document.getElementById('fact-repos').textContent = `${APPS.length} public, ${tools.length} community apps`;
+
+// ── chips ────────────────────────────────────────────────────
+const state = { cat: 'all', q: '', sort: 'stars' };
+const chips = document.getElementById('chips');
+const usedCats = CATEGORIES.filter((c) => tools.some((a) => a.category === c.id));
+chips.innerHTML = [
+  `<button class="chip-btn" type="button" data-cat="all" aria-pressed="true">All<span>${tools.length}</span></button>`,
+  ...usedCats.map((c) => `<button class="chip-btn" type="button" data-cat="${c.id}" aria-pressed="false">${esc(c.title)}<span>${tools.filter((a) => a.category === c.id).length}</span></button>`),
+].join('');
+chips.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-cat]');
+  if (!btn) return;
+  state.cat = btn.dataset.cat;
+  for (const b of chips.children) b.setAttribute('aria-pressed', String(b === btn));
+  render();
+  document.getElementById('browse').scrollIntoView({ block: 'start' });
+});
+
+// ── cards ────────────────────────────────────────────────────
+function card(app) {
+  const ver = app.version ? `<span class="pill ver">${esc(app.version)}</span>` : '';
+  const ready = app.readiness && app.readiness !== 'stable' ? `<span class="pill ${esc(app.readiness)}">${esc(app.readiness[0].toUpperCase() + app.readiness.slice(1))}</span>` : '';
+  const devices = app.devices?.length ? `<span class="pill mute">${app.devices.length === 1 ? esc(app.devices[0].replace(/\s*\(.*\)/, '')) : `${app.devices.length} models`}</span>` : '';
+  return `<article class="card">
+    <div class="card-head">${tile(app, 'lg')}
+      <div class="heading"><h3><button type="button" data-open="${app.id}">${esc(app.name)}</button></h3><p class="by">by ${esc(app.author)}</p></div>
+      <span class="stars" title="${app.stars} stars on GitHub">${UI.star}${fmt(app.stars)}</span>
+    </div>
+    <p class="tagline">${esc(app.tagline)}</p>
+    <p class="desc">${esc(app.description)}</p>
+    <div class="meta">${ver}${ready}<span class="pill type">${esc(TYPE_LABEL[app.type] || app.type)}</span>${devices}</div>
+    ${installBlock(app)}
+    <div class="card-foot"><button class="details" type="button" data-open="${app.id}">Details</button><a href="https://github.com/${ORG}/${esc(app.repo)}">GitHub ↗</a><span class="updated">Updated ${ago(app.updated)}</span></div>
+  </article>`;
+}
+
+function featured() {
+  const top = [...tools].sort((a, b) => b.stars - a.stars).slice(0, 3);
+  return `<section class="section" aria-labelledby="h-popular">
+    <div class="section-head"><h2 id="h-popular">Most popular</h2><span class="count">by GitHub stars</span></div>
+    <div class="featured">${top.map((app, i) => `
+      <a class="feature" href="#${app.id}" data-open="${app.id}" style="background:linear-gradient(150deg, ${app.gradient[0]}, ${app.gradient[1]})">
+        <span class="rank">No. ${i + 1} in ${esc(CATEGORIES.find((c) => c.id === app.category)?.title || '')}</span>
+        <span class="top">${tile(app, 'lg')}<span><h3>${esc(app.name)}</h3><span class="by">by ${esc(app.author)}</span></span></span>
+        <p class="desc">${esc(app.tagline)} ${esc(app.description.split('. ')[0].replace(/\.$/, ''))}.</p>
+        <span class="foot"><span>${UI.star}${fmt(app.stars)}</span>${app.version ? `<span>${esc(app.version)}</span>` : ''}<span>Updated ${ago(app.updated)}</span></span>
+      </a>`).join('')}
+    </div></section>`;
+}
+
+const sorters = {
+  stars: (a, b) => b.stars - a.stars || a.name.localeCompare(b.name),
+  updated: (a, b) => Date.parse(b.updated) - Date.parse(a.updated),
+  name: (a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }),
+};
+
+function render() {
+  const out = document.getElementById('results');
+  // "flint 2" stays one term: a bare number belongs to the word before it.
+  const terms = state.q.toLowerCase().split(/\s+/).filter(Boolean)
+    .reduce((acc, w) => (/^\d+$/.test(w) && acc.length ? acc.push(`${acc.pop()} ${w}`) : acc.push(w), acc), []);
+  let list = tools.filter((a) => (state.cat === 'all' || a.category === state.cat) && terms.every((t) => a.haystack.includes(t)));
+  list.sort(sorters[state.sort]);
+
+  if (state.q) {
+    out.innerHTML = `<section class="section"><div class="section-head"><h2>Results for “${esc(state.q)}”</h2><span class="count">${list.length} app${list.length === 1 ? '' : 's'}</span></div>
+      ${list.length ? `<div class="grid">${list.map(card).join('')}</div>` : `<p class="empty">No app matches “${esc(state.q)}”. Try a router model like “Flint 2” or a feature like “VPN”.</p>`}</section>`;
+    return;
+  }
+  if (state.cat !== 'all') {
+    const c = CATEGORIES.find((x) => x.id === state.cat);
+    out.innerHTML = `<section class="section"><div class="section-head"><h2>${esc(c.title)}</h2><span class="count">${list.length} apps</span></div><p class="intro">${esc(c.intro)}</p><div class="grid">${list.map(card).join('')}</div></section>`;
+    return;
+  }
+  out.innerHTML = featured() + usedCats.map((c) => {
+    const items = list.filter((a) => a.category === c.id);
+    return `<section class="section" id="cat-${c.id}" aria-labelledby="h-${c.id}"><div class="section-head"><h2 id="h-${c.id}">${esc(c.title)}</h2><span class="count">${items.length} app${items.length === 1 ? '' : 's'}</span></div><p class="intro">${esc(c.intro)}</p><div class="grid">${items.map(card).join('')}</div></section>`;
+  }).join('');
+}
+
+// ── official rows ────────────────────────────────────────────
+document.getElementById('official-count').textContent = `${official.length} repositories`;
+document.getElementById('official-rows').innerHTML = official.sort(sorters.stars).map((app) => {
+  const site = app.links?.find((l) => /docs|documentation|site/i.test(l.label));
+  return `<li class="row">${tile(app, 'sm')}
+    <div class="text"><a class="name" href="https://github.com/${ORG}/${esc(app.repo)}">${esc(app.name)}</a><span class="tl">${esc(app.tagline)}</span></div>
+    <div class="right">${site ? `<a href="${esc(site.url)}">${esc(site.label)} ↗</a>` : ''}<span class="stars">${UI.star}${fmt(app.stars)}</span></div></li>`;
+}).join('');
+
+// ── detail sheet ─────────────────────────────────────────────
+const sheet = document.getElementById('sheet');
+function openSheet(id, push = true) {
+  const app = APPS.find((a) => a.id === id);
+  if (!app) return;
+  const devs = app.devices?.length ? `<div><h4>Supported models</h4><div class="dev">${app.devices.map((d) => `<span>${esc(d)}</span>`).join('')}</div>${app.firmware ? `<p class="hint">Firmware: ${esc(app.firmware)}</p>` : ''}</div>` : (app.firmware ? `<div><h4>Requirements</h4><p>Firmware: ${esc(app.firmware)}</p></div>` : '');
+  const links = [
+    `<a class="primary" href="https://github.com/${ORG}/${esc(app.repo)}">Open on GitHub ↗</a>`,
+    app.upstream.toLowerCase() !== `${ORG}/${app.repo}`.toLowerCase() ? `<a href="https://github.com/${esc(app.upstream)}">Original repository ↗</a>` : '',
+    ...(app.links || []).map((l) => `<a href="${esc(l.url)}">${esc(l.label)} ↗</a>`),
+  ].join('');
+  sheet.innerHTML = `<div class="sheet">
+    <div class="sheet-head">${tile(app, 'xl')}<div class="heading"><h2 id="sheet-title">${esc(app.name)}</h2><p class="tagline">${esc(app.tagline)}</p><p class="by">by ${esc(app.author)} · ${esc(TYPE_LABEL[app.type] || app.type)}</p></div>
+      <button class="close" type="button" data-close aria-label="Close">${UI.close}</button></div>
+    <div class="kv">
+      <div><span>Stars</span><b>${fmt(app.stars)}</b></div>
+      <div><span>Version</span><b>${esc(app.version || 'No release')}</b></div>
+      <div><span>Updated</span><b>${longDate(app.updated)}</b></div>
+      <div><span>Licence</span><b>${esc(app.license || 'Not stated')}</b></div>
+    </div>
+    <p class="lead">${esc(app.description)}</p>
+    ${app.features?.length ? `<div><h4>Features</h4><ul class="features">${app.features.map((f) => `<li>${UI.tick}<span>${esc(f)}</span></li>`).join('')}</ul></div>` : ''}
+    ${app.install || app.install_note ? `<div><h4>Install</h4>${installBlock(app)}${app.install ? '<p class="hint">Run this on the router after logging in via SSH.</p>' : ''}</div>` : ''}
+    ${devs}
+    ${app.notes ? `<div class="note">${UI.warn}<p>${esc(app.notes)}</p></div>` : ''}
+    <div class="sheet-links">${links}</div>
+    <p class="credit">${app.kind === 'tool' ? `Made by <a href="https://github.com/${esc(app.author)}">${esc(app.author)}</a>. This organization keeps a synced copy; the author keeps ownership and credit.` : 'Published by GL.iNet. Mirrored in this organization for reference.'}${app.tech?.length ? ` Built with ${app.tech.map(esc).join(', ')}.` : ''}</p>
+  </div>`;
+  if (!sheet.open) sheet.showModal();
+  if (push) setHash(`#${app.id}`);
+}
+function closeSheet() {
+  if (sheet.open) sheet.close();
+}
+function setHash(h) {
+  try { history.replaceState(null, '', h || location.pathname + location.search); } catch { /* sandboxed frame */ }
+}
+sheet.addEventListener('close', () => setHash(''));
+sheet.addEventListener('click', (e) => {
+  if (e.target === sheet || e.target.closest('[data-close]')) closeSheet();
+});
+
+// ── global events ────────────────────────────────────────────
+document.addEventListener('click', (e) => {
+  const opener = e.target.closest('[data-open]');
+  if (opener) { e.preventDefault(); openSheet(opener.dataset.open); return; }
+  const copy = e.target.closest('[data-copy]');
+  if (copy) {
+    const text = copy.dataset.copy;
+    const ok = () => { copy.innerHTML = UI.check; copy.classList.add('done'); setTimeout(() => { copy.innerHTML = UI.copy; copy.classList.remove('done'); }, 1600); };
+    const fallback = () => {
+      const code = copy.parentElement.querySelector('code');
+      const r = document.createRange(); r.selectNodeContents(code);
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    };
+    try { navigator.clipboard.writeText(text).then(ok, fallback); } catch { fallback(); }
+  }
+});
+const q = document.getElementById('q');
+let t;
+q.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { state.q = q.value.trim(); render(); }, 120); });
+document.getElementById('suggest').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  q.value = b.textContent; state.q = b.textContent; render();
+  document.getElementById('browse').scrollIntoView({ block: 'start' });
+});
+document.getElementById('sort').addEventListener('change', (e) => { state.sort = e.target.value; render(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && document.activeElement !== q && !sheet.open) { e.preventDefault(); q.focus(); }
+});
+
+render();
+if (location.hash.length > 1) openSheet(location.hash.slice(1), false);
+</script>
+</body>
+</html>
