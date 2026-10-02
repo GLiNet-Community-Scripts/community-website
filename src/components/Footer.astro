@@ -20,10 +20,6 @@ const { site, generatedAt } = Astro.props;
         <a href={site.submit}>Suggest a project</a>
         <a href={`https://github.com/${site.org}/community-website`}>Source of this site</a>
       </nav>
-      <nav class="col" aria-label="Maintainer">
-        <h4>Maintained by {site.maintainer.name}</h4>
-        {site.maintainer.links.map((l) => <a href={l.url}>{l.label}</a>)}
-      </nav>
       <nav class="col" aria-label="Official GL.iNet resources">
         <h4>Official GL.iNet resources</h4>
         {site.official.map((l) => <a href={l.url}>{l.label}</a>)}

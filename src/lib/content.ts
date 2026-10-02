@@ -76,10 +76,6 @@ const SiteSchema = z.object({
     long: z.string().min(1),
     official: LinkSchema,
   }),
-  maintainer: z.object({
-    name: z.string().min(1),
-    links: z.array(LinkSchema).min(1),
-  }),
   submit: z.string().url(),
   official: z.array(LinkSchema),
   ignore: z.array(z.string()),

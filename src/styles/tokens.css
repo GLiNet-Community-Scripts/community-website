@@ -1,6 +1,6 @@
 /*
- * Design tokens. Apple-style quiet surfaces from apps.admon.me, one green
- * accent taken from the community banner.
+ * Design tokens. Apple-style quiet surfaces, one green accent taken from
+ * the community banner.
  * No web fonts: the system stack keeps the page free of third-party
  * requests. If a web font is ever needed, put the woff2 files in
  * public/fonts/ and declare them here with @font-face.

@@ -1,4 +1,4 @@
-# Global settings: metadata, hero, disclaimer, maintainer.
+# Global settings: metadata, hero, disclaimer.
 title: Community Apps for GL.iNet routers (unofficial)
 description: >-
   Scripts, add-ons and companion tools for GL.iNet routers, built by the
@@ -33,12 +33,6 @@ disclaimer:
 # Issue form for suggesting a new project
 # (.github/ISSUE_TEMPLATE/new-project.yml in this repository).
 submit: https://github.com/GLiNet-Community-Scripts/community-website/issues/new?template=new-project.yml
-
-maintainer:
-  name: Admon
-  links:
-    - { label: GL.iNet forum, url: "https://forum.gl-inet.com/u/admon/" }
-    - { label: GitHub, url: "https://github.com/admonstrator" }
 
 official:
   - { label: GL.iNet website, url: "https://www.gl-inet.com" }

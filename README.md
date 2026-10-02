@@ -7,9 +7,7 @@ A static site built with [Astro](https://astro.build), deployed to GitHub
 Pages at **https://gl-i.net**.
 
 **Unofficial.** This is a community project. It is not affiliated with,
-endorsed by or operated by GL.iNet. Maintained by Admon
-([GL.iNet forum](https://forum.gl-inet.com/u/admon/),
-[GitHub](https://github.com/admonstrator)).
+endorsed by or operated by GL.iNet.
 
 ## Local development
 
@@ -29,7 +27,7 @@ All text lives in three YAML files. Changing the site never touches HTML.
   caveats). The header of the file documents every field.
 - [`content/categories.yaml`](content/categories.yaml): the sections and
   filter chips, in display order.
-- [`content/site.yaml`](content/site.yaml): hero, disclaimer, maintainer,
+- [`content/site.yaml`](content/site.yaml): hero, disclaimer,
   official GL.iNet links, and `ignore` for repositories that should not
   appear.
 

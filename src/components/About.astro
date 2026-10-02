@@ -36,10 +36,6 @@ const { site, stats, repos, generatedAt } = Astro.props;
       <h3>About this site</h3>
       <p>{site.disclaimer.long}</p>
       <dl class="facts">
-        <dt>Run by</dt>
-        <dd>{site.maintainer.name}, on behalf of the community</dd>
-        <dt>Contact</dt>
-        <dd>{site.maintainer.links.map((l, i) => <Fragment>{i > 0 && ' · '}<a href={l.url}>{l.label}</a></Fragment>)}</dd>
         <dt>Data</dt>
         <dd>{repos} repositories, {stats.apps} community apps, refreshed nightly from GitHub</dd>
         <dt>Last refresh</dt>
