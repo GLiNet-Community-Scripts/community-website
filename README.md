@@ -103,6 +103,18 @@ loaded from Google.
 
 ## Assets
 
-- `public/og.png`: the social preview card, rendered once with Playwright.
-  Regenerate it only when the hero copy changes.
-- `public/favicon.svg`: the Wi-Fi mark.
+- `public/og.png` (1200×630): the Open Graph / X card of the site.
+- `social/github-preview.png` (1280×640): upload it under Settings →
+  General → Social preview, so links to this repository get the same card.
+- `public/apple-touch-icon.png` (180×180) and `public/favicon.svg`: the
+  Wi-Fi mark.
+
+The three PNGs are rendered from the real content (the tile grid shows the
+most-starred apps) by `scripts/render-social.mjs`. They are committed, not
+built. Regenerate them after changing the hero copy, or when the top apps
+have shifted:
+
+```sh
+npm i --no-save playwright && npx playwright install chromium
+node scripts/render-social.mjs
+```
