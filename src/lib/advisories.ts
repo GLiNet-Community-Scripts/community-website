@@ -120,7 +120,9 @@ const AdvisorySchema = z.object({
   published: Day,
   updated: Moment,
   banner: z.string().min(1).max(170).optional(),
-  banner_until: Day.optional(),
+  // Active advisories only: the bar disappears after this date (end of day, UTC)
+  // or moment. Fixed ones show a green "Resolved" bar for RESOLVED_HOURS by themselves.
+  banner_until: Moment.optional(),
   cve: z.union([z.literal('requested'), z.array(z.string().regex(/^CVE-\d{4}-\d{4,}$/))]).default([]),
   confirmed: z.enum(keys(CONFIRMED)),
   summary: z.string().min(1),
@@ -209,8 +211,12 @@ export interface Advisory extends AdvisoryInput {
   slug: string;
   url: string;
   active: boolean;
-  /** Banner colour while it is on the home page; null when it isn't. */
+  /** Colour of the advisory: critical/warning while active (by severity), resolved after. */
+  tone: BannerLevel;
+  /** The same while the bar is shown, null when it isn't (expired or never). */
   level: BannerLevel | null;
+  /** When the bar disappears (ISO), null when it stays as long as the advisory is active. */
+  bannerEnds: string | null;
   /** Archive filter bucket. */
   bucket: 'active' | 'fixed' | 'nofix';
   statusLabel: string;
@@ -220,6 +226,9 @@ export interface Advisory extends AdvisoryInput {
 }
 
 const RANK = { critical: 0, high: 1, medium: 2, low: 3 };
+
+/** How long a fixed advisory keeps its green "Resolved" bar after "updated". */
+export const RESOLVED_HOURS = 48;
 
 /** End of a day (UTC) for date-only values, the instant itself otherwise. */
 const until = (s: string) => Date.parse(s) + (s.includes('T') ? 0 : 86_400_000 - 1);
@@ -253,7 +262,9 @@ function readAdvisories(appIds: Set<string>, now: number): Advisory[] {
 
       const status = STATUS[a.status];
       if (status.active && !a.banner) die('an active advisory needs "banner", the one-line text for the top bar');
-      if (status.active && a.banner_until) die('"banner_until" is for fixed advisories only');
+      if (!status.active && a.banner_until) {
+        die(`"banner_until" is for active advisories; a fixed one shows its "Resolved" bar for ${RESOLVED_HOURS} hours after "updated" by itself`);
+      }
       if (a.confirmed !== 'unconfirmed') {
         const wanted = a.confirmed === 'gl-inet-staff' ? ['gl-inet-staff'] : ['gl-inet', 'gl-inet-forum', 'gl-inet-release-notes'];
         if (!a.sources.some((s) => wanted.includes(s.type))) {
@@ -262,13 +273,12 @@ function readAdvisories(appIds: Set<string>, now: number): Advisory[] {
       }
       for (const id of a.apps) if (!appIds.has(id)) die(`apps: unknown app "${id}" (use the id from the app's page anchor)`);
 
-      const level: BannerLevel | null = status.active
-        ? RANK[a.severity] <= RANK.high
-          ? 'critical'
-          : 'warning'
-        : a.banner_until && a.banner && now <= until(a.banner_until)
-          ? 'resolved'
-          : null;
+      // Colour of the advisory everywhere; the bar uses it while it is shown.
+      const tone: BannerLevel = status.active ? (RANK[a.severity] <= RANK.high ? 'critical' : 'warning') : 'resolved';
+      const ends = status.active
+        ? (a.banner_until ? until(a.banner_until) : null)
+        : a.status === 'fixed' ? Date.parse(a.updated) + RESOLVED_HOURS * 3_600_000 : null;
+      const shown = status.active ? ends === null || now <= ends : Boolean(a.banner) && ends !== null && now <= ends;
       const fixable = a.models.filter((m) => !m.eol && m.fixed);
       const fixes = [...new Set(fixable.map((m) => m.fixed!))];
       const fixedIn = a.affected.fixed_in ?? (fixes.length === 1 ? fixes[0] : null);
@@ -280,7 +290,9 @@ function readAdvisories(appIds: Set<string>, now: number): Advisory[] {
         slug,
         url: `/security/${slug}/`,
         active: status.active,
-        level,
+        tone,
+        level: shown ? tone : null,
+        bannerEnds: ends === null ? null : new Date(ends).toISOString(),
         bucket: status.active ? 'active' : a.status === 'no-fix' ? 'nofix' : 'fixed',
         statusLabel: label,
         fixedIn,
@@ -303,11 +315,13 @@ export function loadSecurity(appIds: Set<string>, now = Date.now()) {
   const active = advisories
     .filter((a) => a.active)
     .sort((x, y) => RANK[x.severity] - RANK[y.severity] || Date.parse(y.updated) - Date.parse(x.updated));
-  // The advisory in the bar: the most severe active one, else a recently fixed one.
-  const lead = active[0] ?? advisories.find((a) => a.level === 'resolved') ?? null;
+  // Active advisories whose bar is shown (banner_until not passed)
+  const urgent = active.filter((a) => a.level);
+  // The advisory in the bar: the most severe shown one, else a recently fixed one.
+  const lead = urgent[0] ?? advisories.find((a) => a.level === 'resolved') ?? null;
   const byApp = new Map<string, Advisory>();
-  for (const a of [...active].reverse()) for (const id of a.apps) byApp.set(id, a);
-  return { advisories, active, lead, byApp, notices: readNotices(now) };
+  for (const a of [...urgent].reverse()) for (const id of a.apps) byApp.set(id, a);
+  return { advisories, active, urgent, lead, byApp, notices: readNotices(now) };
 }
 
 export type Security = ReturnType<typeof loadSecurity>;
@@ -334,7 +348,7 @@ export interface Feed {
 
 export function feedItems(security: Security, siteUrl: string): Feed[] {
   const abs = (u: string) => new URL(u, siteUrl).href;
-  const shown = [...security.active, ...security.advisories.filter((a) => a.level === 'resolved')];
+  const shown = [...security.urgent, ...security.advisories.filter((a) => a.level === 'resolved')];
   return [
     ...shown.map((a) => ({
       kind: 'advisory' as const,
@@ -347,7 +361,7 @@ export function feedItems(security: Security, siteUrl: string): Feed[] {
       severity: a.severity,
       status: a.statusLabel,
       exploited: a.exploited,
-      ...(a.banner_until ? { until: a.banner_until } : {}),
+      ...(a.bannerEnds ? { until: a.bannerEnds } : {}),
     })),
     ...security.notices.map((n) => ({
       kind: 'notice' as const,

@@ -17,19 +17,19 @@ interface Props {
 }
 
 const { site, security, page, current } = Astro.props;
-const { lead, active, notices } = security;
+const { lead, urgent: shown, notices } = security;
 const urgent = lead?.active ? lead : null;
 // A recently fixed advisory (banner_until) gets a green bar, dismissible.
 const resolved = !urgent && lead?.level === 'resolved' ? lead : null;
 const resolvedKey = resolved && `resolved-${resolved.id}-${resolved.updated}`;
 const pre = page === 'home' ? '' : '/';
 const here = urgent && current?.id === urgent.id;
-const more = active.length - 1;
+const more = shown.length - 1;
 const pillHref = more > 0 ? '/security/' : here ? '#do' : urgent?.url;
 ---
 
 {urgent && (
-  <div class="alert-bar" data-level={urgent.level} role="region" aria-label="Security advisory">
+  <div class="alert-bar" data-level={urgent.level} data-until={urgent.bannerEnds} role="region" aria-label="Security advisory">
     <div class="container alert-bar-inner">
       <p>
         <Fragment set:html={UI.shield} /><b>{SEVERITY[urgent.severity].label} security advisory:</b> {urgent.banner}
@@ -43,7 +43,7 @@ const pillHref = more > 0 ? '/security/' : here ? '#do' : urgent?.url;
   </div>
 )}
 {resolved && (
-  <div class="alert-bar" data-level="resolved" data-notice={resolvedKey} data-until={`${resolved.banner_until}T23:59:59Z`} role="region" aria-label="Resolved security advisory">
+  <div class="alert-bar" data-level="resolved" data-notice={resolvedKey} data-until={resolved.bannerEnds} role="region" aria-label="Resolved security advisory">
     <div class="container alert-bar-inner has-x">
       <p>
         <Fragment set:html={UI.shieldOk} /><b>Resolved:</b> {resolved.banner}
@@ -64,10 +64,11 @@ const pillHref = more > 0 ? '/security/' : here ? '#do' : urgent?.url;
     </div>
   </div>
 ))}
-{(notices.length > 0 || resolved) && (
+{(notices.length > 0 || resolved || urgent?.bannerEnds) && (
   <script is:inline>
-    // Hide dismissed or expired notices before they paint (the site is rebuilt nightly).
-    document.querySelectorAll('[data-notice]').forEach(function (el) {
+    // Hide expired or dismissed bars before they paint. A job rebuilds the site
+    // within 30 minutes of an expiry; until then this keeps the page right.
+    document.querySelectorAll('.alert-bar[data-until], .alert-bar[data-notice]').forEach(function (el) {
       var gone = Date.parse(el.getAttribute('data-until')) < Date.now();
       try { gone = gone || localStorage.getItem('dismissed:notice:' + el.getAttribute('data-notice')) === '1'; } catch (e) {}
       if (gone) el.hidden = true;
@@ -88,7 +89,7 @@ const pillHref = more > 0 ? '/security/' : here ? '#do' : urgent?.url;
     </a>
     <div class="nav-links">
       {urgent && (
-        <a class="nav-adv keep" data-level={urgent.level} href={pillHref} aria-label={`Security: ${active.length} active advisor${active.length === 1 ? 'y' : 'ies'}`}>
+        <a class="nav-adv keep" data-level={urgent.level} href={pillHref} aria-label={`Security: ${shown.length} active advisor${shown.length === 1 ? 'y' : 'ies'}`}>
           <i></i><Fragment set:html={UI.shield} /><span class="t">Security</span>
         </a>
       )}

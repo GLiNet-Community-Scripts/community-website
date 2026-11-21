@@ -68,9 +68,17 @@ One file drives everything:
   `mitigated`): the red (critical, high) or amber (medium, low) bar on every
   page (its "What to do" link goes to the advisory page), the "Security"
   pill in the navigation, a note in every install sheet and an "Advisory"
-  pill on the cards listed in `apps`;
-- once `fixed`, with `banner_until`: a green "Resolved" bar, dismissible,
-  until that date.
+  pill on the cards listed in `apps`. With `banner_until` the bar (and the
+  rest) ends at that date or moment while the advisory stays active on its
+  page and in the archive;
+- once `fixed`: a green "Resolved" bar for 48 hours after `updated`,
+  dismissible. Give `updated` a time for exactly 48 hours.
+
+Nobody has to remove a bar by hand. `.github/workflows/notices-watch.yml`
+builds the site every 30 minutes without deploying and compares its
+`notices.json` with the deployed one. When a bar's time is up, a notice's
+`from` has come or a change is not deployed yet, it starts the deploy.
+Until then a small script in the page already hides a bar whose time is up.
 
 Ground rules, partly enforced by the build:
 
@@ -91,20 +99,21 @@ Ground rules, partly enforced by the build:
 
 ### Notices for other sites
 
-Everything the site currently shows as a bar or panel (open advisories,
-recently fixed ones with `banner_until`, entries from `notices.yaml`) is
+Everything the site currently shows as a bar (open advisories, fixed ones
+in their first 48 hours, entries from `notices.yaml`) is
 also published for other sites and scripts. [firmware.gl-i.net](https://firmware.gl-i.net/)
 and its terminal menu read it.
 
 - `/notices.json`: `{ version: 1, generated, source, notices: [...] }`, each
   notice with `kind` (`advisory` or `notice`), `id`, `level`
   (`critical`, `warning`, `info` or `resolved`), `text`, `url`, `updated`,
-  and for advisories `title`, `severity`, `status`, `exploited`.
+  `until` when the bar ends on its own, and for advisories `title`,
+  `severity`, `status`, `exploited`.
 - `/notices.tsv`: one line per notice, tab-separated, no header:
   `level  id  updated  url  text`. An empty file means nothing to show.
 
-Both change only with a build of this site (every push to `main` and
-nightly).
+Both change with every build of this site: each push to `main`, nightly,
+and within 30 minutes of a bar's start or end (see above).
 
 "Report privately" on `/security/` uses GitHub's private vulnerability
 reporting (`site.yaml` → `security.report`). Turn it on once under

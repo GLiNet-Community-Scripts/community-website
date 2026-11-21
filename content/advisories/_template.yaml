@@ -36,8 +36,11 @@ published: 2026-11-20
 # readers who dismissed the "Resolved" bar see it again.
 updated: 2026-11-20T18:05Z
 
-# Optional, closed advisories only: show a green "Resolved" bar on every page
-# until this date.
+# Optional, active advisories only: end the bar (and the "Security" pill and
+# install sheet notes) at this date (end of day, UTC) or moment. The advisory
+# stays active on its page and in the archive. Without it, the bar stays as
+# long as the advisory is active. Once "fixed", the green "Resolved" bar shows
+# for 48 hours after "updated" by itself; give "updated" a time for that.
 # banner_until: 2026-12-15
 
 # [] when there is none (most issues), "requested", or [CVE-2026-1234].
@@ -51,9 +54,9 @@ cve: []
 #   unconfirmed     user or researcher reports we checked ourselves
 confirmed: gl-inet-public
 
-# Required while active, max. 170 characters: the text in the top bar and on
-# the collapsed panel. For a closed advisory with banner_until, the text of
-# the "resolved" line.
+# Required while active, max. 170 characters: the text of the bar. Once
+# "fixed", the text of the green "Resolved" bar: say what was fixed and
+# whether anyone still has to do something.
 banner: >-
   One or two sentences: what happened and the single most important thing
   to do.

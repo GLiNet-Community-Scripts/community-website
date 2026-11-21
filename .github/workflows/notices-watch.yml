@@ -1,0 +1,49 @@
+name: Check notices
+
+# Every 30 minutes: build the site without deploying it and compare its
+# notices.json with the deployed one. When a bar's time is up (banner_until,
+# the 48 hours of a "Resolved" bar, a notice's until) or a notice's "from" has
+# come, they differ and the full deploy runs. firmware.gl-i.net picks the
+# change up with its own check a few minutes later.
+
+on:
+  schedule:
+    - cron: '2,32 * * * *' # before the check of firmware.gl-i.net at :07 and :37
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write # start the deploy workflow
+
+concurrency:
+  group: notices-watch
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Without the GitHub data (prebuild): the notices don't depend on it.
+      - run: npx astro build
+      - id: compare
+        run: node scripts/check-notices.mjs
+      - name: Deploy
+        if: steps.compare.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          busy=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow deploy.yml --limit 10 \
+                   --json status --jq '[.[] | select(.status != "completed")] | length')
+          if [ "$busy" -gt 0 ]; then
+            echo "A deploy is already queued or running."
+            exit 0
+          fi
+          gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY" --ref main
+          echo "::notice::Notices changed, deploy started."

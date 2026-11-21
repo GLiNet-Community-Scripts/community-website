@@ -23,7 +23,7 @@ const older = advisories[i + 1];
 const apps = a.apps.map((id) => [...tools, ...official].find((x) => x.id === id)!);
 const paragraphs = (a.details ?? '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 const url = new URL(a.url, site.url).href;
-const level = a.level ?? (a.active ? 'warning' : 'resolved');
+const level = a.tone;
 const cve = a.cve === 'requested' ? 'Requested' : a.cve.length === 0 ? 'None assigned' : null;
 // Community notes to read before acting on "Do this now".
 const before = a.community?.notes.filter((n) => n.before) ?? [];

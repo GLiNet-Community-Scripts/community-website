@@ -61,7 +61,7 @@ const day = (d: string) => new Date(d).getUTCDate();
           <p class="sa-none"><Fragment set:html={UI.okCircle} /><span><b>No open advisories right now.</b> Anything new appears here, in the banner on every page and in the RSS feed.</span></p>
         ) : active.map((a) => (
           <div class="sa-active">
-            <article class="adv" data-level={a.level} aria-labelledby={`a-${a.slug}`}>
+            <article class="adv" data-level={a.tone} aria-labelledby={`a-${a.slug}`}>
               <div class="adv-head">
                 <span class="tile lg adv-tile" aria-hidden="true" set:html={UI.shield} />
                 <div class="adv-titles">
