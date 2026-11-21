@@ -89,6 +89,23 @@ Ground rules, partly enforced by the build:
 - Bump `updated` with every change. The RSS feed shows the advisory again,
   and readers who hid the home page panel see it again.
 
+### Notices for other sites
+
+Everything the site currently shows as a bar or panel (open advisories,
+recently fixed ones with `banner_until`, entries from `notices.yaml`) is
+also published for other sites and scripts. [firmware.gl-i.net](https://firmware.gl-i.net/)
+and its terminal menu read it.
+
+- `/notices.json`: `{ version: 1, generated, source, notices: [...] }`, each
+  notice with `kind` (`advisory` or `notice`), `id`, `level`
+  (`critical`, `warning`, `info` or `resolved`), `text`, `url`, `updated`,
+  and for advisories `title`, `severity`, `status`, `exploited`.
+- `/notices.tsv`: one line per notice, tab-separated, no header:
+  `level  id  updated  url  text`. An empty file means nothing to show.
+
+Both change only with a build of this site (every push to `main` and
+nightly).
+
 "Report privately" on `/security/` uses GitHub's private vulnerability
 reporting (`site.yaml` → `security.report`). Turn it on once under
 **Settings → Code security → Private vulnerability reporting**.

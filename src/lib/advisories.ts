@@ -301,3 +301,52 @@ export function loadSecurity(appIds: Set<string>, now = Date.now()) {
 }
 
 export type Security = ReturnType<typeof loadSecurity>;
+
+/*
+ * Everything that is currently shown as a bar or panel, for other sites and
+ * scripts (firmware.gl-i.net, its terminal menu): /notices.json and
+ * /notices.tsv. Active advisories first (most severe first), then recently
+ * fixed ones, then short notices.
+ */
+export interface Feed {
+  kind: 'advisory' | 'notice';
+  id: string;
+  level: BannerLevel | Notice['level'];
+  text: string;
+  url: string;
+  updated: string;
+  title?: string;
+  severity?: Advisory['severity'];
+  status?: string;
+  exploited?: boolean;
+  until?: string;
+}
+
+export function feedItems(security: Security, siteUrl: string): Feed[] {
+  const abs = (u: string) => new URL(u, siteUrl).href;
+  const shown = [...security.active, ...security.advisories.filter((a) => a.level === 'resolved')];
+  return [
+    ...shown.map((a) => ({
+      kind: 'advisory' as const,
+      id: a.id,
+      level: a.level!,
+      text: a.banner!,
+      url: abs(a.url),
+      updated: a.updated,
+      title: a.title,
+      severity: a.severity,
+      status: a.statusLabel,
+      exploited: a.exploited,
+      ...(a.banner_until ? { until: a.banner_until } : {}),
+    })),
+    ...security.notices.map((n) => ({
+      kind: 'notice' as const,
+      id: n.id,
+      level: n.level,
+      text: n.text,
+      url: n.link?.url ?? abs('/security/'),
+      updated: n.from ?? n.until,
+      until: n.until,
+    })),
+  ];
+}
