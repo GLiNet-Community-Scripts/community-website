@@ -7,7 +7,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-21T16:15Z
+updated: 2026-11-21T16:35Z
 cve: []
 confirmed: gl-inet-public
 
@@ -63,9 +63,10 @@ check:
   - title: GL.iNet's first check
     text: >-
       If the output contains "crond -i /tmp/.log", the router is under attack
-      according to GL.iNet. The line with "grep tmp" is the check itself.
-      GL.iNet staff has since said that a clean result here is not enough, so
-      run the other checks too.
+      according to GL.iNet. A line with "cat /tmp/f" is the remote shell that
+      users reported, so it is a hit as well. The line with "grep tmp" is the
+      check itself. GL.iNet staff has since said that a clean result here is
+      not enough, so run the other checks too.
     command: ps | grep tmp
   - title: The same in the admin panel
     menu: [System, Advanced Settings, LuCI, Status, Processes]
@@ -84,6 +85,13 @@ check:
       No output is the good result. nc, netcat, socat, "/bin/sh -i" or mkfifo
       in the output need a closer look.
     command: ps ww | grep -E '[n]c |[n]etcat|[s]ocat|[/]bin/sh -i|[m]kfifo'
+  - title: The shell's pipe
+    text: >-
+      A user who had the remote shell reports that its pipe /tmp/f stays after
+      the shell was stopped and only goes away at a restart. If the line
+      starts with "p", the shell has run since the last restart. "No such
+      file" is the good result.
+    command: ls -la /tmp/f
 
 details: |
   On 20 November 2026 GL.iNet identified a vulnerability in its cloud remote management services. According to GL.iNet, an unauthorized party exploited it to access a subset of GL.iNet routers and KVM devices and to install malicious software on them.
@@ -96,10 +104,17 @@ details: |
 
   If you find such a remote shell, GL.iNet staff says: save the output of "ps ww" and "netstat -tnp", stop the process with "kill -TERM" and its PID (then "kill -KILL" if it is still there), and check that the connection is gone. Don't stop processes you know, such as dropbear or tailscaled. Stopping the shell ends only that session. Treat the router as compromised, disconnect it from the internet, keep the evidence and follow GL.iNet's remediation instructions, which staff says are still to come.
 
+  By the afternoon of 21 November, three users in that thread had reported the same remote shell, all on a GL-AXT1800 with firmware 4.8.3 and all connected to 170.39.226.219, on a different port each time. Two of them measured when it started: about 21:40 UTC on 20 November. One of the three found none of it on disk afterwards, and another reports that it was gone after a restart. So a router that has been restarted or updated since 20 November can pass every check of running processes even if it was hit.
+
+  The third user also looked for the cause. According to their analysis, the GoodCloud client on the router (package gl-sdk4-cloud) has a handler for an AstroWarp / SD-WAN command from the cloud that puts an address from the cloud message into an iptables command without checking it, so a crafted address runs as a command. They report that the handler also runs when AstroWarp is switched off, and that it is the same in firmware 4.8.4. This is one user's analysis. GL.iNet has not confirmed it.
+
+  That user's advice after a hit: treat every secret stored on the router as exposed, including VPN keys and configurations, Wi-Fi passwords and the admin password.
+
   GL.iNet will email affected customers individually, at the address of their cloud account, with guidance for their devices. If you are not sure whether your device is affected, contact GL.iNet support; they will help you check it. GL.iNet says it will update its notice as new information becomes available.
 
 unknowns:
-  - Which models and firmware versions were affected. GL.iNet has not published a list.
+  - Which models and firmware versions were affected. GL.iNet has not published a list. The user reports so far all concern the GL-AXT1800 with firmware 4.8.3.
+  - Whether the cause one user found, a handler in the GoodCloud client on the router, is right, and which firmware versions contain it. GL.iNet has not commented.
   - What the malicious software does. GL.iNet has named one sign, a running process, but no technical details.
   - How to tell whether a router was compromised earlier or has something on it that starts the malware again. GL.iNet staff says the checks so far can't show that.
   - Whether a factory reset is enough or the bootloader (U-Boot) has to be flashed again. GL.iNet staff has raised the question.
@@ -110,6 +125,7 @@ unknowns:
   - Whether to keep using cloud remote management until then. The notice doesn't say.
 
 timeline:
+  - { at: 2026-11-21T16:15Z, text: "A third user reports the same remote shell on a GL-AXT1800 and traces it to a handler in the GoodCloud client on the router. Not confirmed by GL.iNet.", tag: Community }
   - { at: 2026-11-21T16:10Z, text: "GL.iNet staff says in the forum that the first check is not enough, adds checks for open connections and processes, and says what to do when a remote shell is found." }
   - { at: 2026-11-21T13:56Z, text: "GL.iNet posts a quick check for routers in its forum: look for a running process \"crond -i /tmp/.log\"." }
   - { at: 2026-11-21T13:27Z, text: "A community member publishes a script that checks devices for the known malware files.", tag: Community }
@@ -142,7 +158,7 @@ sources:
   - type: community
     label: User reports in the same forum thread
     url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070
-    note: Two users report a remote shell on a GL-AXT1800 with firmware 4.8.3 that connects to 170.39.226.219.
+    note: Three users report a remote shell on a GL-AXT1800 with firmware 4.8.3 that connects to 170.39.226.219. One of them describes the cause and what the shell left behind.
     date: 2026-11-21
 
 contacts:

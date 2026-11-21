@@ -112,7 +112,8 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           It also runs <a href={`${advisory.url}#check`}>GL.iNet’s quick check</a> for a running process
           <code>crond -i /tmp/.log</code>, and looks for the remote shell that users reported in GL.iNet’s forum: a
           process that uses <code>/tmp/f</code> and connects to <code>170.39.226.219</code>. GL.iNet staff says to
-          treat a router with such a shell as compromised. The further checks staff recommends are included:
+          treat a router with such a shell as compromised. The pipe <code>/tmp/f</code> counts too: it stays after
+          the shell was stopped, until the next restart. The further checks staff recommends are included:
           processes such as <code>nc</code>, <code>socat</code> or <code>/bin/sh -i</code>, and connections held by a
           shell.
         </p>
