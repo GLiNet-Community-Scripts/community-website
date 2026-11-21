@@ -25,6 +25,8 @@ const paragraphs = (a.details ?? '').split(/\n\s*\n/).map((p) => p.trim()).filte
 const url = new URL(a.url, site.url).href;
 const level = a.level ?? (a.active ? 'warning' : 'resolved');
 const cve = a.cve === 'requested' ? 'Requested' : a.cve.length === 0 ? 'None assigned' : null;
+// Community notes to read before acting on "Do this now".
+const before = a.community?.notes.filter((n) => n.before) ?? [];
 const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': 'By GL.iNet staff', unconfirmed: 'Not yet' }[a.confirmed];
 ---
 
@@ -63,6 +65,9 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
 
       <section id="do" class="do-box" aria-labelledby="h-do">
         <h2 id="h-do">{a.active ? 'Do this now' : 'What to do'}</h2>
+        {before.map((n) => (
+          <p class="do-before"><b>Before you start:</b> {n.before} <a href="#community">Read our note first&nbsp;↓</a></p>
+        ))}
         <div class:list={['do-cols', { two: a.actions.length > 1 }]}>
           {a.actions.map((g) => (
             <div>

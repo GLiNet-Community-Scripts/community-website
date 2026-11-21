@@ -130,12 +130,16 @@ apps: []
 
 # Optional: our own view as the community team, in a separate box right
 # after "Do this now", e.g. where GL.iNet's advice needs care in some setups.
-# The first title also appears on the home page panel (max. 90 characters).
+# The first title also appears on the home page panel (max. 90 characters),
+# unless a note has "before": then that line sits above the steps instead.
 # Keep it clearly ours: no claims on GL.iNet's behalf.
 # community:
 #   date: 2026-11-21
 #   notes:
 #     - title: In a business network, talk to your cyber insurer before you reset
+#       # Optional: one line at the top of "Do this now", before the steps,
+#       # when people should read this note before they act (max. 160 characters).
+#       before: A reset destroys logs that your insurer may need.
 #       text: |
 #         First paragraph.
 #

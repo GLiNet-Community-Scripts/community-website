@@ -176,7 +176,17 @@ const AdvisorySchema = z.object({
   community: z
     .object({
       date: Day,
-      notes: z.array(z.object({ title: z.string().min(1).max(90), text: z.string().min(1) })).min(1),
+      notes: z
+        .array(
+          z.object({
+            title: z.string().min(1).max(90),
+            text: z.string().min(1),
+            // Optional one-liner shown at the top of "Do this now", before the steps,
+            // when people should read this note before they act.
+            before: z.string().min(1).max(160).optional(),
+          }),
+        )
+        .min(1),
     })
     .optional(),
 });

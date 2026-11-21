@@ -104,6 +104,9 @@ community:
   date: 2026-11-21
   notes:
     - title: In a business network, talk to your cyber insurer before you reset
+      before: >-
+        Running these devices in a business network? A reset destroys logs that
+        your insurer or investigators may need.
       text: |
         A factory reset wipes the device, and with it the logs that could show how and since when someone had access. On GL.iNet routers the system log is kept in memory by default, so even a restart clears it.
 

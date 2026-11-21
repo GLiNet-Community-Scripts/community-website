@@ -20,6 +20,8 @@ interface Props {
 const { advisory: a, more } = Astro.props;
 const key = `${a.id}@${a.updated}`;
 const statement = a.sources.find((s) => s.type.startsWith('gl-inet') && s.url);
+// Community notes to read before acting on the steps; other notes get a line after them.
+const before = a.community?.notes.filter((n) => n.before) ?? [];
 ---
 
 <div class="container adv-wrap">
@@ -51,6 +53,9 @@ const statement = a.sources.find((s) => s.type.startsWith('gl-inet') && s.url);
         <p class="adv-lead">{a.summary}</p>
         <div class="adv-do">
           <h3>What to do now</h3>
+          {before.map((n) => (
+            <p class="do-before"><b>Before you start:</b> {n.before} <a href={`${a.url}#community`}>Read our note first</a></p>
+          ))}
           <div class:list={['adv-do-cols', { two: a.actions.length > 1 }]}>
             {a.actions.map((g) => (
               <div>
@@ -60,7 +65,7 @@ const statement = a.sources.find((s) => s.type.startsWith('gl-inet') && s.url);
             ))}
           </div>
         </div>
-        {a.community && (
+        {a.community && before.length === 0 && (
           <p class="adv-community">
             <b>Community note:</b> {a.community.notes[0].title}.{' '}
             <a href={`${a.url}#community`}>Read our view</a>
