@@ -1,0 +1,101 @@
+# GL.iNet security notice of 20 November 2026: cloud remote management
+# (GoodCloud), routers and KVM devices. Based only on GL.iNet's notice on its
+# blog and the same notice in the GL.iNet forum.
+id: CSA-2026-01
+title: Cloud remote management flaw used to install malware on routers and KVM devices
+severity: critical
+exploited: true
+status: investigating
+published: 2026-11-21
+updated: 2026-11-21
+cve: []
+confirmed: gl-inet-public
+
+banner: >-
+  An attacker used a flaw in GL.iNet's cloud remote management to install
+  malware on some routers and KVM devices. GL.iNet recommends a factory reset.
+
+summary: >-
+  An unauthorized party used a vulnerability in GL.iNet's cloud remote
+  management (GoodCloud) to access some GL.iNet routers and KVM devices and
+  install malicious software on them. GL.iNet says it closed the
+  vulnerability and is preparing firmware with additional protections. It
+  recommends a factory reset of routers and KVM devices, and a check of any
+  computer connected to a KVM device.
+
+affected:
+  summary: >-
+    A subset of GL.iNet routers and KVM devices, reached through GL.iNet's
+    cloud remote management. GL.iNet has not published which models or
+    firmware versions; it is emailing affected customers individually.
+  products: [Routers, KVM devices (Comet)]
+  firmware: Not published
+
+actions:
+  - audience: KVM devices (Comet)
+    steps:
+      - title: Reset the KVM to factory settings
+        text: >-
+          With the device powered on, hold the Reset button for about 10
+          seconds, release it and set the device up again.
+        link: { label: Reset guide, url: https://docs.gl-inet.com/kvm/en/faq/factory_reset/ }
+      - title: Check the computer connected to the KVM
+        text: >-
+          Look for programs, browser extensions or accounts you don't know,
+          unexpected startup items or scheduled tasks, changed settings and
+          unusual network activity.
+      - title: Scan that computer with up-to-date security software
+        text: >-
+          If anything looks suspicious, change the passwords of the accounts
+          used on it and contact GL.iNet support.
+      - title: Install the updated firmware once GL.iNet releases it
+  - audience: Routers
+    steps:
+      - title: Reset the router to factory settings
+        text: >-
+          After the router has fully started, hold the Reset button for 10
+          seconds, release it and set the router up again. This erases your
+          settings and installed apps.
+        link: { label: Reset guide, url: "https://docs.gl-inet.com/router/en/4/faq/repair_network_or_reset_firmware/#reset-to-factory" }
+      - title: Install the updated firmware once GL.iNet releases it
+
+details: |
+  On 20 November 2026 GL.iNet identified a vulnerability in its cloud remote management services. According to GL.iNet, an unauthorized party exploited it to access a subset of GL.iNet routers and KVM devices and to install malicious software on them.
+
+  GL.iNet says it closed the vulnerability in its cloud services right after discovering it and applied corrective measures to the affected devices. It is preparing a firmware release with additional security protections and will publish it as soon as possible. Its investigation into the full scope is ongoing, including any effect on computers connected to affected KVM devices.
+
+  GL.iNet will email affected customers individually, at the address of their cloud account, with guidance for their devices. If you are not sure whether your device is affected, contact GL.iNet support; they will help you check it. GL.iNet says it will update its notice as new information becomes available.
+
+unknowns:
+  - Which models and firmware versions were affected. GL.iNet has not published a list.
+  - What the malicious software does. GL.iNet has not published technical details or signs to look for on a device.
+  - Whether data such as cloud account details or passwords was exposed. The notice doesn't say.
+  - Whether computers connected to affected KVM devices were affected. GL.iNet is still investigating.
+  - When the updated firmware comes out, and for which models.
+  - Whether to keep using cloud remote management until then. The notice doesn't say.
+
+timeline:
+  - { at: 2026-11-21T04:25Z, text: GL.iNet updates its notice. It doesn't say what changed. }
+  - { at: 2026-11-20, text: GL.iNet publishes a security notice on its blog and in its forum. }
+  - { at: 2026-11-20, text: "GL.iNet identifies the vulnerability, closes it in its cloud services and applies corrective measures to affected devices." }
+
+sources:
+  - type: gl-inet
+    label: GL.iNet Security Notice 2026-11-20
+    url: https://www.gl-inet.com/blogs/blog/glinet-security-notice-2026-11-20
+    note: GL.iNet's official notice on its blog. Last updated 21 Nov 2026, 04:25 UTC.
+    date: 2026-11-20
+  - type: gl-inet-forum
+    label: "2026-11-20: GL.iNet Security Notice – GoodCloud / KVM / Routers"
+    url: https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056
+    note: The same notice, posted by the GL.iNet Security Team in the official forum.
+    date: 2026-11-20
+
+contacts:
+  - { label: Is my device affected?, email: support@gl-inet.com }
+  - { label: Report a security issue, email: security@gl-inet.com }
+
+apps_note: >-
+  None of the community apps on this site are named in GL.iNet's notice. A
+  factory reset removes installed apps and their settings, so re-run their
+  installers afterwards.
