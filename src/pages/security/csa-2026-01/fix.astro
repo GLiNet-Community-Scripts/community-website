@@ -91,6 +91,19 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
         <p class="adv-fine">On an infected KVM device the malware replaces <code>netstat</code>, so its output may not be trustworthy. The script never calls it and reads the connections from the system directly.</p>
       </section>
 
+      <section id="share" aria-labelledby="h-share">
+        <h2 id="h-share">Help us see who was hit</h2>
+        <p>
+          When the script finds something, it offers to send a short anonymous report to the community. It shows the
+          report first and sends it only after you answer <code>y</code>. With <code>--no-report</code> it never asks.
+        </p>
+        <p>
+          The report says which model and firmware version the device has, when it was checked, which known traces
+          were found and, for the reported remote shell, when it started and which port it used. It contains no host
+          name, no address or key of the device and no file. The sender’s address is not stored.
+        </p>
+      </section>
+
       <section id="report" aria-labelledby="h-report">
         <h2 id="h-report">Reading the report</h2>
         <div class="sa-table-wrap fix-table">
