@@ -14,6 +14,7 @@ const { site, generatedAt, security } = loadContent();
 const advisory = security.advisories.find((a) => a.id === 'CSA-2026-01')!;
 const url = new URL(`${advisory.url}fix/`, site.url).href;
 const repo = 'https://github.com/admonstrator/glinet-csa-2026-01';
+const rth = 'https://github.com/RemoteToHome-io/gl-security-incident-2026';
 const steps = [
   {
     title: 'Check',
@@ -71,7 +72,8 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
         <h2 id="h-warn">Read this first</h2>
         <ul>
           <li><b>This is community work, not a GL.iNet tool.</b> GL.iNet has not reviewed or endorsed it. Use it at your own risk.</li>
-          <li><b>It does not replace a factory reset.</b> GL.iNet recommends a reset. The script finds and removes only the traces we know of.</li>
+          <li><b>Run it before you restart, reset or update the device.</b> Some traces exist only until the next restart, and the KVM firmware 1.10.2 for the RM1PE deletes the malware’s files at boot without keeping a copy.</li>
+          <li><b>It does not replace a factory reset or GL.iNet’s security firmware.</b> The script finds and removes only the traces we know of.</li>
           <li><b>In a business network, wait.</b> Talk to your cyber insurer or incident response provider before you change or reset the device. <a href={`${advisory.url}#community`}>Why</a></li>
         </ul>
       </section>
@@ -88,7 +90,7 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
             </li>
           ))}
         </ol>
-        <p class="adv-fine">On an infected KVM device the malware replaces <code>netstat</code>, so its output may not be trustworthy. The script never calls it and reads the connections from the system directly.</p>
+        <p class="adv-fine">On an infected device <code>netstat</code> can be replaced, and GL.iNet staff says that running the replacement starts the malware. The script never calls it and reads the connections from the system directly.</p>
       </section>
 
       <section id="share" aria-labelledby="h-share">
@@ -137,8 +139,9 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
         <ul class="unknowns">{markers.map((m) => <li><code>{m}</code></li>)}</ul>
         <p>
           It also runs <a href={`${advisory.url}#check`}>GL.iNet’s quick check</a> for a running process
-          <code>crond -i /tmp/.log</code>, and looks for the remote shell that users reported in GL.iNet’s forum: a
-          process that uses <code>/tmp/f</code> and connects to <code>170.39.226.219</code>. GL.iNet staff says to
+          <code>crond -i /tmp/.log</code>, and looks for the remote shell that forum users and RemoteToHome Consulting
+          found on GL-AXT1800 routers: a process that uses <code>/tmp/f</code> and connects to
+          <code>170.39.226.219</code>. GL.iNet staff says to
           treat a router with such a shell as compromised. The pipe <code>/tmp/f</code> counts too: it stays after
           the shell was stopped, until the next restart. The script also runs the further checks staff recommends:
           processes such as <code>nc</code>, <code>socat</code> or <code>/bin/sh -i</code>, and connections held by a
@@ -165,11 +168,17 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
         <h2 id="h-after">Afterwards</h2>
         <ul class="unknowns">
           <li>Keep the evidence archive.</li>
-          <li>KVM: update to the fixed firmware.</li>
+          <li>KVM: install GL.iNet’s security firmware. Only the 1.10.2 build for the RM1PE removes the malware’s files by itself; the builds for the RM1 and RM1V2 do not.</li>
           <li>Router: update <b>without keeping settings</b>. The malware hides in <code>/etc/config</code>, which an update with kept settings preserves.</li>
           <li>A factory reset wipes everything the malware could have written and is the safe option on both.</li>
           <li>Check the computer attached to a KVM, and the devices behind a router.</li>
           <li>Change the device password, your GL.iNet cloud account password and your SSH keys.</li>
+          <li>
+            If the device was hit, everything it held a key for is exposed too. Remove the router’s VPN profile on the
+            server or with the VPN provider and create a new one, and remove the router’s SSH keys from every machine
+            that trusts them. <a href={`${rth}#if-you-find-something`}>RemoteToHome’s recovery steps&nbsp;↗</a>
+          </li>
+          <li>KVM: after an update that keeps settings, the password, the SSH keys and everything under <code>/etc/kvmd/user</code> are still the old ones. Change them and look for keys and scripts you did not add.</li>
         </ul>
       </section>
 
@@ -177,6 +186,7 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
         <h2 id="h-more">More</h2>
         <ul class="sources">
           <li><a href={advisory.url}>Advisory {advisory.id}</a><p>What happened and what GL.iNet recommends</p></li>
+          <li><a href={rth}>RemoteToHome’s findings on the incident&nbsp;↗</a><p>How the remote shell got in, what the KVM firmware does, and how to recover a device</p></li>
           <li><a href={repo}>Source code and README on GitHub&nbsp;↗</a><p>All options, the script for running it from your computer, tests and limits</p></li>
           <li><a href={`${repo}/issues`}>Report a problem&nbsp;↗</a><p>Bugs and false alarms. Never attach an evidence archive.</p></li>
         </ul>
@@ -185,6 +195,12 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
       <p class="adv-fine sa-fine">
         Written by <a href="https://github.com/Admonstrator">Admon</a> for the community, not by GL.iNet. Provided as-is
         under the MIT licence, without any warranty. Get firmware only from GL.iNet.
+      </p>
+      <p class="adv-fine">
+        Thanks to <a href="https://remotetohome.io">RemoteToHome Consulting</a> for the analysis of the remote shell
+        and of the KVM firmware, for the recovery steps and for how to read the firmware build, to the forum users
+        kosrkosr and TakashiSasaki for the first reports of the shell, to AdamK for the connection checks, and to
+        everyone who sent a report or posted their output.
       </p>
 
       <nav class="sa-pager" aria-label="Back">
