@@ -34,6 +34,27 @@ affected:
     with firmware 4.8.3.
   products: [Routers, KVM devices (Comet)]
   firmware: Not published
+  # From a post by GL.iNet staff in the forum: where traces were reported,
+  # not a list of affected devices.
+  reported:
+    as_of: 2026-11-21T18:45Z
+    source:
+      label: GL.iNet staff in the forum
+      url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070/55
+    models:
+      - { name: Flint 3, sku: GL-BE9300, kind: Router, firmware: [4.10.1] }
+      - { name: Flint 2, sku: GL-MT6000, kind: Router, firmware: [4.8.3, 4.9.0] }
+      - { name: Brume 3, sku: GL-MT5000, kind: Router, firmware: [4.9.0] }
+      - { name: Beryl AX, sku: GL-MT3000, kind: Router, firmware: [4.8.0, 4.8.1] }
+      - { name: Brume 2, sku: GL-MT2500, kind: Router, firmware: [4.7.4, 4.7.13] }
+      - { name: Slate AX, sku: GL-AXT1800, kind: Router, firmware: [4.8.3] }
+      - { name: Mudi 7, sku: GL-E5800, kind: Router, firmware: [4.10.3] }
+      - { name: Spitz AX, sku: GL-X3000, kind: Router, firmware: [4.7.4] }
+      - { name: Comet, sku: GL-RM1, kind: KVM, firmware: [] }
+    note: |
+      This is where traces have been reported so far, collected by GL.iNet staff from user reports and from anonymous reports of the community script. If your model or firmware isn't listed, that does not mean it is unaffected.
+
+      According to GL.iNet staff, what matters most is whether GoodCloud was enabled and connected during the attack, not which firmware version the device ran. A device that was powered off throughout could not receive the malicious command. The firmware still matters because the code that handles the command is on the device, and staff does not know yet which router firmware, if any, contains the fix.
 
 # GL.iNet's steps, from its notice as last updated on 21 November 2026.
 actions:

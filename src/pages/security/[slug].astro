@@ -152,6 +152,30 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
             {a.affected.not_affected && <Fragment>{' '}<span>Not affected: {a.affected.not_affected}</span></Fragment>}
           </p>
         )}
+        {a.affected.reported && (
+          <Fragment>
+            <h3 class="sa-h3">Where traces have been reported</h3>
+            <p class="adv-refs">
+              <span>As of {when(a.affected.reported.as_of)}</span>{' '}
+              <span>{a.affected.reported.models.length} models</span>{' '}
+              <span>Source: <a href={a.affected.reported.source.url}>{a.affected.reported.source.label}&nbsp;↗</a></span>
+            </p>
+            <div class="sa-table-wrap">
+              <table class="rep-table">
+                <thead><tr><th>Model</th><th>Firmware with reported traces</th></tr></thead>
+                <tbody>
+                  {a.affected.reported.models.map((m) => (
+                    <tr>
+                      <td><b>{m.name}</b><small>{[m.sku, m.kind].filter(Boolean).join(' · ')}</small></td>
+                      <td>{m.firmware.length ? m.firmware.map((f) => <span class="fw-chip">{f}</span>) : <span class="fw-none">Firmware not known</span>}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {a.affected.reported.note && a.affected.reported.note.split(/\n\s*\n/).map((p) => <p>{p.trim()}</p>)}
+          </Fragment>
+        )}
         {a.models.length > 0 && (
           <div class="sa-table-wrap">
             <table class="sa-table">

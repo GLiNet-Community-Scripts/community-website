@@ -132,6 +132,16 @@ const AdvisorySchema = z.object({
     firmware: z.string().min(1).optional(),
     fixed_in: z.string().min(1).optional(),
     not_affected: z.string().min(1).optional(),
+    // Optional: models and firmware versions on which traces were reported.
+    // Not a list of affected devices: say so in "note". Needs a time and a source.
+    reported: z
+      .object({
+        as_of: Moment,
+        source: z.object({ label: z.string().min(1), url: Https }),
+        note: z.string().min(1).optional(),
+        models: z.array(z.object({ name: z.string().min(1), sku: z.string().min(1).optional(), kind: z.string().min(1).optional(), firmware: z.array(z.string().min(1)).default([]) })).min(1),
+      })
+      .optional(),
   }),
   models: z
     .array(
