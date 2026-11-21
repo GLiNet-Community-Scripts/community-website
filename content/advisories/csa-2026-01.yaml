@@ -20,8 +20,8 @@ summary: >-
   management (GoodCloud) to access some GL.iNet routers and KVM devices and
   install malicious software on them. GL.iNet says it closed the
   vulnerability and is preparing firmware with additional protections. It
-  recommends a factory reset of routers and KVM devices, and a check of any
-  computer connected to a KVM device.
+  recommends resetting routers and KVM devices to factory settings and
+  checking any computer connected to a KVM device.
 
 affected:
   summary: >-
@@ -96,7 +96,7 @@ check:
 details: |
   On 20 November 2026 GL.iNet identified a vulnerability in its cloud remote management services. According to GL.iNet, an unauthorized party exploited it to access a subset of GL.iNet routers and KVM devices and to install malicious software on them.
 
-  GL.iNet says it closed the vulnerability in its cloud services right after discovering it and applied corrective measures to the affected devices. It is preparing a firmware release with additional security protections and will publish it as soon as possible. Its investigation into the full scope is ongoing, including any effect on computers connected to affected KVM devices.
+  GL.iNet says it closed the vulnerability in its cloud services right after discovering it and applied corrective measures to the affected devices. It is preparing a firmware release with additional security protections and will publish it as soon as possible. It is still investigating the full scope, including any effect on computers connected to affected KVM devices.
 
   On 21 November GL.iNet posted a quick check for routers in its forum: a router is under attack when a process "crond -i /tmp/.log" is running. If you find it, or are not sure, GL.iNet asks you to contact support@gl-inet.com or security@gl-inet.com.
 
@@ -173,7 +173,7 @@ apps_note: >-
 community_fix:
   title: The community built a script that also checks the files on a device
   text: |
-    GL.iNet's checks look at what is running right now. The community has reacted with a script by Admon that runs the same checks and also looks at the files on a GL.iNet router or KVM device: the ones this malware is known to leave behind, including the entries that would start it again after a restart. It can save evidence from the device first and, if you ask it to, remove what it found.
+    GL.iNet's checks look at what is running right now. A community script by Admon runs the same checks and also looks at the files on a GL.iNet router or KVM device: the ones this malware is known to leave behind, including the entries that would start it again after a restart. It can save evidence from the device first and, if you ask it to, remove what it found.
   caveat: >-
     Community work, not a GL.iNet tool. GL.iNet has not reviewed or endorsed
     it. The script knows only the known traces, so a clean result does not
@@ -187,10 +187,10 @@ community:
   notes:
     - title: In a business network, talk to your cyber insurer before you reset
       before: >-
-        Running these devices in a business network? A reset destroys logs that
-        your insurer or investigators may need.
+        In a business network, a reset destroys logs that your insurer or
+        investigators may need.
       text: |
-        A factory reset wipes the device, and with it the logs that could show how and since when someone had access. On GL.iNet routers the system log is kept in memory by default, so even a restart clears it.
+        A factory reset wipes the device, and with it the logs that could show how someone got access and when it started. On GL.iNet routers the system log is kept in memory by default, so even a restart clears it.
 
         If the device runs in a business network and you have cyber insurance or an incident response provider, contact them before you reset it. They may want logs and configuration secured first, and many policies expect you to report an incident before you change affected systems. Until then, disconnect the device from the internet instead of resetting it.
     - title: On a KVM device, don't rely on netstat

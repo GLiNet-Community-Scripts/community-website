@@ -17,12 +17,12 @@ const repo = 'https://github.com/admonstrator/glinet-csa-2026-01';
 const steps = [
   {
     title: 'Check',
-    text: 'Reads only and prints a report. Nothing is changed.',
+    text: 'Only reads and prints a report. It changes nothing.',
     command: 'wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh',
   },
   {
     title: 'Save the evidence',
-    text: 'Writes an archive to /tmp. That is RAM: copy it to your computer before you reboot. It contains your configuration, possibly with Wi-Fi and VPN keys, so don’t post it anywhere.',
+    text: 'Writes an archive to /tmp, which is in RAM, so copy it to your computer before you reboot. It contains your configuration, possibly with Wi-Fi and VPN keys, so don’t post it anywhere.',
     command: 'sh gl-helper-triage.sh --archive',
   },
   {
@@ -94,7 +94,7 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
       <section id="share" aria-labelledby="h-share">
         <h2 id="h-share">Help us see who was hit</h2>
         <p>
-          At the end the script offers to send a short anonymous report to the community, also when it found
+          At the end the script offers to send a short anonymous report to the community, even when it found
           nothing: reports from clean devices show which models and firmware versions were not hit. It says what the
           report contains and sends it only after you answer <code>y</code>; <code>v</code> shows the complete report
           first. With <code>--no-report</code> it never asks.
@@ -140,7 +140,7 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           <code>crond -i /tmp/.log</code>, and looks for the remote shell that users reported in GL.iNet’s forum: a
           process that uses <code>/tmp/f</code> and connects to <code>170.39.226.219</code>. GL.iNet staff says to
           treat a router with such a shell as compromised. The pipe <code>/tmp/f</code> counts too: it stays after
-          the shell was stopped, until the next restart. The further checks staff recommends are included:
+          the shell was stopped, until the next restart. The script also runs the further checks staff recommends:
           processes such as <code>nc</code>, <code>socat</code> or <code>/bin/sh -i</code>, and connections held by a
           shell.
         </p>
