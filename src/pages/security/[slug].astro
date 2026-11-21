@@ -74,7 +74,7 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
               <h3>{fix.title}</h3>
               {fix.before && <p>{fix.before}</p>}
               {fix.does.length > 0 && <ul>{fix.does.map((d) => <li>{d}</li>)}</ul>}
-              <Terminal command={fix.command} label="root@device" />
+              <Terminal command={fix.command} label="root@device" variants={fix.command_variants} />
               {fix.author && <p class="do-first-author">{fix.author}</p>}
               <p class="do-first-link">
                 <a href={fix.link.url}>{fix.link.label}&nbsp;{fix.link.url.startsWith('/') ? '→' : '↗'}</a>

@@ -36,7 +36,35 @@ if (archive) {
   model?.addEventListener('change', update);
 }
 
+// Terminal blocks that offer the same step with several tools (curl, wget): switching one
+// switches all of them, and the choice is remembered in this browser.
+function useVariant(name: string) {
+  for (const term of document.querySelectorAll<HTMLElement>('.term')) {
+    const pre = term.querySelector<HTMLElement>(`pre[data-variant="${CSS.escape(name)}"]`);
+    if (!pre) continue;
+    for (const p of term.querySelectorAll<HTMLElement>('pre[data-variant]')) p.hidden = p !== pre;
+    for (const b of term.querySelectorAll<HTMLElement>('.term-tabs button')) b.setAttribute('aria-pressed', String(b.dataset.variant === name));
+    term.querySelector<HTMLElement>('.term-copy')!.dataset.copy = pre.dataset.command!;
+  }
+}
+try {
+  const saved = localStorage.getItem('term-variant');
+  if (saved) useVariant(saved);
+} catch {
+  // no storage (private window): the first variant stays
+}
+
 document.addEventListener('click', (e) => {
+  const tab = (e.target as HTMLElement).closest<HTMLElement>('.term-tabs button');
+  if (tab) {
+    useVariant(tab.dataset.variant!);
+    try {
+      localStorage.setItem('term-variant', tab.dataset.variant!);
+    } catch {
+      // works for this page view all the same
+    }
+    return;
+  }
   const copy = (e.target as HTMLElement).closest<HTMLElement>('[data-copy]');
   if (copy) copyFrom(copy);
 });

@@ -146,6 +146,10 @@ apps: []
 #   # now" and GL.iNet's steps follow as "Or check by hand". "does" lists
 #   # what it does (max. 5 short points).
 #   command: wget -q https://example.org/tool -O tool.sh ; sh tool.sh
+#   # Optional: the same command with other tools; the reader switches in the block.
+#   command_variants:
+#     - { name: curl, command: curl -fsSL https://example.org/tool -o tool.sh ; sh tool.sh }
+#     - { name: wget, command: wget -q https://example.org/tool -O tool.sh ; sh tool.sh }
 #   does: [Runs GL.iNet's check, Saves evidence first]
 #   author: Who wrote it, in a sentence or two (max. 260 characters).
 #   link: { label: Check your device, url: /security/csa-2026-02/fix/ }

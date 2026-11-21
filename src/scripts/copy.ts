@@ -7,7 +7,7 @@ export function copyFrom(button: HTMLElement) {
     setTimeout(() => (label.textContent = 'Copy'), 1600);
   };
   const selectInstead = () => {
-    const code = button.closest('.term')?.querySelector('code');
+    const code = button.closest('.term')?.querySelector('pre:not([hidden]) code');
     if (!code) return;
     const range = document.createRange();
     range.selectNodeContents(code);

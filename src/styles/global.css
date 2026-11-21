@@ -195,6 +195,10 @@ button { font: inherit; color: inherit; }
 /* ── terminal ──────────────────────────────────────────────── */
 .term { min-width: 0; border-radius: 12px; background: var(--term-bg); color: var(--term-fg); overflow: hidden; }
 .term-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 6px 6px 14px; border-bottom: 1px solid var(--term-line); font: 12px var(--font-mono); color: var(--term-dim); }
+.term-tabs { margin-right: auto; display: inline-flex; gap: 2px; padding: 2px; border-radius: 8px; background: var(--term-btn); }
+.term-tabs button { border: 0; background: none; cursor: pointer; padding: 3px 10px; border-radius: 6px; font: 600 12px var(--font-mono); color: var(--term-dim); }
+.term-tabs button[aria-pressed="true"] { background: var(--term-bg); color: var(--term-fg); }
+.term-tabs button:hover { color: var(--term-prompt); }
 .term-copy { border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font: 600 12.5px var(--font-sans); color: var(--term-fg); background: var(--term-btn); padding: 5px 11px; border-radius: 7px; }
 .term-copy:hover { color: var(--term-prompt); }
 .term-copy svg { width: 14px; height: 14px; }
