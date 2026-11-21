@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import AdvisoryPanel from '../components/AdvisoryPanel.astro';
 import Hero from '../components/Hero.astro';
 import Charts from '../components/Charts.astro';
 import CategorySection from '../components/CategorySection.astro';
@@ -23,7 +22,6 @@ const categoryTitle = Object.fromEntries(sections.map((s) => [s.category.id, s.c
   <SiteHeader site={site} security={security} page="home" />
 
   <main id="top">
-    {security.lead && <AdvisoryPanel advisory={security.lead} more={security.active.length - (security.lead.active ? 1 : 0)} />}
     <Hero hero={site.hero} stats={stats} />
 
     <div class="filters" id="browse">

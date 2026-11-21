@@ -66,11 +66,11 @@ One file drives everything:
   `/security/feed.xml`;
 - while `status` is active (`investigating`, `fix-rolling-out`,
   `mitigated`): the red (critical, high) or amber (medium, low) bar on every
-  page, the "Security" pill in the navigation, the panel at the top of the
-  home page, a note in every install sheet and an "Advisory" pill on the
-  cards listed in `apps`;
-- once `fixed`, with `banner_until`: a "resolved" line on the home page until
-  that date.
+  page (its "What to do" link goes to the advisory page), the "Security"
+  pill in the navigation, a note in every install sheet and an "Advisory"
+  pill on the cards listed in `apps`;
+- once `fixed`, with `banner_until`: a green "Resolved" bar, dismissible,
+  until that date.
 
 Ground rules, partly enforced by the build:
 
@@ -87,7 +87,7 @@ Ground rules, partly enforced by the build:
 - Our own assessment goes into `community`, a separate box "The community
   team's view" after "Do this now", never into GL.iNet's statements.
 - Bump `updated` with every change. The RSS feed shows the advisory again,
-  and readers who hid the home page panel see it again.
+  and readers who dismissed the "Resolved" bar see it again.
 
 ### Notices for other sites
 

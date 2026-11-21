@@ -36,6 +36,8 @@
   --info-bar: #0a66c2;
   --info-bar-link: #dcecff;
   --ok-line: rgba(22, 119, 76, 0.22);
+  --ok-bar: #16774c;
+  --ok-bar-link: #d6f5e4;
   --tile-ring: rgba(0, 0, 0, 0.07);
   --overlay: rgba(10, 20, 15, 0.38);
   --on-accent: #ffffff;
@@ -89,6 +91,7 @@
     --info-bar: #0b5cad;
     --info-bar-link: #d3e8ff;
     --ok-line: rgba(76, 195, 138, 0.28);
+    --ok-bar: #1e6b43;
     --tile-ring: rgba(255, 255, 255, 0.09);
     --overlay: rgba(0, 0, 0, 0.6);
     --on-accent: #04140c;

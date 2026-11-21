@@ -2,8 +2,8 @@
  * Security advisories (content/advisories/*.yaml) and short notices
  * (content/notices.yaml). Loaded and validated at build time like the rest
  * of the content. An advisory drives its own page under /security/, the
- * archive, the RSS feed and, while it is active, the banner, the nav pill
- * and the panel on the home page.
+ * archive, the RSS feed and, while it is active, the bar on every page,
+ * the nav pill, the install sheet notes and the card markers.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -303,7 +303,7 @@ export function loadSecurity(appIds: Set<string>, now = Date.now()) {
   const active = advisories
     .filter((a) => a.active)
     .sort((x, y) => RANK[x.severity] - RANK[y.severity] || Date.parse(y.updated) - Date.parse(x.updated));
-  // The advisory on the home page: the most severe active one, else a recently fixed one.
+  // The advisory in the bar: the most severe active one, else a recently fixed one.
   const lead = active[0] ?? advisories.find((a) => a.level === 'resolved') ?? null;
   const byApp = new Map<string, Advisory>();
   for (const a of [...active].reverse()) for (const id of a.apps) byApp.set(id, a);

@@ -4,8 +4,8 @@
 # fill it in. Each file becomes a page at /security/<id>/, an entry in the
 # archive and in the RSS feed (/security/feed.xml). While "status" is
 # active (investigating, fix-rolling-out, mitigated), the site also shows
-# the banner on every page, the "Security" pill in the navigation, the
-# panel at the top of the home page and a note in every install sheet.
+# the bar on every page, the "Security" pill in the navigation and a note
+# in every install sheet.
 #
 # Write plain English, like the rest of the site. Say what GL.iNet said,
 # say what we don't know, and don't guess. Dates are UTC unless you give a
@@ -33,10 +33,10 @@ status: investigating
 
 published: 2026-11-20
 # Bump this with every change: the RSS feed shows the advisory again, and
-# readers who hid the home page panel see it again.
+# readers who dismissed the "Resolved" bar see it again.
 updated: 2026-11-20T18:05Z
 
-# Optional, closed advisories only: show a "resolved" line on the home page
+# Optional, closed advisories only: show a green "Resolved" bar on every page
 # until this date.
 # banner_until: 2026-12-15
 
@@ -130,8 +130,7 @@ apps: []
 
 # Optional: our own view as the community team, in a separate box right
 # after "Do this now", e.g. where GL.iNet's advice needs care in some setups.
-# The first title also appears on the home page panel (max. 90 characters),
-# unless a note has "before": then that line sits above the steps instead.
+# Titles: max. 90 characters.
 # Keep it clearly ours: no claims on GL.iNet's behalf.
 # community:
 #   date: 2026-11-21

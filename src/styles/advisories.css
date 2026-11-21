@@ -1,6 +1,6 @@
 /*
- * Security advisories: the bar above the disclaimer bar, the nav item, the
- * panel on the home page and the pages under /security/.
+ * Security advisories: the bar above the disclaimer bar, the nav item and
+ * the pages under /security/.
  * Colours come from tokens.css (--danger*, --warn*, --info*, --ok-line).
  * Quiet on purpose: text lines instead of badges, few boxes, wide columns.
  */
@@ -9,10 +9,9 @@
 [data-level="critical"] { --a-fg: var(--danger); --a-bg: var(--danger-bg); --a-line: var(--danger-line); --a-bar: var(--danger-bar); --a-bar-fg: var(--danger-bar-fg); --a-bar-link: var(--danger-bar-link); --a-tile: linear-gradient(160deg, #ff6a5c, #c4271b); }
 [data-level="warning"]  { --a-fg: var(--warn);   --a-bg: var(--warn-bg);   --a-line: var(--warn-line);   --a-bar: var(--warn-bar);   --a-bar-fg: var(--warn-bar-fg);   --a-bar-link: var(--warn-bar-fg);    --a-tile: linear-gradient(160deg, #ffc04d, #e08600); }
 [data-level="info"]     { --a-fg: var(--info);   --a-bg: var(--info-bg);   --a-line: var(--info-line);   --a-bar: var(--info-bar);   --a-bar-fg: #ffffff;              --a-bar-link: var(--info-bar-link);  --a-tile: linear-gradient(160deg, #5aaeff, #0a66c2); }
-[data-level="resolved"] { --a-fg: var(--accent); --a-bg: var(--accent-soft); --a-line: var(--ok-line);   --a-bar: var(--bar-bg);     --a-bar-fg: var(--bar-fg);        --a-bar-link: var(--bar-link);       --a-tile: linear-gradient(160deg, #4cc38a, #16774c); }
+[data-level="resolved"] { --a-fg: var(--accent); --a-bg: var(--accent-soft); --a-line: var(--ok-line);   --a-bar: var(--ok-bar);     --a-bar-fg: #ffffff;              --a-bar-link: var(--ok-bar-link);       --a-tile: linear-gradient(160deg, #4cc38a, #16774c); }
 
 /* No lonely last words in running text. */
-.adv .adv-steps li, .do-box .adv-steps b, .sa-row h4 { text-wrap: balance; }
 .alert-bar p, .adv p, .adv li, .community-box p, .sa-article p, .sa-article li, .sa-list .sum, .explain p, .legend li, .page-head .sub, .sa-none, .adv-note p { text-wrap: pretty; }
 
 /* ── bar above the disclaimer bar ──────────────────────────── */
@@ -56,9 +55,7 @@
 .adv-fine { font-size: 13px; color: var(--text-2); }
 .btn-soft.lg { font-size: 14.5px; padding: 9px 18px; }
 
-/* ── home page panel ───────────────────────────────────────── */
-.adv-wrap { padding-top: 32px; }
-.adv-wrap:not([hidden]) + .hero { padding-top: 56px; }
+/* ── advisory card (active advisories on /security/) ─────── */
 .adv { background: var(--surface); border: 1px solid var(--a-line); border-radius: 22px; box-shadow: var(--card-shadow); padding: 28px 30px 24px; }
 .adv-head { display: flex; gap: 18px; align-items: flex-start; }
 .adv-tile { background: var(--a-tile); }
@@ -67,36 +64,15 @@
 .adv h2, .adv h3 { font-size: clamp(22px, 2.6vw, 28px); line-height: 1.2; letter-spacing: -0.022em; }
 .adv h3 a { color: inherit; }
 .adv h3 a:hover { color: var(--a-fg); text-decoration: none; }
-.adv-toggle { flex: none; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-size: 13px; font-weight: 600; padding: 6px 12px 6px 9px; border-radius: var(--radius-pill); cursor: pointer; white-space: nowrap; }
-.adv-toggle:hover { color: var(--text); border-color: var(--a-line); }
-.adv-toggle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: rotate .2s; }
-.adv-toggle[aria-expanded="false"] svg { rotate: 180deg; }
 .adv-body { margin-top: 16px; padding-left: 78px; }
 .adv-lead { font-size: 16.5px; line-height: 1.6; max-width: 780px; }
-.adv-do { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border); }
-.adv-do h3 { font-size: 16px; letter-spacing: -0.01em; }
-.adv-do h4 { font-size: 13.5px; font-weight: 600; color: var(--text-2); letter-spacing: 0; margin-bottom: 10px; }
-.adv-do-cols { margin-top: 14px; display: grid; gap: 18px 36px; }
-.adv-do-cols.two { grid-template-columns: 1fr 1fr; }
 .adv-steps { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; counter-reset: adv; }
 .adv-steps li { display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 12px; }
 .adv-steps li::before { counter-increment: adv; content: counter(adv); grid-row: 1 / span 2; width: 24px; height: 24px; border-radius: 50%; background: var(--a-bg); color: var(--a-fg); font-weight: 700; font-size: 13px; display: grid; place-items: center; }
-.adv .adv-steps li { font-size: 15px; font-weight: 550; line-height: 1.4; padding-top: 2px; }
 .adv-foot { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.adv-foot .more { margin-left: 8px; font-size: 14.5px; font-weight: 600; }
 .adv .adv-refs { margin-top: 16px; }
 .adv .adv-fine { margin-top: 4px; }
 
-/* collapsed ("Hide details") and the resolved card */
-.adv.is-compact { padding: 16px 20px; }
-.adv.is-compact .adv-body { display: none; }
-.adv.is-compact .adv-head { align-items: center; gap: 14px; }
-.adv.is-compact .adv-tile { width: 42px; height: 42px; }
-.adv.is-compact .adv-tile svg { width: 23px; height: 23px; }
-.adv.is-compact .adv-titles { gap: 2px; padding-top: 0; }
-.adv.is-compact h2 { font-size: 16.5px; letter-spacing: -0.01em; }
-.adv-compact-line { font-size: 14px; color: var(--text-2); }
-.adv-compact-line a { font-weight: 600; }
 
 /* ── markers on cards and in install sheets ────────────────── */
 .pill.adv-pill { display: inline-flex; align-items: center; gap: 4px; color: var(--a-fg); background: var(--a-bg); }
@@ -209,9 +185,6 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 .do-before b { color: var(--accent); font-weight: 650; }
 .do-before a { font-weight: 600; white-space: nowrap; }
 .sa-article .do-box .do-before { margin-top: 14px; font-size: 15px; }
-.adv-community { margin-top: 20px; padding: 12px 16px; border-radius: 12px; background: var(--accent-soft); font-size: 14.5px; line-height: 1.5; }
-.adv-community b { color: var(--accent); font-weight: 650; }
-.adv-community a { font-weight: 600; white-space: nowrap; }
 
 .unknowns { margin: 10px 0 0; padding-left: 20px; font-size: 16px; line-height: 1.6; }
 .unknowns li + li { margin-top: 4px; }
@@ -280,21 +253,13 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
   .nav-adv i { position: absolute; top: -1px; right: -3px; animation: none !important; box-shadow: 0 0 0 2px var(--bg); }
   .nav.has-adv .nav-links a[href^="https://github.com"] { display: none; }
 
-  .adv-wrap { padding-top: 20px; }
-  .adv-wrap:not([hidden]) + .hero { padding-top: 40px; }
   .adv { padding: 20px 18px; border-radius: 20px; }
   .adv-head { gap: 14px; flex-wrap: wrap; }
   .adv-titles { order: 3; flex-basis: 100%; }
-  .adv-toggle { margin-left: auto; }
-  .adv.is-compact .adv-head { flex-wrap: nowrap; }
-  .adv.is-compact .adv-titles { order: 0; flex-basis: auto; }
   .adv-head .adv-tile { width: 44px; height: 44px; }
   .adv-head .adv-tile svg { width: 24px; height: 24px; }
   .adv h2, .adv h3 { font-size: 21px; }
-  .adv-toggle { width: 34px; height: 34px; padding: 0; justify-content: center; }
-  .adv-toggle .t { display: none; }
   .adv-lead { font-size: 16px; }
-  .adv-do-cols.two { grid-template-columns: 1fr; }
   .adv-foot .btn-install, .adv-foot .btn-soft { flex: 1 1 auto; text-align: center; }
 
   .page-head { padding-top: 36px; }

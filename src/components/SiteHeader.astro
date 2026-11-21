@@ -19,6 +19,9 @@ interface Props {
 const { site, security, page, current } = Astro.props;
 const { lead, active, notices } = security;
 const urgent = lead?.active ? lead : null;
+// A recently fixed advisory (banner_until) gets a green bar, dismissible.
+const resolved = !urgent && lead?.level === 'resolved' ? lead : null;
+const resolvedKey = resolved && `resolved-${resolved.id}-${resolved.updated}`;
 const pre = page === 'home' ? '' : '/';
 const here = urgent && current?.id === urgent.id;
 const more = active.length - 1;
@@ -31,11 +34,22 @@ const pillHref = more > 0 ? '/security/' : here ? '#do' : urgent?.url;
       <p>
         <Fragment set:html={UI.shield} /><b>{SEVERITY[urgent.severity].label} security advisory:</b> {urgent.banner}
         <span class="links">
-          <a href={page === 'home' ? '#advisory' : here ? '#do' : `${urgent.url}#do`}>What to do</a>
+          <a href={here ? '#do' : `${urgent.url}#do`}>What to do</a>
           {!here && <a href={urgent.url}>Full advisory →</a>}
           {more > 0 && <a href="/security/">{more} more →</a>}
         </span>
       </p>
+    </div>
+  </div>
+)}
+{resolved && (
+  <div class="alert-bar" data-level="resolved" data-notice={resolvedKey} data-until={`${resolved.banner_until}T23:59:59Z`} role="region" aria-label="Resolved security advisory">
+    <div class="container alert-bar-inner has-x">
+      <p>
+        <Fragment set:html={UI.shieldOk} /><b>Resolved:</b> {resolved.banner}
+        {current?.id !== resolved.id && <span class="links"><a href={resolved.url}>Full advisory →</a></span>}
+      </p>
+      <button class="x" type="button" data-dismiss={`notice:${resolvedKey}`} aria-label="Dismiss" set:html={UI.close} />
     </div>
   </div>
 )}
@@ -50,7 +64,7 @@ const pillHref = more > 0 ? '/security/' : here ? '#do' : urgent?.url;
     </div>
   </div>
 ))}
-{notices.length > 0 && (
+{(notices.length > 0 || resolved) && (
   <script is:inline>
     // Hide dismissed or expired notices before they paint (the site is rebuilt nightly).
     document.querySelectorAll('[data-notice]').forEach(function (el) {

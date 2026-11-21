@@ -13,7 +13,7 @@ import { ICON_NAMES } from './icons';
 import { gradientFor } from './tiles';
 
 // Anchors used by the page itself; app ids must not collide with them.
-const RESERVED_IDS = ['top', 'browse', 'results', 'official', 'install', 'submit', 'about', 'advisory'];
+const RESERVED_IDS = ['top', 'browse', 'results', 'official', 'install', 'submit', 'about'];
 
 export const TYPE_LABEL = {
   'router-script': 'Router script',
