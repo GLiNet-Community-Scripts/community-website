@@ -112,7 +112,12 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           It also runs <a href={`${advisory.url}#check`}>GL.iNet’s quick check</a> for a running process
           <code>crond -i /tmp/.log</code>, and looks for a remote shell that users reported in GL.iNet’s forum: a
           process that uses <code>/tmp/f</code> and connects to <code>170.39.226.219</code>. GL.iNet has not confirmed
-          that this shell belongs to the incident. Both only show what is running right now.
+          that this shell belongs to the incident.
+        </p>
+        <p>
+          Every running program is compared with the read-only firmware image. A program that was started from
+          <code>/tmp</code>, is not part of the firmware or differs from it is listed as <code>REVIEW</code>, or as
+          <code>INFO</code> when a package installed it. All of this only shows what is running right now.
         </p>
         <p>
           The script also finds system tools that were replaced (for example <code>netstat</code>), processes started
