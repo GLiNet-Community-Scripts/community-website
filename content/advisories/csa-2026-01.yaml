@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-21T20:00Z
+updated: 2026-11-21T20:02Z
 cve: []
 confirmed: gl-inet-public
 
@@ -29,9 +29,9 @@ affected:
   summary: >-
     A subset of GL.iNet routers and KVM devices, reached through GL.iNet's
     cloud remote management. GL.iNet has not published which models or
-    firmware versions; it is emailing affected customers individually. The
-    community's reports of a remote shell so far all concern the GL-AXT1800
-    with firmware 4.8.3.
+    firmware versions; it is emailing affected customers individually. GL.iNet
+    staff has listed the models and firmware versions on which traces were
+    reported, see the table below.
   products: [Routers, KVM devices (Comet)]
   firmware: Not published
   # From a post by GL.iNet staff in the forum: where traces were reported,
@@ -52,7 +52,7 @@ affected:
       - { name: Spitz AX, sku: GL-X3000, kind: Router, firmware: [4.7.4] }
       - { name: Comet, sku: GL-RM1, kind: KVM, firmware: [] }
     note: |
-      This is where traces have been reported so far, collected by GL.iNet staff from user reports and from anonymous reports of the community script. If your model or firmware isn't listed, that does not mean it is unaffected.
+      These are the models and firmware versions with reported traces, as listed by GL.iNet staff in the forum. It is not a list of affected devices from GL.iNet's investigation. If your model or firmware isn't listed, that does not mean it is unaffected.
 
       According to GL.iNet staff, what matters most is whether GoodCloud was enabled and connected during the attack, not which firmware version the device ran. A device that was powered off throughout could not receive the malicious command. The firmware still matters because the code that handles the command is on the device, and staff does not know yet which router firmware, if any, contains the fix.
 
@@ -172,7 +172,7 @@ details: |
   GL.iNet will email affected customers individually, at the address of their GoodCloud account, with guidance for their devices, and says you do not need to wait for that email to check your device or install the update. It says it will update its notice as new information becomes available.
 
 unknowns:
-  - Which models and firmware versions were affected, in which time window, and how many devices. GL.iNet has not published this.
+  - Which models and firmware versions were affected, in which time window, and how many devices. GL.iNet has not published this; the table above shows only where traces were reported.
   - Whether the cause RemoteToHome found in the GoodCloud client on the router is right, and which firmware removes it. GL.iNet has not commented.
   - What the malicious software does, and how the process GL.iNet names relates to the "gl-helper" files found on KVM devices.
   - What was run through the remote shells, and whether 170.39.226.219 is the only address involved.
@@ -183,6 +183,8 @@ unknowns:
   - Whether to keep using cloud remote management until the firmware is out. The notice doesn't say. See our note below.
 
 timeline:
+  - at: 2026-11-21T18:45Z
+    text: "GL.iNet staff lists in the forum the models and firmware versions on which traces were reported: eight router models and one KVM."
   - at: 2026-11-21T17:24Z
     text: RemoteToHome Consulting reports the address the remote shells connect to, 170.39.226.219, to its hosting provider.
     tag: Community
@@ -232,6 +234,11 @@ sources:
     label: Check that netstat is still linked to busybox
     url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070/41
     note: GL.iNet staff in the same thread. The command itself can be compromised, and running it starts the malware.
+    date: 2026-11-21
+  - type: gl-inet-forum
+    label: Models and firmware versions with reported indicators
+    url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070/55
+    note: GL.iNet staff in the same thread, as of 21 November 2026, 18:45 UTC. What matters most is whether GoodCloud was enabled and connected during the attack.
     date: 2026-11-21
   - type: researcher
     label: "RemoteToHome Consulting: findings on the incident, how to check and how to recover"

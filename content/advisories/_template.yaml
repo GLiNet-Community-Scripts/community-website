@@ -75,6 +75,17 @@ affected:
   fixed_in: 4.8.2                # optional; otherwise taken from models
   not_affected: Firmware 3.x     # optional
 
+# Optional, inside "affected": where traces were reported, as a grid of models
+# by firmware versions. Not a list of affected devices; say so in "note".
+#   reported:
+#     as_of: 2026-11-21T18:45Z
+#     source: { label: GL.iNet staff in the forum, url: https://forum.gl-inet.com/ }
+#     models:
+#       - { name: Flint 2, sku: GL-MT6000, kind: Router, firmware: [4.8.3, 4.9.0] }
+#       - { name: Comet, sku: GL-RM1, kind: KVM, firmware: [] }   # firmware not known
+#     note: |
+#       If your model isn't listed, that does not mean it is unaffected.
+
 # Optional: one line per model, drives the table on the page.
 models: []
 #  - { name: Flint 2, sku: GL-MT6000, affected: 4.0.0 – 4.8.1, fixed: 4.8.2, released: 2026-11-21 }
