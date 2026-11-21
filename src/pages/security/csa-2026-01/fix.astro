@@ -88,7 +88,7 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
             </li>
           ))}
         </ol>
-        <p class="adv-fine">Don’t run <code>netstat</code> on a device you suspect. The malware replaces it. The script never calls it.</p>
+        <p class="adv-fine">On an infected KVM device the malware replaces <code>netstat</code>, so its output may not be trustworthy. The script never calls it and reads the connections from the system directly.</p>
       </section>
 
       <section id="report" aria-labelledby="h-report">
@@ -110,9 +110,11 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
         <ul class="unknowns">{markers.map((m) => <li><code>{m}</code></li>)}</ul>
         <p>
           It also runs <a href={`${advisory.url}#check`}>GL.iNet’s quick check</a> for a running process
-          <code>crond -i /tmp/.log</code>, and looks for a remote shell that users reported in GL.iNet’s forum: a
-          process that uses <code>/tmp/f</code> and connects to <code>170.39.226.219</code>. GL.iNet has not confirmed
-          that this shell belongs to the incident.
+          <code>crond -i /tmp/.log</code>, and looks for the remote shell that users reported in GL.iNet’s forum: a
+          process that uses <code>/tmp/f</code> and connects to <code>170.39.226.219</code>. GL.iNet staff says to
+          treat a router with such a shell as compromised. The further checks staff recommends are included:
+          processes such as <code>nc</code>, <code>socat</code> or <code>/bin/sh -i</code>, and connections held by a
+          shell.
         </p>
         <p>
           Every running program is compared with the read-only firmware image. A program that was started from
