@@ -94,6 +94,8 @@ Ground rules, partly enforced by the build:
   guess.
 - Our own assessment goes into `community`, a separate box "The community
   team's view" after "Do this now", never into GL.iNet's statements.
+  A note there can carry a `link` to community work such as a script; say
+  in its text that it is community work and not reviewed by GL.iNet.
 - Bump `updated` with every change. The RSS feed shows the advisory again,
   and readers who dismissed the "Resolved" bar see it again.
 

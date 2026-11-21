@@ -186,6 +186,9 @@ const AdvisorySchema = z.object({
             // Optional one-liner shown at the top of "Do this now", before the steps,
             // when people should read this note before they act.
             before: z.string().min(1).max(160).optional(),
+            // Optional link to community work (a script, a write-up). Unlike the
+            // links in "actions" it may point outside gl-inet.com.
+            link: z.object({ label: z.string().min(1), url: Https }).optional(),
           }),
         )
         .min(1),
