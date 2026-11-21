@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-21T18:47Z
+updated: 2026-11-21T18:51Z
 cve: []
 confirmed: gl-inet-public
 
@@ -246,9 +246,9 @@ community_fix:
     restart, reset or update the device: those wipe traces of the attack.
   command: wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh
   author: >-
-    Written by Admon, a community moderator in GL.iNet's official forum and
-    the author of the Tailscale Updater and other widely used community tools
-    for GL.iNet routers. The script is his work, not GL.iNet's.
+    By Admon and the community: RemoteToHome Consulting and users of
+    GL.iNet's forum contributed findings and checks. Admon is a community
+    moderator in that forum. It is community work, not GL.iNet's.
   does:
     - Runs GL.iNet's check and the wider ones GL.iNet staff recommends
     - Looks at files, autostart entries and the firewall, not only at what is running
