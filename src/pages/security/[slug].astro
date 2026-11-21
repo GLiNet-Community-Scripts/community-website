@@ -27,6 +27,7 @@ const level = a.tone;
 const cve = a.cve === 'requested' ? 'Requested' : a.cve.length === 0 ? 'None assigned' : null;
 // Community notes to read before acting on "Do this now".
 const before = a.community?.notes.filter((n) => n.before) ?? [];
+const fix = a.community_fix;
 const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': 'By GL.iNet staff', unconfirmed: 'Not yet' }[a.confirmed];
 ---
 
@@ -65,15 +66,31 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
 
       <section id="do" class="do-box" aria-labelledby="h-do">
         <h2 id="h-do">{a.active ? 'Do this now' : 'What to do'}</h2>
-        {a.community_fix?.before && (
+        {fix?.command ? (
+          <div id="community-fix" class="do-first">
+            {fix.image && <img src={fix.image} width="240" height="200" alt="" />}
+            <div>
+              <p class="do-first-eyebrow">Start here · Community script, not a GL.iNet tool</p>
+              <h3>{fix.title}</h3>
+              {fix.before && <p>{fix.before}</p>}
+              {fix.does.length > 0 && <ul>{fix.does.map((d) => <li>{d}</li>)}</ul>}
+              <Terminal command={fix.command} label="root@device" />
+              <p class="do-first-foot">
+                <a href={fix.link.url}>{fix.link.label}&nbsp;{fix.link.url.startsWith('/') ? '→' : '↗'}</a>
+                <span>{fix.caveat}</span>
+              </p>
+            </div>
+          </div>
+        ) : fix?.before && (
           <p class="do-before">
-            <b>Before you reset:</b> {a.community_fix.before}{' '}
-            <a href={a.community_fix.link.url}>{a.community_fix.link.label}&nbsp;{a.community_fix.link.url.startsWith('/') ? '→' : '↗'}</a>
+            <b>Before you reset:</b> {fix.before}{' '}
+            <a href={fix.link.url}>{fix.link.label}&nbsp;{fix.link.url.startsWith('/') ? '→' : '↗'}</a>
           </p>
         )}
         {before.map((n) => (
           <p class="do-before"><b>Before you start:</b> {n.before} <a href="#community">Read our note first&nbsp;↓</a></p>
         ))}
+        {fix?.command && <h3 class="do-alt">Or check by hand, as GL.iNet’s notice says</h3>}
         <div class:list={['do-cols', { two: a.actions.length > 1 }]}>
           {a.actions.map((g) => (
             <div>
@@ -93,7 +110,7 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
         </div>
       </section>
 
-      {a.community_fix && (
+      {a.community_fix && !a.community_fix.command && (
         <section id="community-fix" class="fix-card" aria-labelledby="h-fix">
           {a.community_fix.image && <img src={a.community_fix.image} width="240" height="200" alt="" />}
           <div>

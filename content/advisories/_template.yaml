@@ -142,6 +142,11 @@ apps: []
 #   # Optional: one line at the top of "Do this now", before GL.iNet's steps,
 #   # when the tool should run first (max. 160 characters).
 #   before: A reset wipes the traces. Run the community script first.
+#   # Optional: with a command, the tool becomes the first block in "Do this
+#   # now" and GL.iNet's steps follow as "Or check by hand". "does" lists
+#   # what it does (max. 5 short points).
+#   command: wget -q https://example.org/tool -O tool.sh ; sh tool.sh
+#   does: [Runs GL.iNet's check, Saves evidence first]
 #   link: { label: Check your device, url: /security/csa-2026-02/fix/ }
 #   image: /img/csa-2026-02-fix.svg   # optional, a file in public/
 

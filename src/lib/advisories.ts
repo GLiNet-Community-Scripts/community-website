@@ -185,6 +185,11 @@ const AdvisorySchema = z.object({
       // Optional one-liner at the top of "Do this now", before GL.iNet's steps,
       // when the tool should be run before them (a reset wipes what it looks for).
       before: z.string().min(1).max(160).optional(),
+      // Optional: put the tool first in "Do this now", ahead of GL.iNet's steps,
+      // with this command and up to five short points on what it does. The
+      // dark green card further down is then left out.
+      command: z.string().min(1).optional(),
+      does: z.array(z.string().min(1).max(120)).max(5).default([]),
       link: z.object({ label: z.string().min(1), url: z.union([z.string().regex(/^\/[a-z0-9/-]*$/), Https]) }),
       image: z.string().regex(/^\/[a-z0-9/._-]+$/).optional(),
     })

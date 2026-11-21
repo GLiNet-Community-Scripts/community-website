@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-21T18:38Z
+updated: 2026-11-21T18:45Z
 cve: []
 confirmed: gl-inet-public
 
@@ -233,7 +233,7 @@ apps_note: >-
   installers afterwards.
 
 community_fix:
-  title: The community built a script that also checks the files on a device
+  title: Run the community script first
   text: |
     GL.iNet's check looks for one process that is running right now. A community script by Admon runs that check and the wider ones, and also looks at the files on a GL.iNet router or KVM device: the ones this malware is known to leave behind, including the entries that would start it again after a restart. It can save evidence from the device first and, if you ask it to, remove what it found.
   caveat: >-
@@ -242,9 +242,15 @@ community_fix:
     prove that a device is clean, and it does not replace a factory reset or
     GL.iNet's security firmware. Use it at your own risk.
   before: >-
-    A restart, reset or update wipes traces of the attack. Run the community
-    script first: it checks the device and saves evidence. Not a GL.iNet tool.
-  link: { label: Check your device, url: /security/csa-2026-01/fix/ }
+    One command does the checks below for you and more. Run it before you
+    restart, reset or update the device: those wipe traces of the attack.
+  command: wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh
+  does:
+    - Runs GL.iNet's check and the wider ones GL.iNet staff recommends
+    - Looks at files, autostart entries and the firewall, not only at what is running
+    - Only reads. It saves evidence or removes what it found when you ask it to
+    - Offers to send a short anonymous report, so everyone sees which devices were hit
+  link: { label: How to run it and read the result, url: /security/csa-2026-01/fix/ }
   image: /img/csa-2026-01-fix.svg
 
 community:
