@@ -20,6 +20,10 @@ const steps = [
     title: 'Check',
     text: 'Only reads and prints a report. It changes nothing.',
     command: 'curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh',
+    variants: [
+      { name: 'curl', command: 'curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh' },
+      { name: 'wget', command: 'wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh' },
+    ],
   },
   {
     title: 'Save the evidence',
@@ -86,7 +90,7 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
             <li>
               <b>{s.title}</b>
               <p>{s.text}</p>
-              <Terminal command={s.command} label="root@device" />
+              <Terminal command={s.command} label="root@device" variants={s.variants} />
             </li>
           ))}
         </ol>

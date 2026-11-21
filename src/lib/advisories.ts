@@ -199,6 +199,9 @@ const AdvisorySchema = z.object({
       // with this command and up to five short points on what it does. The
       // dark green card further down is then left out.
       command: z.string().min(1).optional(),
+      // Optional: the same command with other tools (curl, wget). The reader can
+      // switch between them; the first one is shown.
+      command_variants: z.array(z.object({ name: z.string().min(1).max(12), command: z.string().min(1) })).max(4).default([]),
       // Optional: who wrote it, one or two sentences, shown with the tool.
       author: z.string().min(1).max(260).optional(),
       does: z.array(z.string().min(1).max(120)).max(5).default([]),

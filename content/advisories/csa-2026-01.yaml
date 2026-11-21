@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-21T19:49Z
+updated: 2026-11-21T20:00Z
 cve: []
 confirmed: gl-inet-public
 
@@ -266,6 +266,9 @@ community_fix:
     One command does the checks below for you and more. Run it before you
     restart, reset or update the device: those wipe traces of the attack.
   command: curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh
+  command_variants:
+    - { name: curl, command: curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh }
+    - { name: wget, command: wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh }
   author: >-
     By Admon and the community: RemoteToHome Consulting and users of
     GL.iNet's forum contributed findings and checks. An independent community

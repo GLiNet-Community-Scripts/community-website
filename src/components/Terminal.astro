@@ -6,15 +6,30 @@ interface Props {
   command: string;
   label: string;
   prompt?: string;
+  /** The same step with other tools, e.g. curl and wget. The first one is shown; the
+      reader switches in the bar, and the choice is kept for all blocks and later visits. */
+  variants?: { name: string; command: string }[];
 }
 
-const { command, label, prompt = '#' } = Astro.props;
+const { command, label, prompt = '#', variants = [] } = Astro.props;
+const first = variants[0]?.command ?? command;
 ---
 
 <div class="term">
   <div class="term-bar">
     <span>{label}</span>
-    <button class="term-copy" type="button" data-copy={command}><Fragment set:html={UI.copy} /><span>Copy</span></button>
+    {variants.length > 1 && (
+      <span class="term-tabs" role="group" aria-label="Tool">
+        {variants.map((v, i) => (
+          <button type="button" data-variant={v.name} aria-pressed={i === 0 ? 'true' : 'false'}>{v.name}</button>
+        ))}
+      </span>
+    )}
+    <button class="term-copy" type="button" data-copy={first}><Fragment set:html={UI.copy} /><span>Copy</span></button>
   </div>
-  <pre><code set:html={shellLines(command, prompt)} /></pre>
+  {variants.length > 1 ? (
+    variants.map((v, i) => <pre data-variant={v.name} data-command={v.command} hidden={i > 0}><code set:html={shellLines(v.command, prompt)} /></pre>)
+  ) : (
+    <pre><code set:html={shellLines(first, prompt)} /></pre>
+  )}
 </div>
