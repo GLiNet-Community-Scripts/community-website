@@ -28,6 +28,9 @@ const cve = a.cve === 'requested' ? 'Requested' : a.cve.length === 0 ? 'None ass
 // Community notes to read before acting on "Do this now".
 const before = a.community?.notes.filter((n) => n.before) ?? [];
 const fix = a.community_fix;
+// Columns of the "reported" table: every firmware version that occurs, lowest first.
+const verKey = (v: string) => v.split(/[^0-9]+/).filter(Boolean).map((n) => n.padStart(4, '0')).join('.');
+const repVersions = [...new Set((a.affected.reported?.models ?? []).flatMap((m) => m.firmware))].sort((x, y) => verKey(x).localeCompare(verKey(y)));
 const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': 'By GL.iNet staff', unconfirmed: 'Not yet' }[a.confirmed];
 ---
 
@@ -160,19 +163,26 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
               <span>{a.affected.reported.models.length} models</span>{' '}
               <span>Source: <a href={a.affected.reported.source.url}>{a.affected.reported.source.label}&nbsp;↗</a></span>
             </p>
-            <div class="sa-table-wrap">
+            <div class="sa-table-wrap rep-wrap" tabindex="0" role="region" aria-label="Models and firmware versions with reported traces">
               <table class="rep-table">
-                <thead><tr><th>Model</th><th>Firmware with reported traces</th></tr></thead>
+                <thead>
+                  <tr><th>Model</th>{repVersions.map((v) => <th class="v">{v}</th>)}</tr>
+                </thead>
                 <tbody>
                   {a.affected.reported.models.map((m) => (
                     <tr>
-                      <td><b>{m.name}</b><small>{[m.sku, m.kind].filter(Boolean).join(' · ')}</small></td>
-                      <td>{m.firmware.length ? m.firmware.map((f) => <span class="fw-chip">{f}</span>) : <span class="fw-none">Firmware not known</span>}</td>
+                      <th scope="row"><b>{m.name}</b><small>{[m.sku, m.kind].filter(Boolean).join(' · ')}</small></th>
+                      {m.firmware.length === 0 ? (
+                        <td class="unknown" colspan={repVersions.length}>Traces reported, firmware not known</td>
+                      ) : repVersions.map((v) => (
+                        <td class="c" aria-label={m.firmware.includes(v) ? `Traces reported on ${v}` : `No report for ${v}`}>{m.firmware.includes(v) && <span class="hit" aria-hidden="true"></span>}</td>
+                      ))}
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+            <p class="rep-legend"><span class="hit" aria-hidden="true"></span> Traces reported <span class="sep">·</span> Empty: no report so far. That does not mean “not affected”.</p>
             {a.affected.reported.note && a.affected.reported.note.split(/\n\s*\n/).map((p) => <p>{p.trim()}</p>)}
           </Fragment>
         )}

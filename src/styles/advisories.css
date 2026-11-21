@@ -236,15 +236,25 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 .sa-table td:first-child b { display: block; font-weight: 650; }
 .sa-table td:first-child small { font-size: 12.5px; color: var(--text-2); font-family: var(--font-mono); }
 .sa-table .fix { font-weight: 650; }
-/* models and firmware on which traces were reported: not the "affected / fixed" table above */
-.rep-table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
-.rep-table th { text-align: left; font-size: 13px; color: var(--text-2); font-weight: 600; padding: 12px 18px; background: var(--surface-2); }
-.rep-table td { padding: 11px 18px; border-top: 1px solid var(--border); vertical-align: middle; }
-.rep-table td:first-child { width: 42%; }
-.rep-table td:first-child b { display: block; font-weight: 650; }
-.rep-table td:first-child small { font-size: 12.5px; color: var(--text-2); }
-.fw-chip { display: inline-block; margin: 2px 6px 2px 0; padding: 2px 10px; border-radius: var(--radius-pill); background: var(--a-bg); color: var(--a-fg); font: 600 13px var(--font-mono); }
-.fw-none { font-size: 13.5px; color: var(--text-2); }
+/* models and firmware on which traces were reported: a grid, models down, versions across.
+   Not the "affected / fixed" table above. Scrolls sideways with the model column kept in view. */
+.rep-wrap { overflow-x: auto; }
+.rep-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14.5px; }
+.rep-table thead th { text-align: left; font-size: 13px; color: var(--text-2); font-weight: 600; padding: 11px 14px; background: var(--surface-2); white-space: nowrap; }
+.rep-table thead th.v { text-align: center; font-family: var(--font-mono); font-size: 12.5px; color: var(--text); padding-inline: 8px; }
+.rep-table tbody th, .rep-table td { padding: 9px 14px; border-top: 1px solid var(--border); vertical-align: middle; }
+.rep-table tbody th { text-align: left; font-weight: 400; white-space: nowrap; }
+.rep-table th:first-child { position: sticky; left: 0; z-index: 1; padding-left: 18px; }
+.rep-table tbody th:first-child { background: var(--surface); box-shadow: 1px 0 0 var(--border); }
+.rep-table thead th:first-child { box-shadow: 1px 0 0 var(--border); }
+.rep-table tbody th b { display: block; font-weight: 650; }
+.rep-table tbody th small { font-size: 12.5px; color: var(--text-2); }
+.rep-table td.c { text-align: center; padding-inline: 8px; }
+.rep-table td.c:nth-child(even) { background: color-mix(in srgb, var(--surface-2) 45%, transparent); }
+.rep-table td.unknown { font-size: 13.5px; color: var(--text-2); }
+.hit { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--a-fg); vertical-align: -1px; }
+.sa-article section > p.rep-legend { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--text-2); }
+.rep-legend .sep { opacity: .6; margin-inline: 6px; }
 .sa-article section > .sa-h3 + p.adv-refs { margin-top: 6px; }
 .sa-table tr.eol td { background: color-mix(in srgb, var(--mute-bg) 45%, transparent); }
 .st-cell { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; white-space: nowrap; }
