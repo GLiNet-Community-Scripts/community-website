@@ -99,8 +99,10 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
         </p>
         <p>
           The report says which model and firmware version the device has, when it was checked, which known traces
-          were found and, for the reported remote shell, when it started and which port it used. It contains no host
-          name, no address or key of the device and no file. The sender’s address is not stored.
+          were found and, for the reported remote shell, when it started and which port it used. For the malware’s own
+          files and for replaced system tools it adds a fingerprint (SHA-256), the size and the time of the file, so
+          that we can tell variants apart. It contains no host name, no address or key of the device and no file
+          contents. Other changes on the device are only counted. The sender’s address is not stored.
         </p>
       </section>
 
