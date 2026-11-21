@@ -1,0 +1,14 @@
+---
+/* One quiet line above an advisory title: "Critical · Actively exploited · Under investigation". */
+import { SEVERITY, type Advisory } from '../lib/advisories';
+
+interface Props {
+  advisory: Advisory;
+  class?: string;
+}
+
+const { advisory: a, class: cls } = Astro.props;
+const parts = [SEVERITY[a.severity].label, a.exploited ? 'Actively exploited' : null, a.statusLabel].filter(Boolean);
+---
+
+<p class:list={['adv-eyebrow', cls]} data-sev={a.active ? a.severity : undefined}>{parts.map((p, i) => <Fragment>{i > 0 && ' '}<span>{p}</span></Fragment>)}</p>

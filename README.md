@@ -84,6 +84,8 @@ Ground rules, partly enforced by the build:
   firmware anywhere else.
 - Say what GL.iNet said, list what we don't know in `unknowns`, and don't
   guess.
+- Our own assessment goes into `community`, a separate box "The community
+  team's view" after "Do this now", never into GL.iNet's statements.
 - Bump `updated` with every change. The RSS feed shows the advisory again,
   and readers who hid the home page panel see it again.
 

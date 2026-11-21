@@ -172,6 +172,13 @@ const AdvisorySchema = z.object({
     .default([]),
   apps: z.array(z.string().min(1)).default([]),
   apps_note: z.string().min(1).optional(),
+  // Our own view as the community team, kept apart from what GL.iNet says.
+  community: z
+    .object({
+      date: Day,
+      notes: z.array(z.object({ title: z.string().min(1).max(90), text: z.string().min(1) })).min(1),
+    })
+    .optional(),
 });
 
 const NoticeSchema = z.object({

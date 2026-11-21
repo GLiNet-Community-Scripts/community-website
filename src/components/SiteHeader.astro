@@ -29,11 +29,11 @@ const pillHref = more > 0 ? '/security/' : here ? '#do' : urgent?.url;
   <div class="alert-bar" data-level={urgent.level} role="region" aria-label="Security advisory">
     <div class="container alert-bar-inner">
       <p>
-        <span class="tag"><Fragment set:html={UI.shield} /><span class="t-full">{SEVERITY[urgent.severity].label}</span></span><b>Security advisory:</b> {urgent.banner}
+        <Fragment set:html={UI.shield} /><b>{SEVERITY[urgent.severity].label} security advisory:</b> {urgent.banner}
         <span class="links">
           <a href={page === 'home' ? '#advisory' : here ? '#do' : `${urgent.url}#do`}>What to do</a>
-          {!here && <a href={urgent.url}>Full advisory</a>}
-          {more > 0 && <a href="/security/">{more} more</a>}
+          {!here && <a href={urgent.url}>Full advisory →</a>}
+          {more > 0 && <a href="/security/">{more} more →</a>}
         </span>
       </p>
     </div>
@@ -43,7 +43,7 @@ const pillHref = more > 0 ? '/security/' : here ? '#do' : urgent?.url;
   <div class="alert-bar" data-level={n.level} data-notice={n.id} data-until={n.until} role="region" aria-label="Notice">
     <div class:list={['container alert-bar-inner', { 'has-x': n.dismissible }]}>
       <p>
-        <span class="tag"><Fragment set:html={UI.info} /><span class="t-full">Notice</span></span>{n.text}
+        <Fragment set:html={UI.info} />{n.text}
         {n.link && <span class="links"><a href={n.link.url}>{n.link.label} ↗</a></span>}
       </p>
       {n.dismissible && <button class="x" type="button" data-dismiss={`notice:${n.id}`} aria-label="Dismiss notice" set:html={UI.close} />}

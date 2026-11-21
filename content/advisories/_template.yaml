@@ -127,3 +127,16 @@ contacts: []
 apps: []
 # Optional: a sentence about community apps, shown on the page.
 # apps_note: None of the community apps cause this.
+
+# Optional: our own view as the community team, in a separate box right
+# after "Do this now", e.g. where GL.iNet's advice needs care in some setups.
+# The first title also appears on the home page panel (max. 90 characters).
+# Keep it clearly ours: no claims on GL.iNet's behalf.
+# community:
+#   date: 2026-11-21
+#   notes:
+#     - title: In a business network, talk to your cyber insurer before you reset
+#       text: |
+#         First paragraph.
+#
+#         Second paragraph.

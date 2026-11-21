@@ -24,6 +24,7 @@ document.addEventListener('click', (e) => {
     const compact = panel.classList.toggle('is-compact');
     toggle.setAttribute('aria-expanded', String(!compact));
     toggle.querySelector('.t')!.textContent = compact ? 'Show details' : 'Hide details';
+    toggle.setAttribute('aria-label', compact ? 'Show details' : 'Hide details');
     store.set(`collapsed:${panel.dataset.collapsible}`, compact);
     return;
   }

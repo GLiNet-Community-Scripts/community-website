@@ -1,0 +1,21 @@
+---
+/* References in one line: "CSA-2026-01 · No CVE · Confirmed by GL.iNet · Updated 21 Nov 2026". */
+import { CONFIRMED, type Advisory } from '../lib/advisories';
+import { when } from '../lib/format';
+
+interface Props {
+  advisory: Advisory;
+  updated?: boolean;
+  class?: string;
+}
+
+const { advisory: a, updated = true, class: cls } = Astro.props;
+const cve = a.cve === 'requested' ? 'CVE requested' : a.cve.length === 0 ? 'No CVE' : a.cve.join(', ');
+---
+
+<p class:list={['adv-refs', cls]}>
+  <span class="mono">{a.id}</span>{' '}
+  <span title={a.cve.length === 0 ? 'Not every issue gets a CVE' : undefined}>{cve}</span>{' '}
+  <span title={CONFIRMED[a.confirmed].hint}>{CONFIRMED[a.confirmed].label}</span>
+  {updated && <Fragment>{' '}<span>Updated {when(a.updated)}</span></Fragment>}
+</p>

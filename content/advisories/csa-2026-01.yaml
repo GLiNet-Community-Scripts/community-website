@@ -99,3 +99,12 @@ apps_note: >-
   None of the community apps on this site are named in GL.iNet's notice. A
   factory reset removes installed apps and their settings, so re-run their
   installers afterwards.
+
+community:
+  date: 2026-11-21
+  notes:
+    - title: In a business network, talk to your cyber insurer before you reset
+      text: |
+        A factory reset wipes the device, and with it the logs that could show how and since when someone had access. On GL.iNet routers the system log is kept in memory by default, so even a restart clears it.
+
+        If the device runs in a business network and you have cyber insurance or an incident response provider, contact them before you reset it. They may want logs and configuration secured first, and many policies expect you to report an incident before you change affected systems. Until then, disconnect the device from the internet instead of resetting it.

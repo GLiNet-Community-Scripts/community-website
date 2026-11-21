@@ -2,11 +2,10 @@
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import Footer from '../../components/Footer.astro';
-import AdvisoryTags from '../../components/AdvisoryTags.astro';
-import Confirmed from '../../components/Confirmed.astro';
+import AdvisoryEyebrow from '../../components/AdvisoryEyebrow.astro';
 import Terminal from '../../components/Terminal.astro';
 import Tile from '../../components/Tile.astro';
-import { CONFIRMED, SEVERITY, SOURCE_TYPE } from '../../lib/advisories';
+import { SEVERITY, SOURCE_TYPE } from '../../lib/advisories';
 import { loadContent } from '../../lib/content';
 import { dayTime, longDate, when } from '../../lib/format';
 import { UI } from '../../lib/ui';
@@ -22,9 +21,11 @@ const a = advisories[i];
 const newer = advisories[i - 1];
 const older = advisories[i + 1];
 const apps = a.apps.map((id) => [...tools, ...official].find((x) => x.id === id)!);
-const statement = a.sources.find((s) => s.type.startsWith('gl-inet') && s.url);
 const paragraphs = (a.details ?? '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 const url = new URL(a.url, site.url).href;
+const level = a.level ?? (a.active ? 'warning' : 'resolved');
+const cve = a.cve === 'requested' ? 'Requested' : a.cve.length === 0 ? 'None assigned' : null;
+const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': 'By GL.iNet staff', unconfirmed: 'Not yet' }[a.confirmed];
 ---
 
 <Layout title={`${a.id}: ${a.title} · gl-i.net (unofficial)`} description={a.summary} url={url}>
@@ -32,37 +33,46 @@ const url = new URL(a.url, site.url).href;
   <SiteHeader site={site} security={security} page="advisory" current={a} />
 
   <main id="top">
-    <header class="container page-head" data-level={a.level ?? (a.active ? 'warning' : 'resolved')}>
+    <article class="container sa-article" data-level={level}>
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="/">Community Apps</a><span class="sep">/</span><a href="/security/">Security advisories</a><span class="sep">/</span><span aria-current="page" class="mono">{a.id}</span>
       </nav>
-      <div class="sa-head">
-        <span class="tile xl adv-tile" aria-hidden="true" set:html={a.active ? UI.shield : UI.shieldOk} />
-        <div class="titles">
-          <div class="adv-tags"><AdvisoryTags advisory={a} /></div>
-          <h1>{a.title}</h1>
-          <p class="sub">{a.summary}</p>
-          <p class="sa-dates">
-            Published {longDate(a.published)} · Updated {when(a.updated)}
-            {a.timeline.length > 1 && <Fragment> · <a href="#timeline">Timeline</a></Fragment>}
-          </p>
-        </div>
-      </div>
-    </header>
 
-    <div class="container sa-layout" data-level={a.level ?? (a.active ? 'warning' : 'resolved')}>
+      <header class="sa-header">
+        <AdvisoryEyebrow advisory={a} />
+        <h1>{a.title}</h1>
+        <p class="sub">{a.summary}</p>
+      </header>
+
+      <dl class="sa-facts">
+        <div><dt>Community ID</dt><dd><span class="mono">{a.id}</span><button class="copy-id" type="button" data-copy={a.id}><span>Copy</span></button></dd></div>
+        <div><dt>CVE</dt><dd>{cve ?? a.cve.map((c) => <a class="mono" href={`https://www.cve.org/CVERecord?id=${c}`}>{c}</a>)}</dd></div>
+        <div><dt>Severity</dt><dd class="sev">{SEVERITY[a.severity].label}</dd></div>
+        <div><dt>Exploited</dt><dd>{a.exploited ? 'Yes' : 'Not known'}</dd></div>
+        <div><dt>Status</dt><dd>{a.statusLabel}</dd></div>
+        <div><dt>Confirmed</dt><dd>{confirmed}</dd></div>
+        <div><dt>Fixed in</dt><dd>{a.fixedIn ?? 'Not released yet'}</dd></div>
+        <div><dt>Updated</dt><dd>{when(a.updated)}</dd></div>
+      </dl>
+      <p class="adv-refs sa-facts-note">
+        <span>Published {longDate(a.published)}</span>{' '}
+        <span>Severity is our rating{a.vendor_severity ? `, GL.iNet’s is “${a.vendor_severity}”` : ''}</span>
+        {a.cve.length === 0 && <Fragment>{' '}<span>Not every issue gets a CVE</span></Fragment>}
+        {a.rollout && <Fragment>{' '}<span>{a.rollout.released} of {a.rollout.total} models have the fix</span></Fragment>}
+      </p>
+
       <section id="do" class="do-box" aria-labelledby="h-do">
         <h2 id="h-do">{a.active ? 'Do this now' : 'What to do'}</h2>
-        <div class:list={['do-groups', { two: a.actions.length > 1 }]}>
+        <div class:list={['do-cols', { two: a.actions.length > 1 }]}>
           {a.actions.map((g) => (
-            <div class="do-group">
+            <div>
               {g.audience && <h3>{g.audience}</h3>}
               <ol class="adv-steps">
                 {g.steps.map((s) => (
                   <li>
                     <b>{s.title}</b>
                     {(s.text || s.link) && (
-                      <span>{s.text}{s.link && <Fragment>{s.text && ' '}<a href={s.link.url}>{s.link.label} ↗</a></Fragment>}</span>
+                      <span>{s.text}{s.link && <Fragment>{s.text && ' '}<a href={s.link.url}>{s.link.label}&nbsp;↗</a></Fragment>}</span>
                     )}
                   </li>
                 ))}
@@ -72,191 +82,149 @@ const url = new URL(a.url, site.url).href;
         </div>
       </section>
 
-      <div class="sa-main">
-        <section id="models" aria-labelledby="h-models">
-          <h2 id="h-models">Who is affected</h2>
-          <p>{a.affected.summary}</p>
-          {a.affected.products.length > 0 && !a.models.length && (
-            <div class="dev spaced">{a.affected.products.map((p) => <span>{p}</span>)}</div>
-          )}
-          <dl class="facts spaced">
-            {a.affected.firmware && <Fragment><dt>Firmware</dt><dd>{a.affected.firmware}</dd></Fragment>}
-            <dt>Fixed in</dt><dd>{a.fixedIn ?? 'Not released yet'}</dd>
-            {a.affected.not_affected && <Fragment><dt>Not affected</dt><dd>{a.affected.not_affected}</dd></Fragment>}
-          </dl>
-          {a.models.length > 0 && (
-            <div class="sa-table-wrap">
-              <table class="sa-table">
-                <thead><tr><th>Model</th><th>Affected</th><th>Fix</th><th>Status</th></tr></thead>
-                <tbody>
-                  {a.models.map((m) => (
-                    <tr class:list={{ eol: m.eol }}>
-                      <td><b>{m.name}</b>{m.sku && <small>{m.sku}</small>}</td>
-                      <td>{m.affected}</td>
-                      <td class="fix">{m.eol ? '–' : (m.fixed ?? 'Not yet')}</td>
-                      <td>
-                        {m.eol ? (
-                          <Fragment><span class="st-cell no"><Fragment set:html={UI.noCircle} />No fix</span><small>{m.note ?? 'end of life'}</small></Fragment>
-                        ) : m.released ? (
-                          <Fragment><span class="st-cell ok"><Fragment set:html={UI.okCircle} />Available</span><small>{m.note ?? `since ${dayTime(m.released)}`}</small></Fragment>
-                        ) : (
-                          <Fragment><span class="st-cell wait"><Fragment set:html={UI.pending} />Pending</span><small>{m.note ?? m.expected ?? 'no date yet'}</small></Fragment>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+      {a.community && (
+        <section id="community" class="community-box" aria-labelledby="h-community">
+          <h2 id="h-community">The community team’s view</h2>
+          {a.community.notes.map((n) => (
+            <Fragment>
+              <h3>{n.title}</h3>
+              {n.text.split(/\n\s*\n/).map((p) => <p>{p.trim()}</p>)}
+            </Fragment>
+          ))}
+          <p class="adv-fine">
+            Our assessment as the maintainers of gl-i.net, {longDate(a.community.date)}. Not GL.iNet’s advice, and not
+            legal or insurance advice.
+          </p>
         </section>
+      )}
 
-        {a.check.length > 0 && (
-          <section id="check" aria-labelledby="h-check">
-            <h2 id="h-check">Check your device</h2>
-            <div class="check">
-              {a.check.map((c) => (
-                <div class="panel">
-                  <h3>{c.title}</h3>
-                  {c.menu && <p class="path">{c.menu.map((m, j) => <Fragment>{j > 0 && <span>→</span>}{m}</Fragment>)}</p>}
-                  {c.text && <p>{c.text}</p>}
-                  {c.command && <Terminal command={c.command} label="root@router" />}
-                </div>
-              ))}
-            </div>
-          </section>
+      <section id="models" aria-labelledby="h-models">
+        <h2 id="h-models">Who is affected</h2>
+        <p>{a.affected.summary}</p>
+        {(a.affected.firmware || a.affected.not_affected) && (
+          <p class="adv-refs">
+            {a.affected.firmware && <span>Firmware: {a.affected.firmware}</span>}
+            {a.affected.not_affected && <Fragment>{' '}<span>Not affected: {a.affected.not_affected}</span></Fragment>}
+          </p>
         )}
-
-        {(paragraphs.length > 0 || a.unknowns.length > 0) && (
-          <section id="details" aria-labelledby="h-details">
-            <h2 id="h-details">What we know</h2>
-            <div class="prose">{paragraphs.map((p) => <p>{p}</p>)}</div>
-            {a.unknowns.length > 0 && (
-              <Fragment>
-                <h3 class="sa-h3">What we don’t know yet</h3>
-                <ul class="unknowns">{a.unknowns.map((u) => <li><Fragment set:html={UI.question} /><span>{u}</span></li>)}</ul>
-              </Fragment>
-            )}
-          </section>
-        )}
-
-        <section id="timeline" aria-labelledby="h-timeline">
-          <h2 id="h-timeline">Timeline</h2>
-          <ol class="adv-time">
-            {a.timeline.map((t) => (
-              <li><time datetime={t.at}>{when(t.at)}</time><span>{t.text}{t.tag && <span class="tl-tag">{t.tag}</span>}</span></li>
-            ))}
-          </ol>
-        </section>
-
-        <section id="sources" aria-labelledby="h-sources">
-          <h2 id="h-sources">Sources</h2>
-          <ul class="sources">
-            {a.sources.map((s) => {
-              const t = SOURCE_TYPE[s.type];
-              return (
-                <li>
-                  <span class="src-type">
-                    <span class:list={['who', t.kind]}><Fragment set:html={t.kind === 'vendor' ? UI.okCircle : t.kind === 'ext' ? UI.external : UI.chat} />{t.who}</span>{t.what}
-                  </span>
-                  <span class="src-body">
-                    {s.url ? <a href={s.url}>{s.label} ↗</a> : <b>{s.label ?? 'Confirmation to the maintainers of this site'}</b>}
-                    {s.note && <p>{s.note}</p>}
-                    <time datetime={s.date}>{longDate(s.date)}</time>
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-
-        {(apps.length > 0 || a.apps_note) && (
-          <section id="apps" aria-labelledby="h-apps">
-            <h2 id="h-apps">Community apps</h2>
-            {a.apps_note && <p>{a.apps_note}</p>}
-            {apps.length > 0 && (
-              <ul class="rows">
-                {apps.map((app) => (
-                  <li class="row">
-                    <Tile icon={app.icon} gradient={app.gradient} size="sm" />
-                    <span class="text"><a class="name" href={`/#${app.id}`}>{app.name}</a><span class="tl">{app.tagline}</span></span>
-                    <span class="right"><a class="btn-install soft" href={`/#install-${app.id}`}>Install</a></span>
-                  </li>
+        {a.models.length > 0 && (
+          <div class="sa-table-wrap">
+            <table class="sa-table">
+              <thead><tr><th>Model</th><th>Affected</th><th>Fix</th><th>Status</th></tr></thead>
+              <tbody>
+                {a.models.map((m) => (
+                  <tr class:list={{ eol: m.eol }}>
+                    <td><b>{m.name}</b>{m.sku && <small>{m.sku}</small>}</td>
+                    <td>{m.affected}</td>
+                    <td class="fix">{m.eol ? '–' : (m.fixed ?? 'Not yet')}</td>
+                    <td>
+                      {m.eol ? (
+                        <Fragment><span class="st-cell no"><Fragment set:html={UI.noCircle} />No fix</span><small>{m.note ?? 'end of life'}</small></Fragment>
+                      ) : m.released ? (
+                        <Fragment><span class="st-cell ok"><Fragment set:html={UI.okCircle} />Available</span><small>{m.note ?? `since ${dayTime(m.released)}`}</small></Fragment>
+                      ) : (
+                        <Fragment><span class="st-cell wait"><Fragment set:html={UI.pending} />Pending</span><small>{m.note ?? m.expected ?? 'no date yet'}</small></Fragment>
+                      )}
+                    </td>
+                  </tr>
                 ))}
-              </ul>
-            )}
-          </section>
-        )}
-
-        <nav class="sa-pager" aria-label="More advisories">
-          <a href="/security/">← All security advisories</a>
-          {older ? (
-            <a class="next" href={older.url}><small>Previous advisory</small>{older.id} · {older.title}</a>
-          ) : newer && (
-            <a class="next" href={newer.url}><small>Newer advisory</small>{newer.id} · {newer.title}</a>
-          )}
-        </nav>
-      </div>
-
-      <aside class="sa-side" aria-label="Advisory facts">
-        <div class="facts-card">
-          <dl>
-            <div class="f">
-              <dt>Community ID</dt>
-              <dd><span class="mono">{a.id}</span><button class="copy-id" type="button" data-copy={a.id}><span>Copy</span></button>
-                <small>Our reference. Use it when no CVE exists.</small></dd>
-            </div>
-            <div class="f">
-              <dt>CVE</dt>
-              <dd>
-                {a.cve === 'requested' ? (
-                  <Fragment>Requested<small>We add the number once it is published.</small></Fragment>
-                ) : a.cve.length === 0 ? (
-                  <Fragment>None assigned<small>Not every issue gets a CVE; that doesn’t make it less serious.</small></Fragment>
-                ) : (
-                  a.cve.map((c) => <a class="mono cve-link" href={`https://www.cve.org/CVERecord?id=${c}`}>{c} ↗</a>)
-                )}
-              </dd>
-            </div>
-            <div class="f">
-              <dt>Severity</dt>
-              <dd><span class={`pill sev sev-${a.severity}`}>{SEVERITY[a.severity].label}</span>
-                <small>{SEVERITY[a.severity].hint}.{a.vendor_severity && ` GL.iNet: “${a.vendor_severity}”.`}</small></dd>
-            </div>
-            <div class="f">
-              <dt>Exploited</dt>
-              <dd>{a.exploited ? 'Yes' : 'Not known'}<small>{a.exploited ? 'Attacks have been seen.' : 'No attacks reported so far.'}</small></dd>
-            </div>
-            <div class="f">
-              <dt>Status</dt>
-              <dd><span class={`st ${a.status === 'investigating' ? 'investigating' : a.active ? 'rolling' : a.status === 'no-fix' ? 'nofix' : 'fixed'}`}><i></i>{a.statusLabel}</span>
-                {a.rollout && <small>{a.rollout.released} of {a.rollout.total} models have the fix.</small>}</dd>
-            </div>
-            <div class="f">
-              <dt>Confirmed</dt>
-              <dd><Confirmed value={a.confirmed} /><small>{CONFIRMED[a.confirmed].hint}</small></dd>
-            </div>
-            <div class="f"><dt>Fixed in</dt><dd>{a.fixedIn ?? 'Not released yet'}</dd></div>
-            <div class="f"><dt>Published</dt><dd>{longDate(a.published)}</dd></div>
-            <div class="f"><dt>Updated</dt><dd>{when(a.updated)}</dd></div>
-          </dl>
-        </div>
-        {a.contacts.length > 0 && (
-          <div class="facts-card contacts">
-            <h2>GL.iNet contacts</h2>
-            {a.contacts.map((c) => <p><span>{c.label}</span><a href={`mailto:${c.email}`}>{c.email}</a></p>)}
+              </tbody>
+            </table>
           </div>
         )}
-        <div class="side-actions">
-          <a class="btn-soft" href="/security/feed.xml"><Fragment set:html={UI.rss} />Follow updates</a>
-          {statement && <a class="btn-soft" href={statement.url}>GL.iNet’s notice ↗</a>}
-        </div>
-        <p class="adv-trust">
-          <Fragment set:html={UI.okCircle} />
-          <span><b>Written by the community, not GL.iNet.</b> Get firmware only from GL.iNet. We never host firmware and never ask for passwords.</span>
-        </p>
-      </aside>
-    </div>
+      </section>
+
+      {a.check.length > 0 && (
+        <section id="check" aria-labelledby="h-check">
+          <h2 id="h-check">Check your device</h2>
+          <div class="check">
+            {a.check.map((c) => (
+              <div class="panel">
+                <h3>{c.title}</h3>
+                {c.menu && <p class="path">{c.menu.map((m, j) => <Fragment>{j > 0 && <span>→</span>}{m}</Fragment>)}</p>}
+                {c.text && <p>{c.text}</p>}
+                {c.command && <Terminal command={c.command} label="root@router" />}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {(paragraphs.length > 0 || a.unknowns.length > 0) && (
+        <section id="details" aria-labelledby="h-details">
+          <h2 id="h-details">What we know</h2>
+          {paragraphs.map((p) => <p>{p}</p>)}
+          {a.unknowns.length > 0 && (
+            <Fragment>
+              <h3 class="sa-h3">What we don’t know yet</h3>
+              <ul class="unknowns">{a.unknowns.map((u) => <li>{u}</li>)}</ul>
+            </Fragment>
+          )}
+        </section>
+      )}
+
+      <section id="timeline" aria-labelledby="h-timeline">
+        <h2 id="h-timeline">Timeline</h2>
+        <ol class="sa-time">
+          {a.timeline.map((t) => (
+            <li><time datetime={t.at}>{when(t.at)}</time><span>{t.text}{t.tag && <span class="tl-tag">{t.tag}</span>}</span></li>
+          ))}
+        </ol>
+      </section>
+
+      <section id="sources" aria-labelledby="h-sources">
+        <h2 id="h-sources">Sources</h2>
+        <ul class="sources">
+          {a.sources.map((s) => {
+            const t = SOURCE_TYPE[s.type];
+            return (
+              <li>
+                {s.url ? <a href={s.url}>{s.label}&nbsp;↗</a> : <b>{s.label ?? 'Confirmation to the maintainers of this site'}</b>}
+                <p class="adv-refs"><span>{t.who}, {t.what.toLowerCase()}</span>{' '}<span>{longDate(s.date)}</span></p>
+                {s.note && <p>{s.note}</p>}
+              </li>
+            );
+          })}
+        </ul>
+        {a.contacts.length > 0 && (
+          <p class="adv-refs sa-contacts">
+            {a.contacts.map((c, j) => <Fragment>{j > 0 && ' '}<span>{c.label} <a href={`mailto:${c.email}`}>{c.email}</a></span></Fragment>)}
+          </p>
+        )}
+      </section>
+
+      {(apps.length > 0 || a.apps_note) && (
+        <section id="apps" aria-labelledby="h-apps">
+          <h2 id="h-apps">Community apps</h2>
+          {a.apps_note && <p>{a.apps_note}</p>}
+          {apps.length > 0 && (
+            <ul class="rows">
+              {apps.map((app) => (
+                <li class="row">
+                  <Tile icon={app.icon} gradient={app.gradient} size="sm" />
+                  <span class="text"><a class="name" href={`/#${app.id}`}>{app.name}</a><span class="tl">{app.tagline}</span></span>
+                  <span class="right"><a class="btn-install soft" href={`/#install-${app.id}`}>Install</a></span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
+      <p class="adv-fine sa-fine">
+        Written by the community, not GL.iNet. Get firmware only from GL.iNet; we never host firmware or ask for passwords.{' '}
+        <a href="/security/feed.xml">Follow updates via RSS</a>.
+      </p>
+
+      <nav class="sa-pager" aria-label="More advisories">
+        <a href="/security/">← All security advisories</a>
+        {older ? (
+          <a class="next" href={older.url}><small>Previous advisory</small>{older.id} · {older.title}</a>
+        ) : newer && (
+          <a class="next" href={newer.url}><small>Newer advisory</small>{newer.id} · {newer.title}</a>
+        )}
+      </nav>
+    </article>
   </main>
 
   <Footer site={site} generatedAt={generatedAt} />
