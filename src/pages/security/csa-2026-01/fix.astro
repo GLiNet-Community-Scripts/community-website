@@ -94,8 +94,10 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
       <section id="share" aria-labelledby="h-share">
         <h2 id="h-share">Help us see who was hit</h2>
         <p>
-          When the script finds something, it offers to send a short anonymous report to the community. It shows the
-          report first and sends it only after you answer <code>y</code>. With <code>--no-report</code> it never asks.
+          At the end the script offers to send a short anonymous report to the community, also when it found
+          nothing: reports from clean devices show which models and firmware versions were not hit. It says what the
+          report contains and sends it only after you answer <code>y</code>; <code>v</code> shows the complete report
+          first. With <code>--no-report</code> it never asks.
         </p>
         <p>
           The report says which model and firmware version the device has, when it was checked, which known traces
@@ -107,7 +109,8 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           It also contains what the attacker left, as text: the lines of changed autostart files (rc.local, the root
           crontab) that are not in the firmware image, the rules of the firewall chain the attack used, and the command
           lines of the malware’s processes. <b>Lines you added to those files yourself are part of this.</b> The script
-          shows everything before it asks. Read it, and answer <code>n</code> if you see a password or token of yours.
+          shows these lines word for word before it asks. Read them, and answer <code>n</code> if you see a password or
+          token of yours.
         </p>
         <p>
           The report contains no host name and no other file. Other changes on the device are only counted. The
