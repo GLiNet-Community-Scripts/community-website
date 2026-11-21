@@ -65,6 +65,12 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
 
       <section id="do" class="do-box" aria-labelledby="h-do">
         <h2 id="h-do">{a.active ? 'Do this now' : 'What to do'}</h2>
+        {a.community_fix?.before && (
+          <p class="do-before">
+            <b>Before you reset:</b> {a.community_fix.before}{' '}
+            <a href={a.community_fix.link.url}>{a.community_fix.link.label}&nbsp;{a.community_fix.link.url.startsWith('/') ? '→' : '↗'}</a>
+          </p>
+        )}
         {before.map((n) => (
           <p class="do-before"><b>Before you start:</b> {n.before} <a href="#community">Read our note first&nbsp;↓</a></p>
         ))}

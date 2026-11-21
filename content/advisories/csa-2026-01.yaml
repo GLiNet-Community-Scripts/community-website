@@ -7,7 +7,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-21T16:35Z
+updated: 2026-11-21T18:14Z
 cve: []
 confirmed: gl-inet-public
 
@@ -179,6 +179,9 @@ community_fix:
     it. The script knows only the known traces, so a clean result does not
     prove that a device is clean, and it does not replace the factory reset
     GL.iNet recommends. Use it at your own risk.
+  before: >-
+    A reset wipes the traces of the attack. Run the community script first: it
+    checks the device and saves the evidence. It is not a GL.iNet tool.
   link: { label: Check your device, url: /security/csa-2026-01/fix/ }
   image: /img/csa-2026-01-fix.svg
 

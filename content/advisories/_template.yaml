@@ -139,6 +139,9 @@ apps: []
 #   text: |
 #     What it does and who wrote it.
 #   caveat: Community work, not a GL.iNet tool. Not reviewed by GL.iNet.
+#   # Optional: one line at the top of "Do this now", before GL.iNet's steps,
+#   # when the tool should run first (max. 160 characters).
+#   before: A reset wipes the traces. Run the community script first.
 #   link: { label: Check your device, url: /security/csa-2026-02/fix/ }
 #   image: /img/csa-2026-02-fix.svg   # optional, a file in public/
 
