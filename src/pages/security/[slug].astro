@@ -76,11 +76,11 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
               {fix.does.length > 0 && <ul>{fix.does.map((d) => <li>{d}</li>)}</ul>}
               <Terminal command={fix.command} label="root@device" />
               {fix.author && <p class="do-first-author">{fix.author}</p>}
-              <p class="do-first-foot">
+              <p class="do-first-link">
                 <a href={fix.link.url}>{fix.link.label}&nbsp;{fix.link.url.startsWith('/') ? '→' : '↗'}</a>
-                <span>{fix.caveat}</span>
               </p>
             </div>
+            <p class="do-first-foot">{fix.caveat}</p>
           </div>
         ) : fix?.before && (
           <p class="do-before">
