@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 400" role="img" aria-labelledby="t">
+  <title id="t">A seal resting on a patched-up router</title>
+  <circle cx="240" cy="200" r="188" fill="#dff3e8"/>
+  <g stroke="#2f3a45" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- seal: tail, body, head -->
+    <path d="M352 196c22-30 50-38 62-30 6 12-6 30-24 40 20 0 34 10 34 22-12 12-44 8-70-6z" fill="#d5dbe1"/>
+    <path d="M150 232c0-52 52-78 112-78s112 30 112 70-40 52-112 52-112-4-112-44z" fill="#eef1f4"/>
+    <circle cx="186" cy="160" r="66" fill="#eef1f4"/>
+    <!-- antennas -->
+    <path d="M112 262 86 150" stroke-width="14"/>
+    <path d="M368 262 394 150" stroke-width="14"/>
+    <!-- router -->
+    <rect x="92" y="236" width="296" height="84" rx="18" fill="#2f3a45"/>
+    <path d="M132 320v14M348 320v14" stroke-width="12"/>
+    <!-- flipper over the router's edge -->
+    <path d="M196 226c10-10 34-8 44 6 8 14 4 34-8 40-14 4-30-6-36-20-4-10-6-20 0-26z" fill="#eef1f4"/>
+  </g>
+  <!-- hide the body outline inside the head -->
+  <path d="M214 178c14-12 30-18 44-20l-8 40-34 10z" fill="#eef1f4"/>
+  <!-- face -->
+  <g fill="#2f3a45">
+    <circle cx="162" cy="156" r="10"/>
+    <circle cx="210" cy="156" r="10"/>
+    <ellipse cx="186" cy="172" rx="7" ry="5"/>
+  </g>
+  <g fill="#fff">
+    <circle cx="165" cy="152" r="3.5"/>
+    <circle cx="213" cy="152" r="3.5"/>
+  </g>
+  <path d="M172 184c5 7 12 7 14 0 2 7 9 7 14 0" fill="none" stroke="#2f3a45" stroke-width="4" stroke-linecap="round"/>
+  <g fill="#f4a9a8" opacity=".75">
+    <ellipse cx="142" cy="178" rx="11" ry="7"/>
+    <ellipse cx="230" cy="178" rx="11" ry="7"/>
+  </g>
+  <!-- LEDs -->
+  <g fill="#52d68a">
+    <circle cx="128" cy="292" r="6"/>
+    <circle cx="150" cy="292" r="6"/>
+    <circle cx="172" cy="292" r="6"/>
+  </g>
+  <!-- plaster -->
+  <g transform="rotate(-18 312 278)">
+    <rect x="268" y="264" width="88" height="28" rx="14" fill="#f3c9a0" stroke="#2f3a45" stroke-width="4"/>
+    <rect x="298" y="264" width="28" height="28" fill="#fbe3c8" stroke="#2f3a45" stroke-width="4"/>
+    <g fill="#2f3a45"><circle cx="307" cy="273" r="2"/><circle cx="317" cy="273" r="2"/><circle cx="307" cy="283" r="2"/><circle cx="317" cy="283" r="2"/></g>
+  </g>
+</svg>

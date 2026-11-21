@@ -94,7 +94,7 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
             <Fragment>
               <h3>{n.title}</h3>
               {n.text.split(/\n\s*\n/).map((p) => <p>{p.trim()}</p>)}
-              {n.link && <p><a href={n.link.url}>{n.link.label}&nbsp;↗</a></p>}
+              {n.link && <p><a href={n.link.url}>{n.link.label}&nbsp;{n.link.url.startsWith('/') ? '→' : '↗'}</a></p>}
             </Fragment>
           ))}
           <p class="adv-fine">

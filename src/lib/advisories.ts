@@ -186,9 +186,12 @@ const AdvisorySchema = z.object({
             // Optional one-liner shown at the top of "Do this now", before the steps,
             // when people should read this note before they act.
             before: z.string().min(1).max(160).optional(),
-            // Optional link to community work (a script, a write-up). Unlike the
-            // links in "actions" it may point outside gl-inet.com.
-            link: z.object({ label: z.string().min(1), url: Https }).optional(),
+            // Optional link to community work (a script, a write-up): a page of
+            // this site ("/security/csa-2026-01/fix/") or an https:// address.
+            // Unlike the links in "actions" it may point outside gl-inet.com.
+            link: z
+              .object({ label: z.string().min(1), url: z.union([z.string().regex(/^\/[a-z0-9/-]*$/), Https]) })
+              .optional(),
           }),
         )
         .min(1),

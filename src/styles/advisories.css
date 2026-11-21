@@ -228,6 +228,33 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 .path { font-size: 14px; font-weight: 600; color: var(--text); }
 .path span { color: var(--text-2); font-weight: 400; margin-inline: 4px; }
 
+/* community fix page (/security/<id>/fix/): the article layout in the accent colour */
+.fix { --a-fg: var(--accent); --a-bg: var(--accent-soft); --a-line: var(--ok-line); }
+.fix code { font-size: .88em; padding: 1px 5px; border-radius: 5px; background: var(--surface-2); overflow-wrap: anywhere; }
+.fix .term code { font-size: inherit; padding: 0; background: none; overflow-wrap: normal; }
+.fix-head { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 12px 32px; align-items: center; }
+.fix-head > div { display: flex; flex-direction: column; gap: 10px; }
+.fix-head img { width: 100%; height: auto; }
+.sa-article > section.fix-warn { margin-top: 32px; padding: 22px 26px 20px; border-radius: 20px; background: var(--danger-bg); border: 1px solid var(--danger-line); }
+.fix-warn h2 { font-size: 14px; font-weight: 650; letter-spacing: 0; color: var(--danger); }
+.fix-warn ul { margin: 10px 0 0; padding-left: 20px; font-size: 16px; line-height: 1.6; }
+.fix-warn li + li { margin-top: 4px; }
+.fix-warn b { font-weight: 650; }
+.sa-article > section.fix-warn + .do-box { margin-top: 20px; }
+.fix-steps { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 20px; counter-reset: fix; }
+.fix-steps li { display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 12px; }
+.fix-steps li::before { counter-increment: fix; content: counter(fix); grid-row: 1 / span 3; width: 24px; height: 24px; border-radius: 50%; background: var(--a-bg); color: var(--a-fg); font-weight: 700; font-size: 13px; display: grid; place-items: center; }
+.fix-steps li > * { grid-column: 2; }
+.fix-steps b { font-size: 15.5px; font-weight: 650; line-height: 1.4; padding-top: 2px; }
+.fix-steps p { margin-top: 3px; font-size: 14.5px; line-height: 1.5; color: var(--text-2); }
+.fix-steps .term { margin-top: 10px; }
+.sa-article .do-box > p.adv-fine { margin-top: 14px; font-size: 13px; line-height: 1.5; }
+.fix-table { overflow-x: auto; }
+.fix-table table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+.fix-table th { text-align: left; font-size: 13px; color: var(--text-2); font-weight: 600; padding: 12px 18px; background: var(--surface-2); }
+.fix-table td { padding: 13px 18px; border-top: 1px solid var(--border); vertical-align: top; }
+.fix-table td:first-child code { white-space: nowrap; font-weight: 650; }
+.fix .unknowns li { list-style: disc; }
 .sa-article .rows { margin-top: 16px; }
 .sa-article > .sa-fine { margin-top: 48px; }
 .sa-pager { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; font-size: 14.5px; }
@@ -275,6 +302,9 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 
   .container.sa-article { padding-top: 28px; }
   .sa-header h1 { font-size: 30px; }
+  .fix-head { grid-template-columns: 1fr; }
+  .fix-head img { grid-row: 1; width: 170px; }
+  .sa-article > section.fix-warn { padding: 20px 18px; }
   .sa-header .sub { font-size: 17px; }
   .sa-article > section.do-box { padding: 20px 18px; }
   .do-cols.two { grid-template-columns: 1fr; gap: 24px; }

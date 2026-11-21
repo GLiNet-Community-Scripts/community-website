@@ -1,0 +1,155 @@
+---
+/*
+ * The community's fix for CSA-2026-01: a script that checks a device for the
+ * known traces of the malware. The script lives in
+ * https://github.com/admonstrator/glinet-csa-2026-01; this page is its guide.
+ */
+import Layout from '../../../layouts/Layout.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import Footer from '../../../components/Footer.astro';
+import Terminal from '../../../components/Terminal.astro';
+import { loadContent } from '../../../lib/content';
+
+const { site, generatedAt, security } = loadContent();
+const advisory = security.advisories.find((a) => a.id === 'CSA-2026-01')!;
+const url = new URL(`${advisory.url}fix/`, site.url).href;
+const repo = 'https://github.com/admonstrator/glinet-csa-2026-01';
+const steps = [
+  {
+    title: 'Check',
+    text: 'Reads only and prints a report. Nothing is changed.',
+    command: 'wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh',
+  },
+  {
+    title: 'Save the evidence',
+    text: 'Writes an archive to /tmp. That is RAM: copy it to your computer before you reboot. It contains your configuration, possibly with Wi-Fi and VPN keys, so don’t post it anywhere.',
+    command: 'sh gl-helper-triage.sh --archive',
+  },
+  {
+    title: 'Clean up',
+    text: 'Only if the check found something. Saves the evidence again, stops the malware, removes its files and autostart entries, then checks again.',
+    command: 'sh gl-helper-triage.sh --fix',
+  },
+];
+const labels = [
+  { label: 'IOC', meaning: 'A known trace of the malware', fix: 'Removes it' },
+  { label: 'PERSIST', meaning: 'A changed rc.local or root crontab without a reference to the malware', fix: 'Resets it only when an IOC was found' },
+  { label: 'REVIEW', meaning: 'An unusual change, not proof of an infection. Check whether it is yours.', fix: 'Never touches it' },
+  { label: 'INFO', meaning: 'Context, for example files installed by a package', fix: 'Never touches it' },
+];
+const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/config/.gl/gl-helper', '/etc/config/.gl/gb'];
+---
+
+<Layout
+  title={`Community fix for ${advisory.id}: check a device for the gl-helper malware · gl-i.net (unofficial)`}
+  description="A community script that checks a GL.iNet router or KVM device for the malware from GL.iNet's security notice of 20 November 2026, saves the evidence and cleans up. Not a GL.iNet tool."
+  url={url}
+>
+  <SiteHeader site={site} security={security} page="advisory" />
+
+  <main id="top">
+    <article class="container sa-article fix">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Community Apps</a><span class="sep">/</span><a href="/security/">Security advisories</a><span class="sep">/</span><a class="mono" href={advisory.url}>{advisory.id}</a><span class="sep">/</span><span aria-current="page">Community fix</span>
+      </nav>
+
+      <header class="sa-header fix-head">
+        <div>
+          <p class="adv-eyebrow"><span>Community fix</span>{' '}<span>Not a GL.iNet tool</span></p>
+          <h1>Check your GL.iNet device for the gl-helper malware</h1>
+          <p class="sub">
+            On 20 November 2026 GL.iNet said that its cloud remote management had been abused to install malware on
+            some routers and KVM devices. This script checks a device for the known traces, saves the evidence and
+            removes them on request.
+          </p>
+        </div>
+        <img src="/img/csa-2026-01-fix.svg" width="240" height="200" alt="A seal resting on a patched-up router" />
+      </header>
+
+      <section class="fix-warn" aria-labelledby="h-warn">
+        <h2 id="h-warn">Read this first</h2>
+        <ul>
+          <li><b>This is community work, not a GL.iNet tool.</b> GL.iNet has not reviewed or endorsed it. Use it at your own risk.</li>
+          <li><b>It does not replace a factory reset.</b> GL.iNet recommends a reset. The script finds and removes only the traces we know of.</li>
+          <li><b>In a business network, wait.</b> Talk to your cyber insurer or incident response provider before you change or reset the device. <a href={`${advisory.url}#community`}>Why</a></li>
+        </ul>
+      </section>
+
+      <section id="run" class="do-box" aria-labelledby="h-run">
+        <h2 id="h-run">Run it</h2>
+        <p>Log in to the device over SSH as root. You can <a href={`${repo}/blob/main/gl-helper-triage.sh`}>read the script&nbsp;↗</a> first.</p>
+        <ol class="fix-steps">
+          {steps.map((s) => (
+            <li>
+              <b>{s.title}</b>
+              <p>{s.text}</p>
+              <Terminal command={s.command} label="root@device" />
+            </li>
+          ))}
+        </ol>
+        <p class="adv-fine">Don’t run <code>netstat</code> on a device you suspect. The malware replaces it. The script never calls it.</p>
+      </section>
+
+      <section id="report" aria-labelledby="h-report">
+        <h2 id="h-report">Reading the report</h2>
+        <div class="sa-table-wrap fix-table">
+          <table>
+            <thead><tr><th>Label</th><th>Meaning</th><th>What <span class="mono">--fix</span> does</th></tr></thead>
+            <tbody>
+              {labels.map((l) => <tr><td><code>{l.label}</code></td><td>{l.meaning}</td><td>{l.fix}</td></tr>)}
+            </tbody>
+          </table>
+        </div>
+        <p>Exit codes: <code>0</code> clean, <code>1</code> traces found, <code>2</code> fixed and clean, <code>3</code> fix incomplete, <code>4</code> error.</p>
+      </section>
+
+      <section id="traces" aria-labelledby="h-traces">
+        <h2 id="h-traces">What it looks for</h2>
+        <p>The traces come from the cleanup GL.iNet shipped in the KVM firmware RM1PE 1.10.2. That cleanup runs when one of these files exists:</p>
+        <ul class="unknowns">{markers.map((m) => <li><code>{m}</code></li>)}</ul>
+        <p>
+          The script also finds system tools that were replaced (for example <code>netstat</code>), processes started
+          from these paths, and autostart entries that point to them: crontabs, <code>rc.local</code>, init scripts and
+          the lists of files a firmware update keeps. <a href={`${repo}#-indicators`}>All details are in the README&nbsp;↗</a>
+        </p>
+      </section>
+
+      <section id="after" aria-labelledby="h-after">
+        <h2 id="h-after">Afterwards</h2>
+        <ul class="unknowns">
+          <li>Keep the evidence archive.</li>
+          <li>KVM: update to the fixed firmware.</li>
+          <li>Router: update <b>without keeping settings</b>. The malware hides in <code>/etc/config</code>, which an update with kept settings preserves.</li>
+          <li>A factory reset wipes everything the malware could have written and is the safe option on both.</li>
+          <li>Check the computer attached to a KVM, and the devices behind a router.</li>
+          <li>Change the device password, your GL.iNet cloud account password and your SSH keys.</li>
+        </ul>
+      </section>
+
+      <section id="more" aria-labelledby="h-more">
+        <h2 id="h-more">More</h2>
+        <ul class="sources">
+          <li><a href={advisory.url}>Advisory {advisory.id}</a><p>What happened and what GL.iNet recommends</p></li>
+          <li><a href={repo}>Source code and README on GitHub&nbsp;↗</a><p>All options, the script for running it from your computer, tests and limits</p></li>
+          <li><a href={`${repo}/issues`}>Report a problem&nbsp;↗</a><p>Bugs and false alarms. Never attach an evidence archive.</p></li>
+        </ul>
+      </section>
+
+      <p class="adv-fine sa-fine">
+        Written by <a href="https://github.com/Admonstrator">Admon</a> for the community, not by GL.iNet. Provided as-is
+        under the MIT licence, without any warranty. Get firmware only from GL.iNet.
+      </p>
+
+      <nav class="sa-pager" aria-label="Back">
+        <a href={advisory.url}>← {advisory.id} · {advisory.title}</a>
+      </nav>
+    </article>
+  </main>
+
+  <Footer site={site} generatedAt={generatedAt} />
+
+  <script>
+    import '../../../scripts/alerts.ts';
+    import '../../../scripts/security.ts';
+  </script>
+</Layout>

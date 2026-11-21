@@ -7,7 +7,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-21T13:34Z
+updated: 2026-11-21T13:36Z
 cve: []
 confirmed: gl-inet-public
 
@@ -117,4 +117,4 @@ community:
         Admon, a member of the community, has written a script that checks a GL.iNet router or KVM device for the files this malware is known to leave behind. It can save evidence from the device first and, if you ask it to, remove what it found.
 
         This is community work, not a GL.iNet tool. GL.iNet has not reviewed or endorsed it. The script knows only the traces that GL.iNet's own cleanup in the KVM firmware RM1PE 1.10.2 looks for. A clean result does not prove that a device is clean, and the script does not replace the factory reset GL.iNet recommends. Read it before you run it, and use it at your own risk.
-      link: { label: "gl-helper triage: guide and script", url: https://admonstrator.github.io/glinet-csa-2026-01/ }
+      link: { label: How to run the script, url: /security/csa-2026-01/fix/ }
