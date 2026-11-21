@@ -115,8 +115,14 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           token of yours.
         </p>
         <p>
-          The report contains no host name and no other file. Other changes on the device are only counted. The
-          sender’s address is not stored.
+          The report carries a device ID, so that several reports from one device count once. It is a hash of the
+          hardware address of the first network interface. The address itself is not sent, and the server hashes
+          the ID again with a secret before it stores it, so it cannot be turned back into the address. Two reports
+          from your device can be linked to each other, but not to you. <code>--no-device-id</code> leaves it out.
+        </p>
+        <p>
+          The report contains no host name, no IP or MAC address and no other file. Other changes on the device are
+          only counted. The sender’s address is not stored.
         </p>
       </section>
 
