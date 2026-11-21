@@ -7,7 +7,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-21T13:42Z
+updated: 2026-11-21T15:58Z
 cve: []
 confirmed: gl-inet-public
 
@@ -59,22 +59,40 @@ actions:
         link: { label: Reset guide, url: "https://docs.gl-inet.com/router/en/4/faq/repair_network_or_reset_firmware/#reset-to-factory" }
       - title: Install the updated firmware once GL.iNet releases it
 
+check:
+  - title: Over SSH
+    text: >-
+      GL.iNet's quick check for routers. If the output contains "crond -i
+      /tmp/.log", the router is under attack according to GL.iNet. No output,
+      or only other lines, counts as healthy for GL.iNet. The line with "grep
+      tmp" is the check itself.
+    command: ps | grep tmp
+  - title: In the admin panel
+    menu: [System, Advanced Settings, LuCI, Status, Processes]
+    text: >-
+      Search the page (Ctrl+F, on a Mac Cmd+F) for "tmp/.log". No match for
+      "crond -i /tmp/.log" counts as healthy for GL.iNet.
+
 details: |
   On 20 November 2026 GL.iNet identified a vulnerability in its cloud remote management services. According to GL.iNet, an unauthorized party exploited it to access a subset of GL.iNet routers and KVM devices and to install malicious software on them.
 
   GL.iNet says it closed the vulnerability in its cloud services right after discovering it and applied corrective measures to the affected devices. It is preparing a firmware release with additional security protections and will publish it as soon as possible. Its investigation into the full scope is ongoing, including any effect on computers connected to affected KVM devices.
 
+  On 21 November GL.iNet posted a quick check for routers in its forum: a router is under attack when a process "crond -i /tmp/.log" is running. If you find it, or are not sure, GL.iNet asks you to contact support@gl-inet.com or security@gl-inet.com.
+
   GL.iNet will email affected customers individually, at the address of their cloud account, with guidance for their devices. If you are not sure whether your device is affected, contact GL.iNet support; they will help you check it. GL.iNet says it will update its notice as new information becomes available.
 
 unknowns:
   - Which models and firmware versions were affected. GL.iNet has not published a list.
-  - What the malicious software does. GL.iNet has not published technical details or signs to look for on a device.
+  - What the malicious software does. GL.iNet has named one sign, a running process, but no technical details.
+  - Whether GL.iNet's quick check also finds a device that was attacked earlier or has been restarted since. See our note below.
   - Whether data such as cloud account details or passwords was exposed. The notice doesn't say.
   - Whether computers connected to affected KVM devices were affected. GL.iNet is still investigating.
   - When the updated firmware comes out, and for which models.
   - Whether to keep using cloud remote management until then. The notice doesn't say.
 
 timeline:
+  - { at: 2026-11-21T13:56Z, text: "GL.iNet posts a quick check for routers in its forum: look for a running process \"crond -i /tmp/.log\"." }
   - { at: 2026-11-21T13:27Z, text: "A community member publishes a script that checks devices for the known malware files.", tag: Community }
   - { at: 2026-11-21T04:25Z, text: GL.iNet updates its notice. It doesn't say what changed. }
   - { at: 2026-11-20, text: GL.iNet publishes a security notice on its blog and in its forum. }
@@ -92,6 +110,17 @@ sources:
     note: The same notice, posted by the GL.iNet Security Team in the official forum.
     date: 2026-11-20
 
+  - type: gl-inet-forum
+    label: Quickly check if your Router is under attack
+    url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070
+    note: GL.iNet's quick check for routers, with answers from GL.iNet to users who posted their results.
+    date: 2026-11-21
+  - type: community
+    label: User reports in the same forum thread
+    url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070
+    note: Two users report a remote shell on a GL-AXT1800 with firmware 4.8.3. Not confirmed by GL.iNet as part of this incident.
+    date: 2026-11-21
+
 contacts:
   - { label: Is my device affected?, email: support@gl-inet.com }
   - { label: Report a security issue, email: security@gl-inet.com }
@@ -102,9 +131,9 @@ apps_note: >-
   installers afterwards.
 
 community_fix:
-  title: No official tool to check a device yet, so the community built one
+  title: The community built a script that also checks the files on a device
   text: |
-    GL.iNet has not published a way to check whether a device is infected, and its updated firmware is not out yet. The community has reacted: Admon has written a script that checks a GL.iNet router or KVM device for the files this malware is known to leave behind. It can save evidence from the device first and, if you ask it to, remove what it found.
+    GL.iNet's quick check looks at the processes that are running right now. The community has reacted with a script by Admon that runs the same check and also looks at the files on a GL.iNet router or KVM device: the ones this malware is known to leave behind, including the entries that would start it again after a restart. It can save evidence from the device first and, if you ask it to, remove what it found.
   caveat: >-
     Community work, not a GL.iNet tool. GL.iNet has not reviewed or endorsed
     it. The script knows only the known traces, so a clean result does not
@@ -124,3 +153,8 @@ community:
         A factory reset wipes the device, and with it the logs that could show how and since when someone had access. On GL.iNet routers the system log is kept in memory by default, so even a restart clears it.
 
         If the device runs in a business network and you have cyber insurance or an incident response provider, contact them before you reset it. They may want logs and configuration secured first, and many policies expect you to report an incident before you change affected systems. Until then, disconnect the device from the internet instead of resetting it.
+    - title: GL.iNet's quick check only shows what is running right now
+      text: |
+        The check lists the running processes. It cannot show whether someone had access earlier, or whether something on the device starts the malware again later. /tmp is memory and is empty after a restart, so a clean result on a router that was restarted or unplugged in the meantime says little. Read a clean result as "not running at the moment", not as "never compromised". The factory reset GL.iNet recommends still applies.
+
+        In the same forum thread, two users with a GL-AXT1800 on firmware 4.8.3 report a different process: a loop that connects a root shell to the address 170.39.226.219 through a pipe at /tmp/f. GL.iNet has not said whether this belongs to the incident. If "ps | grep tmp" shows /tmp/f or that address, treat the router as compromised: disconnect it from the internet and contact GL.iNet.

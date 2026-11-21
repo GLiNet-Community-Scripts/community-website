@@ -55,12 +55,13 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
 
       <header class="sa-header fix-head">
         <div>
-          <p class="adv-eyebrow"><span>Community fix</span>{' '}<span>No official check tool yet</span></p>
+          <p class="adv-eyebrow"><span>Community fix</span>{' '}<span>Not a GL.iNet tool</span></p>
           <h1>Check your GL.iNet device for the gl-helper malware</h1>
           <p class="sub">
             On 20 November 2026 GL.iNet said that its cloud remote management had been abused to install malware on
-            some routers and KVM devices. It has not published a way to check a device yet, so the community built one:
-            this script checks a device for the known traces, saves the evidence and removes them on request.
+            some routers and KVM devices. Its own quick check looks at running processes. The community built a script
+            that runs the same check and also looks at the files on a device. It saves the evidence and removes the
+            known traces on request.
           </p>
         </div>
         <img src="/img/csa-2026-01-fix.svg" width="240" height="200" alt="A seal resting on a patched-up router" />
@@ -107,6 +108,12 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
         <h2 id="h-traces">What it looks for</h2>
         <p>The traces come from the cleanup GL.iNet shipped in the KVM firmware RM1PE 1.10.2. That cleanup runs when one of these files exists:</p>
         <ul class="unknowns">{markers.map((m) => <li><code>{m}</code></li>)}</ul>
+        <p>
+          It also runs <a href={`${advisory.url}#check`}>GL.iNet’s quick check</a> for a running process
+          <code>crond -i /tmp/.log</code>, and looks for a remote shell that users reported in GL.iNet’s forum: a
+          process that uses <code>/tmp/f</code> and connects to <code>170.39.226.219</code>. GL.iNet has not confirmed
+          that this shell belongs to the incident. Both only show what is running right now.
+        </p>
         <p>
           The script also finds system tools that were replaced (for example <code>netstat</code>), processes started
           from these paths, and autostart entries that point to them: crontabs, <code>rc.local</code>, init scripts and

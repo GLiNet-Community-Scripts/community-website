@@ -250,7 +250,6 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 .fix-warn ul { margin: 10px 0 0; padding-left: 20px; font-size: 16px; line-height: 1.6; }
 .fix-warn li + li { margin-top: 4px; }
 .fix-warn b { font-weight: 650; }
-.sa-article > section.fix-warn + .do-box { margin-top: 20px; }
 .fix-steps { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 20px; counter-reset: fix; }
 .fix-steps li { display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 12px; }
 .fix-steps li::before { counter-increment: fix; content: counter(fix); grid-row: 1 / span 3; width: 24px; height: 24px; border-radius: 50%; background: var(--a-bg); color: var(--a-fg); font-weight: 700; font-size: 13px; display: grid; place-items: center; }
