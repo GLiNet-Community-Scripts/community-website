@@ -174,6 +174,18 @@ const AdvisorySchema = z.object({
     .default([]),
   apps: z.array(z.string().min(1)).default([]),
   apps_note: z.string().min(1).optional(),
+  // A fix or check tool built by the community, shown as its own card right
+  // after "Do this now" and as a link in the bar. Not GL.iNet's.
+  community_fix: z
+    .object({
+      title: z.string().min(1).max(90),
+      text: z.string().min(1),
+      // What it is not: shown in the card under the text.
+      caveat: z.string().min(1),
+      link: z.object({ label: z.string().min(1), url: z.union([z.string().regex(/^\/[a-z0-9/-]*$/), Https]) }),
+      image: z.string().regex(/^\/[a-z0-9/._-]+$/).optional(),
+    })
+    .optional(),
   // Our own view as the community team, kept apart from what GL.iNet says.
   community: z
     .object({

@@ -87,6 +87,21 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
         </div>
       </section>
 
+      {a.community_fix && (
+        <section id="community-fix" class="fix-card" aria-labelledby="h-fix">
+          {a.community_fix.image && <img src={a.community_fix.image} width="240" height="200" alt="" />}
+          <div>
+            <p class="fix-card-eyebrow">Community fix · Not from GL.iNet</p>
+            <h2 id="h-fix">{a.community_fix.title}</h2>
+            {a.community_fix.text.split(/\n\s*\n/).map((p) => <p>{p.trim()}</p>)}
+            <a class="fix-card-btn" href={a.community_fix.link.url}>
+              {a.community_fix.link.label}&nbsp;{a.community_fix.link.url.startsWith('/') ? '→' : '↗'}
+            </a>
+            <p class="fix-card-caveat">{a.community_fix.caveat}</p>
+          </div>
+        </section>
+      )}
+
       {a.community && (
         <section id="community" class="community-box" aria-labelledby="h-community">
           <h2 id="h-community">The community team’s view</h2>

@@ -173,6 +173,16 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 .do-box .adv-steps span { margin-top: 3px; font-size: 14.5px; line-height: 1.5; color: var(--text-2); }
 .do-box .adv-steps a { font-weight: 600; }
 
+/* the community's own fix: the one dark green card on the page, so it can't be missed */
+.sa-article > section.fix-card { margin-top: 20px; padding: 26px 28px; border-radius: 20px; background: var(--bar-bg); color: var(--bar-fg); display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 8px 28px; align-items: center; box-shadow: var(--card-shadow); }
+.fix-card img { width: 100%; height: auto; }
+.fix-card-eyebrow { font-size: 13px; font-weight: 650; letter-spacing: .04em; text-transform: uppercase; color: var(--bar-link); }
+.sa-article .fix-card h2 { margin-top: 6px; font-size: 24px; line-height: 1.2; color: #fff; }
+.sa-article .fix-card p:not([class]) { margin-top: 10px; font-size: 16px; line-height: 1.6; }
+.fix-card-btn { display: inline-block; margin-top: 16px; padding: 10px 20px; border-radius: var(--radius-pill); background: #fff; color: #173d2d; font-size: 15.5px; font-weight: 650; }
+.fix-card-btn:hover { text-decoration: none; background: var(--bar-link); }
+.fix-card-btn:focus-visible { outline-color: #fff; }
+.fix-card-caveat { margin-top: 14px; font-size: 13.5px; line-height: 1.5; color: var(--bar-link); }
 /* the community team's own view, kept apart from GL.iNet's statements */
 .sa-article > section.community-box { margin-top: 20px; padding: 22px 26px 20px; border-radius: 20px; background: var(--accent-soft); border: 1px solid var(--ok-line); }
 .community-box h2 { font-size: 14px; font-weight: 650; letter-spacing: 0; color: var(--accent); }
@@ -303,6 +313,8 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
   .container.sa-article { padding-top: 28px; }
   .sa-header h1 { font-size: 30px; }
   .fix-head { grid-template-columns: 1fr; }
+  .sa-article > section.fix-card { grid-template-columns: 1fr; padding: 22px 20px; }
+  .fix-card img { width: 130px; }
   .fix-head img { grid-row: 1; width: 170px; }
   .sa-article > section.fix-warn { padding: 20px 18px; }
   .sa-header .sub { font-size: 17px; }

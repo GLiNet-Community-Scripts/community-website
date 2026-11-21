@@ -95,8 +95,10 @@ Ground rules, partly enforced by the build:
 - Our own assessment goes into `community`, a separate box "The community
   team's view" after "Do this now", never into GL.iNet's statements.
   A note there can carry a `link` to community work such as a script; say
-  in its text that it is community work and not reviewed by GL.iNet. A fix
-  can get its own page below the advisory, like
+  in its text that it is community work and not reviewed by GL.iNet.
+- A fix or check tool built by the community goes into `community_fix`: a
+  dark green card after "Do this now" and a "Community fix" link in the bar.
+  It can get its own page below the advisory, like
   [`src/pages/security/csa-2026-01/fix.astro`](src/pages/security/csa-2026-01/fix.astro)
   (`/security/csa-2026-01/fix/`).
 - Bump `updated` with every change. The RSS feed shows the advisory again,

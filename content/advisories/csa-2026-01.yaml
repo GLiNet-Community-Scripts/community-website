@@ -7,7 +7,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-21T13:36Z
+updated: 2026-11-21T13:42Z
 cve: []
 confirmed: gl-inet-public
 
@@ -101,6 +101,18 @@ apps_note: >-
   factory reset removes installed apps and their settings, so re-run their
   installers afterwards.
 
+community_fix:
+  title: No official tool to check a device yet, so the community built one
+  text: |
+    GL.iNet has not published a way to check whether a device is infected, and its updated firmware is not out yet. The community has reacted: Admon has written a script that checks a GL.iNet router or KVM device for the files this malware is known to leave behind. It can save evidence from the device first and, if you ask it to, remove what it found.
+  caveat: >-
+    Community work, not a GL.iNet tool. GL.iNet has not reviewed or endorsed
+    it. The script knows only the known traces, so a clean result does not
+    prove that a device is clean, and it does not replace the factory reset
+    GL.iNet recommends. Use it at your own risk.
+  link: { label: Check your device, url: /security/csa-2026-01/fix/ }
+  image: /img/csa-2026-01-fix.svg
+
 community:
   date: 2026-11-21
   notes:
@@ -112,9 +124,3 @@ community:
         A factory reset wipes the device, and with it the logs that could show how and since when someone had access. On GL.iNet routers the system log is kept in memory by default, so even a restart clears it.
 
         If the device runs in a business network and you have cyber insurance or an incident response provider, contact them before you reset it. They may want logs and configuration secured first, and many policies expect you to report an incident before you change affected systems. Until then, disconnect the device from the internet instead of resetting it.
-    - title: A community script checks a device for the known malware files
-      text: |
-        Admon, a member of the community, has written a script that checks a GL.iNet router or KVM device for the files this malware is known to leave behind. It can save evidence from the device first and, if you ask it to, remove what it found.
-
-        This is community work, not a GL.iNet tool. GL.iNet has not reviewed or endorsed it. The script knows only the traces that GL.iNet's own cleanup in the KVM firmware RM1PE 1.10.2 looks for. A clean result does not prove that a device is clean, and the script does not replace the factory reset GL.iNet recommends. Read it before you run it, and use it at your own risk.
-      link: { label: How to run the script, url: /security/csa-2026-01/fix/ }

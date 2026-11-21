@@ -131,6 +131,17 @@ apps: []
 # Optional: a sentence about community apps, shown on the page.
 # apps_note: None of the community apps cause this.
 
+# Optional: a fix or check tool built by the community. Shown as its own
+# dark green card right after "Do this now" and as "Community fix" in the bar.
+# Say what GL.iNet has not provided yet, and in "caveat" what the tool is not.
+# community_fix:
+#   title: No official tool to check a device yet, so the community built one
+#   text: |
+#     What it does and who wrote it.
+#   caveat: Community work, not a GL.iNet tool. Not reviewed by GL.iNet.
+#   link: { label: Check your device, url: /security/csa-2026-02/fix/ }
+#   image: /img/csa-2026-02-fix.svg   # optional, a file in public/
+
 # Optional: our own view as the community team, in a separate box right
 # after "Do this now", e.g. where GL.iNet's advice needs care in some setups.
 # Titles: max. 90 characters.

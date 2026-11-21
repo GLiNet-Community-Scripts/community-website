@@ -36,6 +36,7 @@ const pillHref = more > 0 ? '/security/' : here ? '#do' : urgent?.url;
         <span class="links">
           <a href={here ? '#do' : `${urgent.url}#do`}>What to do</a>
           {!here && <a href={urgent.url}>Full advisory →</a>}
+          {urgent.community_fix && <a href={here ? '#community-fix' : `${urgent.url}#community-fix`}>Community fix</a>}
           {more > 0 && <a href="/security/">{more} more →</a>}
         </span>
       </p>
