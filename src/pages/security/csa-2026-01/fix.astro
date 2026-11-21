@@ -101,8 +101,17 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           The report says which model and firmware version the device has, when it was checked, which known traces
           were found and, for the reported remote shell, when it started and which port it used. For the malware’s own
           files and for replaced system tools it adds a fingerprint (SHA-256), the size and the time of the file, so
-          that we can tell variants apart. It contains no host name, no address or key of the device and no file
-          contents. Other changes on the device are only counted. The sender’s address is not stored.
+          that we can tell variants apart.
+        </p>
+        <p>
+          It also contains what the attacker left, as text: the lines of changed autostart files (rc.local, the root
+          crontab) that are not in the firmware image, the rules of the firewall chain the attack used, and the command
+          lines of the malware’s processes. <b>Lines you added to those files yourself are part of this.</b> The script
+          shows everything before it asks. Read it, and answer <code>n</code> if you see a password or token of yours.
+        </p>
+        <p>
+          The report contains no host name and no other file. Other changes on the device are only counted. The
+          sender’s address is not stored.
         </p>
       </section>
 
