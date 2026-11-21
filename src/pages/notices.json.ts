@@ -13,6 +13,8 @@ export function GET() {
     generated: new Date().toISOString(),
     source: new URL('/security/', site.url).href,
     notices: feedItems(security, site.url),
+    // When a bar next appears or ends on its own (null: nothing scheduled).
+    next_change: security.nextChange,
   };
   return new Response(JSON.stringify(body, null, 2) + '\n', { headers: { 'Content-Type': 'application/json' } });
 }

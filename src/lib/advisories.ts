@@ -303,11 +303,10 @@ function readAdvisories(appIds: Set<string>, now: number): Advisory[] {
     .sort((x, y) => y.published.localeCompare(x.published) || y.id.localeCompare(x.id));
 }
 
-function readNotices(now: number): Notice[] {
+function readNotices(): Notice[] {
   const file = path.join(process.cwd(), 'content', 'notices.yaml');
   if (!fs.existsSync(file)) return [];
-  const notices = parse(z.array(NoticeSchema).nullable(), YAML.parse(fs.readFileSync(file, 'utf8')), 'content/notices.yaml') ?? [];
-  return notices.filter((n) => (!n.from || now >= Date.parse(n.from)) && now <= until(n.until));
+  return parse(z.array(NoticeSchema).nullable(), YAML.parse(fs.readFileSync(file, 'utf8')), 'content/notices.yaml') ?? [];
 }
 
 export function loadSecurity(appIds: Set<string>, now = Date.now()) {
@@ -321,7 +320,17 @@ export function loadSecurity(appIds: Set<string>, now = Date.now()) {
   const lead = urgent[0] ?? advisories.find((a) => a.level === 'resolved') ?? null;
   const byApp = new Map<string, Advisory>();
   for (const a of [...urgent].reverse()) for (const id of a.apps) byApp.set(id, a);
-  return { advisories, active, urgent, lead, byApp, notices: readNotices(now) };
+
+  const all = readNotices();
+  const notices = all.filter((n) => (!n.from || now >= Date.parse(n.from)) && now <= until(n.until));
+  // The next moment a bar appears or disappears on its own. The 30-minute job
+  // (.github/workflows/notices-watch.yml) deploys once it has passed.
+  const moments = [
+    ...advisories.filter((a) => a.level && a.bannerEnds).map((a) => Date.parse(a.bannerEnds!)),
+    ...all.flatMap((n) => [n.from ? Date.parse(n.from) : NaN, until(n.until)]),
+  ].filter((t) => t > now);
+  const nextChange = moments.length ? new Date(Math.min(...moments)).toISOString() : null;
+  return { advisories, active, urgent, lead, byApp, notices, nextChange };
 }
 
 export type Security = ReturnType<typeof loadSecurity>;

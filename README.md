@@ -74,10 +74,10 @@ One file drives everything:
 - once `fixed`: a green "Resolved" bar for 48 hours after `updated`,
   dismissible. Give `updated` a time for exactly 48 hours.
 
-Nobody has to remove a bar by hand. `.github/workflows/notices-watch.yml`
-builds the site every 30 minutes without deploying and compares its
-`notices.json` with the deployed one. When a bar's time is up, a notice's
-`from` has come or a change is not deployed yet, it starts the deploy.
+Nobody has to remove a bar by hand. Each build writes into `notices.json`
+when a bar next appears or ends on its own (`next_change`).
+`.github/workflows/notices-watch.yml` reads only that file every 30 minutes,
+no checkout and no build, and starts the deploy once the moment has passed.
 Until then a small script in the page already hides a bar whose time is up.
 
 Ground rules, partly enforced by the build:
@@ -104,11 +104,12 @@ in their first 48 hours, entries from `notices.yaml`) is
 also published for other sites and scripts. [firmware.gl-i.net](https://firmware.gl-i.net/)
 and its terminal menu read it.
 
-- `/notices.json`: `{ version: 1, generated, source, notices: [...] }`, each
+- `/notices.json`: `{ version: 1, generated, source, notices: [...], next_change }`, each
   notice with `kind` (`advisory` or `notice`), `id`, `level`
   (`critical`, `warning`, `info` or `resolved`), `text`, `url`, `updated`,
   `until` when the bar ends on its own, and for advisories `title`,
-  `severity`, `status`, `exploited`.
+  `severity`, `status`, `exploited`. `next_change` is the next moment a bar
+  appears or ends on its own, or `null`.
 - `/notices.tsv`: one line per notice, tab-separated, no header:
   `level  id  updated  url  text`. An empty file means nothing to show.
 

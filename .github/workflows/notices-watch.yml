@@ -1,10 +1,10 @@
 name: Check notices
 
-# Every 30 minutes: build the site without deploying it and compare its
-# notices.json with the deployed one. When a bar's time is up (banner_until,
-# the 48 hours of a "Resolved" bar, a notice's until) or a notice's "from" has
-# come, they differ and the full deploy runs. firmware.gl-i.net picks the
-# change up with its own check a few minutes later.
+# Every 30 minutes, one request and no build: the deployed notices.json says in
+# "next_change" when a bar next appears or ends on its own (banner_until, the
+# 48 hours of a "Resolved" bar, a notice's from/until). Once that moment has
+# passed, the full deploy runs and writes the next one. firmware.gl-i.net
+# picks the change up with its own check a few minutes later.
 
 on:
   schedule:
@@ -12,7 +12,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
   actions: write # start the deploy workflow
 
 concurrency:
@@ -22,18 +21,19 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 3
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      # Without the GitHub data (prebuild): the notices don't depend on it.
-      - run: npx astro build
-      - id: compare
-        run: node scripts/check-notices.mjs
+      - name: Compare
+        id: compare
+        run: |
+          # The query string gets past the CDN cache; no answer means no change.
+          next=$(curl -fsS --max-time 20 "https://gl-i.net/notices.json?t=$(date +%s)" | jq -r '.next_change // empty') || exit 0
+          if [ -n "$next" ] && [ "$(date -u -d "$next" +%s)" -le "$(date -u +%s)" ]; then
+            echo "Change due since $next."
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Next change: ${next:-none scheduled}."
+          fi
       - name: Deploy
         if: steps.compare.outputs.changed == 'true'
         env:
@@ -46,4 +46,4 @@ jobs:
             exit 0
           fi
           gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY" --ref main
-          echo "::notice::Notices changed, deploy started."
+          echo "::notice::A bar starts or ends now, deploy started."
