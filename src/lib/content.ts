@@ -8,11 +8,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
 import { z } from 'zod';
+import { loadSecurity } from './advisories';
 import { ICON_NAMES } from './icons';
 import { gradientFor } from './tiles';
 
 // Anchors used by the page itself; app ids must not collide with them.
-const RESERVED_IDS = ['top', 'browse', 'results', 'official', 'install', 'submit', 'about'];
+const RESERVED_IDS = ['top', 'browse', 'results', 'official', 'install', 'submit', 'about', 'advisory'];
 
 export const TYPE_LABEL = {
   'router-script': 'Router script',
@@ -77,6 +78,9 @@ const SiteSchema = z.object({
     official: LinkSchema,
   }),
   submit: z.string().url(),
+  security: z.object({
+    report: z.string().url(),
+  }),
   official: z.array(LinkSchema),
   ignore: z.array(z.string()),
 });
@@ -200,6 +204,7 @@ export function loadContent() {
       stars: tools.reduce((sum, a) => sum + a.stars, 0),
     },
     generatedAt: github.generatedAt,
+    security: loadSecurity(new Set(apps.map((a) => a.id))),
   };
 }
 

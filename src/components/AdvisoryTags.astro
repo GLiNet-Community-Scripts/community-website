@@ -1,0 +1,24 @@
+---
+import { SEVERITY, STATUS, type Advisory } from '../lib/advisories';
+
+interface Props {
+  advisory: Advisory;
+  /** Leave out the community ID (where it is shown elsewhere). */
+  noId?: boolean;
+}
+
+const { advisory: a, noId = false } = Astro.props;
+const cls = STATUS[a.status].cls;
+---
+
+<span class={`pill sev sev-${a.severity}`}>{SEVERITY[a.severity].label}</span>
+{a.exploited && <span class="pill exploited" title="Attacks have been seen">Exploited</span>}
+<span class={`st ${cls}`}><i></i>{a.statusLabel}</span>
+{!noId && <span class="pill id">{a.id}</span>}
+{a.cve === 'requested'
+  ? <span class="pill nocve">CVE requested</span>
+  : a.cve.length === 0
+    ? <span class="pill nocve" title="Not every issue gets a CVE">No CVE</span>
+    : a.cve.length === 1
+      ? <span class="pill cve">{a.cve[0]}</span>
+      : <span class="pill cve" title={a.cve.join(', ')}>{a.cve.length} CVEs</span>}

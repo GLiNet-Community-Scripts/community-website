@@ -1,0 +1,89 @@
+---
+/*
+ * Everything above <main> on every page: security banner and notices, the
+ * disclaimer bar and the navigation. On sub pages the home page anchors
+ * point back to "/".
+ */
+import { SEVERITY, type Advisory, type Security } from '../lib/advisories';
+import type { Site } from '../lib/content';
+import { UI } from '../lib/ui';
+
+interface Props {
+  site: Site;
+  security: Security;
+  page: 'home' | 'security' | 'advisory';
+  /** The advisory shown on this page, if any. */
+  current?: Advisory;
+}
+
+const { site, security, page, current } = Astro.props;
+const { lead, active, notices } = security;
+const urgent = lead?.active ? lead : null;
+const pre = page === 'home' ? '' : '/';
+const here = urgent && current?.id === urgent.id;
+const more = active.length - 1;
+const pillHref = more > 0 ? '/security/' : here ? '#do' : urgent?.url;
+---
+
+{urgent && (
+  <div class="alert-bar" data-level={urgent.level} role="region" aria-label="Security advisory">
+    <div class="container alert-bar-inner">
+      <p>
+        <span class="tag"><Fragment set:html={UI.shield} /><span class="t-full">{SEVERITY[urgent.severity].label}</span></span><b>Security advisory:</b> {urgent.banner}
+        <span class="links">
+          <a href={page === 'home' ? '#advisory' : here ? '#do' : `${urgent.url}#do`}>What to do</a>
+          {!here && <a href={urgent.url}>Full advisory</a>}
+          {more > 0 && <a href="/security/">{more} more</a>}
+        </span>
+      </p>
+    </div>
+  </div>
+)}
+{notices.map((n) => (
+  <div class="alert-bar" data-level={n.level} data-notice={n.id} data-until={n.until} role="region" aria-label="Notice">
+    <div class:list={['container alert-bar-inner', { 'has-x': n.dismissible }]}>
+      <p>
+        <span class="tag"><Fragment set:html={UI.info} /><span class="t-full">Notice</span></span>{n.text}
+        {n.link && <span class="links"><a href={n.link.url}>{n.link.label} ↗</a></span>}
+      </p>
+      {n.dismissible && <button class="x" type="button" data-dismiss={`notice:${n.id}`} aria-label="Dismiss notice" set:html={UI.close} />}
+    </div>
+  </div>
+))}
+{notices.length > 0 && (
+  <script is:inline>
+    // Hide dismissed or expired notices before they paint (the site is rebuilt nightly).
+    document.querySelectorAll('[data-notice]').forEach(function (el) {
+      var gone = Date.parse(el.getAttribute('data-until')) < Date.now();
+      try { gone = gone || localStorage.getItem('dismissed:notice:' + el.getAttribute('data-notice')) === '1'; } catch (e) {}
+      if (gone) el.hidden = true;
+    });
+  </script>
+)}
+
+<p class="disclaimer-bar">
+  <b>Community project.</b> Not affiliated with, endorsed by or operated by GL.iNet.
+  Looking for the manufacturer? <a href={site.disclaimer.official.url}>gl-inet.com ↗</a>
+</p>
+
+<nav class:list={['nav', { 'has-adv': urgent }]} aria-label="Main">
+  <div class="container nav-inner">
+    <a class="brand" href={page === 'home' ? '#top' : '/'}>
+      <span class="logo" set:html={UI.logo} />
+      <span>Community Apps<small>Unofficial · for GL.iNet routers</small></span>
+    </a>
+    <div class="nav-links">
+      {urgent && (
+        <a class="nav-adv keep" data-level={urgent.level} href={pillHref} aria-label={`Security: ${active.length} active advisor${active.length === 1 ? 'y' : 'ies'}`}>
+          <i></i><Fragment set:html={UI.shield} /><span class="t">Security</span>
+        </a>
+      )}
+      <a href={`${pre}#browse`}>Browse</a>
+      <a href={`${pre}#install`}>How to install</a>
+      <a href={`${pre}#submit`}>Add your project</a>
+      {!urgent && <a href="/security/" aria-current={page !== 'home' ? 'page' : undefined}>Security</a>}
+      <a class="keep" href={`${pre}#about`}>About</a>
+      <a class="keep" href={`https://github.com/${site.org}`}>GitHub ↗</a>
+    </div>
+  </div>
+</nav>

@@ -34,6 +34,12 @@ disclaimer:
 # (.github/ISSUE_TEMPLATE/new-project.yml in this repository).
 submit: https://github.com/GLiNet-Community-Scripts/community-website/issues/new?template=new-project.yml
 
+security:
+  # "Report privately" on /security/. GitHub's private vulnerability
+  # reporting must be on: Settings → Code security → Private vulnerability
+  # reporting.
+  report: https://github.com/GLiNet-Community-Scripts/community-website/security/advisories/new
+
 official:
   - { label: GL.iNet website, url: "https://www.gl-inet.com" }
   - { label: GL.iNet documentation, url: "https://docs.gl-inet.com" }

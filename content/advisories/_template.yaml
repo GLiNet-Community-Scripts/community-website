@@ -1,0 +1,129 @@
+# Template for a security advisory. Files starting with "_" are ignored.
+#
+# Copy this file to <id in lower case>.yaml, e.g. csa-2026-02.yaml, and
+# fill it in. Each file becomes a page at /security/<id>/, an entry in the
+# archive and in the RSS feed (/security/feed.xml). While "status" is
+# active (investigating, fix-rolling-out, mitigated), the site also shows
+# the banner on every page, the "Security" pill in the navigation, the
+# panel at the top of the home page and a note in every install sheet.
+#
+# Write plain English, like the rest of the site. Say what GL.iNet said,
+# say what we don't know, and don't guess. Dates are UTC unless you give a
+# zone: 2026-11-20, or 2026-11-20T18:05+01:00. The build checks every field.
+
+# Our own ID, always set, even when there is a CVE. Next free number per year.
+id: CSA-2026-02
+
+# One line, no full stop. Shown as the page heading and in the archive.
+title: What happened, in a few words
+
+# Our rating: critical (from the internet, no login needed),
+# high (from the local network, or with a login), medium (limited impact or
+# an unusual setup), low (hardening, no known attack).
+severity: high
+# Optional: GL.iNet's own rating, as they wrote it.
+# vendor_severity: high
+
+# true once attacks have been seen ("exploited in the wild").
+exploited: false
+
+# investigating | fix-rolling-out | mitigated (workaround, no fix yet)
+# | fixed | no-fix (e.g. end of life). The first three count as active.
+status: investigating
+
+published: 2026-11-20
+# Bump this with every change: the RSS feed shows the advisory again, and
+# readers who hid the home page panel see it again.
+updated: 2026-11-20T18:05Z
+
+# Optional, closed advisories only: show a "resolved" line on the home page
+# until this date.
+# banner_until: 2026-12-15
+
+# [] when there is none (most issues), "requested", or [CVE-2026-1234].
+cve: []
+
+# How sure we are:
+#   gl-inet-public  GL.iNet said so publicly (needs a gl-inet, gl-inet-forum
+#                   or gl-inet-release-notes source)
+#   gl-inet-staff   GL.iNet staff confirmed it to us directly (needs a
+#                   gl-inet-staff source). Share only what GL.iNet agreed to.
+#   unconfirmed     user or researcher reports we checked ourselves
+confirmed: gl-inet-public
+
+# Required while active, max. 170 characters: the text in the top bar and on
+# the collapsed panel. For a closed advisory with banner_until, the text of
+# the "resolved" line.
+banner: >-
+  One or two sentences: what happened and the single most important thing
+  to do.
+
+# Two to four sentences at the top of the page and in the feed.
+summary: >-
+  What is affected, what an attacker can do, what GL.iNet has done and what
+  users should do.
+
+affected:
+  summary: >-
+    Who is affected, in a sentence or two. Say so when GL.iNet hasn't
+    published a list.
+  products: [Routers]            # chips when there is no model table
+  firmware: 4.0.0 to 4.8.1       # optional, short
+  fixed_in: 4.8.2                # optional; otherwise taken from models
+  not_affected: Firmware 3.x     # optional
+
+# Optional: one line per model, drives the table on the page.
+models: []
+#  - { name: Flint 2, sku: GL-MT6000, affected: 4.0.0 – 4.8.1, fixed: 4.8.2, released: 2026-11-21 }
+#  - { name: Flint 3, sku: GL-BE9300, affected: 4.6.0 – 4.8.1, fixed: 4.8.2, expected: this week }
+#  - { name: Slate, sku: GL-AR750S, affected: 4.0.0 – 4.3.x, eol: true }
+
+# What to do, in GL.iNet's order. One group per audience, or a single group
+# without "audience". Links must point to gl-inet.com (docs, downloads).
+actions:
+  - audience: Routers
+    steps:
+      - title: Update the firmware
+        text: In the admin panel under System → Upgrade.
+        link: { label: Firmware downloads, url: https://dl.gl-inet.com/ }
+
+# Optional: how to check a device.
+check: []
+#  - title: Firmware version
+#    menu: [System, Overview, Firmware version]
+#    command: cat /etc/glversion
+
+# Optional: "What we know". Paragraphs separated by a blank line.
+details: |
+  First paragraph.
+
+  Second paragraph.
+
+# Optional: open questions. Remove them as they get answered.
+unknowns:
+  - Which models are affected.
+
+# Newest first or in any order; the page sorts them. "tag" is optional.
+timeline:
+  - { at: 2026-11-20T18:05Z, text: GL.iNet confirms the issue. }
+
+# Every source, labelled by type:
+#   gl-inet, gl-inet-forum, gl-inet-release-notes   (must link to gl-inet.com)
+#   gl-inet-staff   direct confirmation to us: no url, "note" required
+#   cve             (nvd.nist.gov or cve.org)
+#   researcher, community
+sources:
+  - type: gl-inet-forum
+    label: Title of the forum post
+    url: https://forum.gl-inet.com/
+    date: 2026-11-20
+
+# Optional: GL.iNet addresses to contact (only @gl-inet.com).
+contacts: []
+#  - { label: Is my device affected?, email: support@gl-inet.com }
+
+# Optional: community apps this advisory concerns (ids as in the page
+# anchors, e.g. glinet-tailscale-updater). Their cards get an "Advisory" pill.
+apps: []
+# Optional: a sentence about community apps, shown on the page.
+# apps_note: None of the community apps cause this.

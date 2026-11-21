@@ -20,3 +20,13 @@ export const stamp = (iso: string) =>
   new Date(iso).toLocaleString('en-GB', {
     day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC', timeZoneName: 'short',
   });
+
+/** A date ("20 Nov 2026") or a moment ("20 Nov 2026, 17:05 UTC"), as written in the YAML. */
+export const when = (s: string) => (s.includes('T') ? stamp(s) : longDate(s));
+
+/** Short form for tight lists: "20 Nov" or "20 Nov, 17:05". */
+export function dayTime(s: string): string {
+  const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', timeZone: 'UTC' };
+  if (s.includes('T')) Object.assign(opts, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+  return new Date(s).toLocaleString('en-GB', opts);
+}

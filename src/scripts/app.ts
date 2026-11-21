@@ -4,6 +4,7 @@
  * time; this script only shows, hides, reorders and clones it.
  */
 import { ago } from '../lib/format';
+import { copyFrom } from './copy';
 
 type Sort = 'stars' | 'updated' | 'name';
 const state: { cat: string; q: string; sort: Sort } = { cat: 'all', q: '', sort: 'stars' };
@@ -148,24 +149,8 @@ document.addEventListener('click', (e) => {
     else openApp(opener!.dataset.open!, 'details');
     return;
   }
-  const copy = target.closest<HTMLButtonElement>('[data-copy]');
-  if (!copy) return;
-  const label = copy.querySelector('span');
-  const done = () => {
-    if (!label) return;
-    label.textContent = 'Copied';
-    setTimeout(() => (label.textContent = 'Copy'), 1600);
-  };
-  const selectInstead = () => {
-    const code = copy.closest('.term')?.querySelector('code');
-    if (!code) return;
-    const range = document.createRange();
-    range.selectNodeContents(code);
-    const sel = getSelection()!;
-    sel.removeAllRanges();
-    sel.addRange(range);
-  };
-  navigator.clipboard?.writeText(copy.dataset.copy!).then(done, selectInstead) ?? selectInstead();
+  const copy = target.closest<HTMLElement>('[data-copy]');
+  if (copy) copyFrom(copy);
 });
 
 window.addEventListener('hashchange', openFromHash);

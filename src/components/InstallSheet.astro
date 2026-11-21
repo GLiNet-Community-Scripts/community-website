@@ -1,6 +1,7 @@
 ---
 import Tile from './Tile.astro';
 import Terminal from './Terminal.astro';
+import type { Advisory } from '../lib/advisories';
 import type { App } from '../lib/content';
 import { hasPlaceholder } from '../lib/shell';
 import { UI } from '../lib/ui';
@@ -8,9 +9,11 @@ import { UI } from '../lib/ui';
 interface Props {
   app: App;
   org: string;
+  /** An open advisory to point to before installing. */
+  advisory?: Advisory | null;
 }
 
-const { app, org } = Astro.props;
+const { app, org, advisory } = Astro.props;
 
 const RUNS_ON = {
   'router-script': 'router',
@@ -61,6 +64,13 @@ const more = app.devices.length > 5 ? ` and ${app.devices.length - 5} more` : ''
     </div>
     <button class="close" type="button" data-close aria-label="Close" set:html={UI.close} />
   </div>
+
+  {advisory && (
+    <div class="adv-note" data-level={advisory.level}>
+      <Fragment set:html={UI.shield} />
+      <p><b>Security advisory {advisory.id}.</b> {advisory.banner} <a href={`${advisory.url}#do`}>What to do</a></p>
+    </div>
+  )}
 
   {(app.devices.length > 0 || app.firmware) && (
     <p class="req">

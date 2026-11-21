@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+// After global.css so its rules win where both apply.
+import '../styles/advisories.css';
 
 interface Props {
   title: string;
@@ -43,6 +45,7 @@ const ogImageAlt =
     <meta name="twitter:image:alt" content={ogImageAlt} />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f6f5" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0c0b" />
+    <slot name="head" />
   </head>
   <body>
     <slot />

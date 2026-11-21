@@ -1,0 +1,15 @@
+# Short notices without their own page, e.g. maintenance of GL.iNet's
+# forum or download server. Each one is a bar above the disclaimer bar on
+# every page, between "from" and "until". Security issues go into
+# content/advisories/ instead.
+#
+# - id: forum-maintenance-2026-11        # unique, lower case
+#   level: info                          # info (blue) | warning (amber)
+#   text: >-                             # max. 170 characters
+#     GL.iNet's forum is down for maintenance on 28 Nov, 02:00 to 06:00 UTC.
+#   link: { label: Details, url: https://forum.gl-inet.com/ }   # optional
+#   from: 2026-11-26                     # optional
+#   until: 2026-11-28T06:00Z             # hidden after this, no commit needed
+#   dismissible: true                    # default true
+
+[]

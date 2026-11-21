@@ -30,6 +30,10 @@ All text lives in three YAML files. Changing the site never touches HTML.
 - [`content/site.yaml`](content/site.yaml): hero, disclaimer,
   official GL.iNet links, and `ignore` for repositories that should not
   appear.
+- [`content/advisories/`](content/advisories/): one file per security
+  advisory, see below.
+- [`content/notices.yaml`](content/notices.yaml): short notices without a
+  page, e.g. maintenance of GL.iNet's forum.
 
 Adding a project: suggestions arrive through the
 [project form](https://github.com/GLiNet-Community-Scripts/community-website/issues/new?template=new-project.yml)
@@ -47,6 +51,45 @@ Tile icons (see `src/lib/icons.ts`): `router`, `shield`, `lock`, `chip`,
 
 **The build validates everything.** Unknown categories, icons or types,
 duplicate repositories and malformed links fail with a clear message.
+
+## Security advisories
+
+Security issues in GL.iNet routers and services get an advisory under
+[`/security/`](https://gl-i.net/security/). Each one is a YAML file in
+`content/advisories/`, named after its ID (`csa-2026-01.yaml` for
+`CSA-2026-01`). [`_template.yaml`](content/advisories/_template.yaml)
+documents every field; files starting with `_` are ignored.
+
+One file drives everything:
+
+- its page `/security/<id>/`, the archive on `/security/` and the RSS feed
+  `/security/feed.xml`;
+- while `status` is active (`investigating`, `fix-rolling-out`,
+  `mitigated`): the red (critical, high) or amber (medium, low) bar on every
+  page, the "Security" pill in the navigation, the panel at the top of the
+  home page, a note in every install sheet and an "Advisory" pill on the
+  cards listed in `apps`;
+- once `fixed`, with `banner_until`: a "resolved" line on the home page until
+  that date.
+
+Ground rules, partly enforced by the build:
+
+- Every advisory has a community ID (`CSA-YYYY-NN`). A CVE is optional:
+  most issues never get one.
+- `confirmed` says how sure we are: GL.iNet said so publicly, GL.iNet staff
+  confirmed it to us directly (only what GL.iNet agreed to share), or not
+  confirmed. The build checks that a matching source exists.
+- Sources of type `gl-inet*` and links in the steps must point to
+  `gl-inet.com`; CVE sources to nvd.nist.gov or cve.org. We never link
+  firmware anywhere else.
+- Say what GL.iNet said, list what we don't know in `unknowns`, and don't
+  guess.
+- Bump `updated` with every change. The RSS feed shows the advisory again,
+  and readers who hid the home page panel see it again.
+
+"Report privately" on `/security/` uses GitHub's private vulnerability
+reporting (`site.yaml` → `security.report`). Turn it on once under
+**Settings → Code security → Private vulnerability reporting**.
 
 ## GitHub data
 

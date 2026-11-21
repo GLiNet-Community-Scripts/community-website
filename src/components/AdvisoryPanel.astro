@@ -1,0 +1,118 @@
+---
+/*
+ * The advisory at the top of the home page: the full panel while it is
+ * active (collapsible, remembered per revision), a one-line "resolved" card
+ * for a while after it is fixed (dismissible).
+ */
+import AdvisoryTags from './AdvisoryTags.astro';
+import Confirmed from './Confirmed.astro';
+import type { Advisory } from '../lib/advisories';
+import { dayTime, when } from '../lib/format';
+import { UI } from '../lib/ui';
+
+interface Props {
+  advisory: Advisory;
+  /** Other active advisories besides this one. */
+  more: number;
+}
+
+const { advisory: a, more } = Astro.props;
+const key = `${a.id}@${a.updated}`;
+const statement = a.sources.find((s) => s.type.startsWith('gl-inet') && s.url);
+const names = a.models.length ? a.models.map((m) => m.name) : a.affected.products;
+const grouped = a.actions.length > 1;
+---
+
+<div class="container adv-wrap">
+  {a.level === 'resolved' ? (
+    <article class="adv is-compact" id="advisory" data-level="resolved" data-dismissible={`advisory:${key}`} aria-labelledby="adv-title">
+      <div class="adv-head">
+        <span class="tile adv-tile" aria-hidden="true" set:html={UI.shieldOk} />
+        <div class="adv-meta">
+          <div class="adv-tags"><span class="pill lvl">Resolved</span><span class="pill id">{a.id}</span><span class="adv-date">{when(a.updated)}</span></div>
+          <p class="adv-compact-line"><b id="adv-title">{a.title}</b>{a.banner} <a href={a.url}>Read the advisory</a></p>
+        </div>
+        <button class="close" type="button" data-dismiss={`advisory:${key}`} aria-label="Dismiss" set:html={UI.close} />
+      </div>
+    </article>
+  ) : (
+    <article class="adv" id="advisory" data-level={a.level} data-collapsible={key} aria-labelledby="adv-title">
+      <div class="adv-head">
+        <span class="tile lg adv-tile" aria-hidden="true" set:html={UI.shield} />
+        <div class="adv-meta">
+          <div class="adv-tags"><AdvisoryTags advisory={a} /></div>
+          <p class="adv-updated">Updated {when(a.updated)} · <Confirmed value={a.confirmed} /></p>
+          <p class="adv-compact-line"><b>{a.title}</b>{a.banner}</p>
+        </div>
+        <button class="adv-toggle" type="button" data-toggle aria-expanded="true" aria-controls="advisory">
+          <Fragment set:html={UI.chevronUp} /><span class="t">Hide details</span>
+        </button>
+      </div>
+      <h2 id="adv-title">{a.title}</h2>
+      <p class="adv-lead">{a.summary}</p>
+      <div class="adv-grid">
+        <section aria-labelledby="adv-h1">
+          <h3 id="adv-h1">Who is affected</h3>
+          {names.length > 0 && (
+            <div class="dev">
+              {names.slice(0, 6).map((n) => <span>{n}</span>)}
+              {names.length > 6 && <span class="more">+{names.length - 6} more</span>}
+            </div>
+          )}
+          <p class="adv-aside first">{a.affected.summary}</p>
+          <dl class="facts">
+            {a.affected.firmware && <Fragment><dt>Firmware</dt><dd>{a.affected.firmware}</dd></Fragment>}
+            <dt>Fixed in</dt><dd>{a.fixedIn ? <b>{a.fixedIn}</b> : 'Not released yet'}</dd>
+            {a.affected.not_affected && <Fragment><dt>Not affected</dt><dd>{a.affected.not_affected}</dd></Fragment>}
+          </dl>
+          {a.apps_note && <p class="adv-aside">{a.apps_note}</p>}
+        </section>
+        <section aria-labelledby="adv-h2">
+          <h3 id="adv-h2">What to do now</h3>
+          {a.actions.map((g) => (
+            <Fragment>
+              {g.audience && <h4 class="adv-aud">{g.audience}</h4>}
+              <ol class:list={['adv-steps', { tight: grouped }]}>
+                {g.steps.map((s) => <li><b>{s.title}</b>{!grouped && s.text && <span>{s.text}</span>}</li>)}
+              </ol>
+            </Fragment>
+          ))}
+          {grouped && <p class="adv-aside"><a href={`${a.url}#do`}>Each step in detail →</a></p>}
+        </section>
+        <section aria-labelledby="adv-h3">
+          <h3 id="adv-h3">Timeline <small>· UTC</small></h3>
+          <ol class="adv-time">
+            {a.timeline.slice(0, 4).map((t) => <li><time datetime={t.at}>{dayTime(t.at)}</time><span>{t.text}</span></li>)}
+          </ol>
+        </section>
+      </div>
+      <div class="adv-foot">
+        <a class="btn-install lg" href={a.url}>Read the full advisory</a>
+        {statement && <a class="btn-soft" href={statement.url}>GL.iNet’s notice ↗</a>}
+        <a class="ref" href="/security/">{more > 0 ? `${more} more active advisor${more === 1 ? 'y' : 'ies'} →` : 'All security advisories →'}</a>
+      </div>
+      <p class="adv-trust">
+        <Fragment set:html={UI.okCircle} />
+        <span><b>Written by the community, not GL.iNet.</b> Every advisory says where its information comes from.
+        Get firmware only from GL.iNet. We never host firmware and never ask for passwords; if a page does, it is not us.</span>
+      </p>
+    </article>
+  )}
+  <script is:inline>
+    // Restore "hide details" / "dismiss" before the panel paints.
+    (function () {
+      var el = document.getElementById('advisory');
+      try {
+        if (el.dataset.collapsible && localStorage.getItem('collapsed:' + el.dataset.collapsible) === '1') {
+          el.classList.add('is-compact');
+          var b = el.querySelector('[data-toggle]');
+          b.setAttribute('aria-expanded', 'false');
+          b.querySelector('.t').textContent = 'Show details';
+        }
+        if (el.dataset.dismissible && localStorage.getItem('dismissed:' + el.dataset.dismissible) === '1') {
+          el.parentElement.hidden = true;
+        }
+      } catch (e) {}
+    })();
+  </script>
+</div>

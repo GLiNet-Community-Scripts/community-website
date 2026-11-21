@@ -1,14 +1,16 @@
 ---
 import AppCard from './AppCard.astro';
+import type { Advisory } from '../lib/advisories';
 import type { App, Category } from '../lib/content';
 
 interface Props {
   category: Category;
   apps: App[];
   org: string;
+  advisories: Map<string, Advisory>;
 }
 
-const { category, apps, org } = Astro.props;
+const { category, apps, org, advisories } = Astro.props;
 ---
 
 <section class="section" id={`cat-${category.id}`} aria-labelledby={`h-${category.id}`}>
@@ -18,6 +20,6 @@ const { category, apps, org } = Astro.props;
   </div>
   <p class="intro">{category.intro}</p>
   <div class="grid">
-    {apps.map((app) => <AppCard app={app} org={org} />)}
+    {apps.map((app) => <AppCard app={app} org={org} advisory={advisories.get(app.id)} />)}
   </div>
 </section>

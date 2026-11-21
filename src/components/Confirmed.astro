@@ -1,0 +1,14 @@
+---
+import { CONFIRMED, type Advisory } from '../lib/advisories';
+import { UI } from '../lib/ui';
+
+interface Props {
+  value: Advisory['confirmed'];
+  short?: boolean;
+}
+
+const { value, short = false } = Astro.props;
+const c = CONFIRMED[value];
+---
+
+<span class={`conf ${c.cls}`} title={c.hint}><Fragment set:html={value === 'unconfirmed' ? UI.question : UI.okCircle} />{short ? c.short : c.label}</span>

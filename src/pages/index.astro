@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import AdvisoryPanel from '../components/AdvisoryPanel.astro';
 import Hero from '../components/Hero.astro';
 import Charts from '../components/Charts.astro';
 import CategorySection from '../components/CategorySection.astro';
@@ -10,35 +12,18 @@ import Footer from '../components/Footer.astro';
 import DetailSheet from '../components/DetailSheet.astro';
 import InstallSheet from '../components/InstallSheet.astro';
 import { loadContent } from '../lib/content';
-import { UI } from '../lib/ui';
 
-const { site, sections, tools, official, popular, recent, stats, generatedAt } = loadContent();
+const { site, sections, tools, official, popular, recent, stats, generatedAt, security } = loadContent();
+// Install sheets carry a note while a critical or high advisory is open.
+const urgent = security.lead?.level === 'critical' ? security.lead : null;
 const categoryTitle = Object.fromEntries(sections.map((s) => [s.category.id, s.category.title]));
 ---
 
 <Layout title={site.title} description={site.description} url={site.url}>
-  <p class="disclaimer-bar">
-    <b>Community project.</b> Not affiliated with, endorsed by or operated by GL.iNet.
-    Looking for the manufacturer? <a href={site.disclaimer.official.url}>gl-inet.com ↗</a>
-  </p>
-
-  <nav class="nav" aria-label="Main">
-    <div class="container nav-inner">
-      <a class="brand" href="#top">
-        <span class="logo" set:html={UI.logo} />
-        <span>Community Apps<small>Unofficial · for GL.iNet routers</small></span>
-      </a>
-      <div class="nav-links">
-        <a href="#browse">Browse</a>
-        <a href="#install">How to install</a>
-        <a href="#submit">Add your project</a>
-        <a class="keep" href="#about">About</a>
-        <a class="keep" href={`https://github.com/${site.org}`}>GitHub ↗</a>
-      </div>
-    </div>
-  </nav>
+  <SiteHeader site={site} security={security} page="home" />
 
   <main id="top">
+    {security.lead && <AdvisoryPanel advisory={security.lead} more={security.active.length - (security.lead.active ? 1 : 0)} />}
     <Hero hero={site.hero} stats={stats} />
 
     <div class="filters" id="browse">
@@ -64,7 +49,7 @@ const categoryTitle = Object.fromEntries(sections.map((s) => [s.category.id, s.c
     <div class="container">
       <div id="catalog">
         <Charts popular={popular} recent={recent} categoryTitle={categoryTitle} org={site.org} />
-        {sections.map(({ category, apps }) => <CategorySection category={category} apps={apps} org={site.org} />)}
+        {sections.map(({ category, apps }) => <CategorySection category={category} apps={apps} org={site.org} advisories={security.byApp} />)}
       </div>
 
       <section class="section" id="results" aria-live="polite" hidden>
@@ -86,11 +71,12 @@ const categoryTitle = Object.fromEntries(sections.map((s) => [s.category.id, s.c
   {tools.map((app) => (
     <Fragment>
       <template id={`tpl-details-${app.id}`}><DetailSheet app={app} org={site.org} /></template>
-      <template id={`tpl-install-${app.id}`}><InstallSheet app={app} org={site.org} /></template>
+      <template id={`tpl-install-${app.id}`}><InstallSheet app={app} org={site.org} advisory={security.byApp.get(app.id) ?? urgent} /></template>
     </Fragment>
   ))}
 
   <script>
     import '../scripts/app.ts';
+    import '../scripts/alerts.ts';
   </script>
 </Layout>

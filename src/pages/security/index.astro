@@ -1,0 +1,209 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import Footer from '../../components/Footer.astro';
+import AdvisoryTags from '../../components/AdvisoryTags.astro';
+import Confirmed from '../../components/Confirmed.astro';
+import { CONFIRMED, SEVERITY, type Advisory } from '../../lib/advisories';
+import { loadContent } from '../../lib/content';
+import { when } from '../../lib/format';
+import { UI } from '../../lib/ui';
+
+const { site, generatedAt, security } = loadContent();
+const { advisories, active } = security;
+const url = new URL('/security/', site.url).href;
+const key = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const names = (a: Advisory) => (a.models.length ? a.models.map((m) => m.name) : a.affected.products);
+const models = [...new Set(advisories.flatMap(names))].sort((x, y) => x.localeCompare(y));
+const years = [...new Set(advisories.map((a) => a.year))];
+const count = (b: Advisory['bucket']) => advisories.filter((a) => a.bucket === b).length;
+const latest = advisories.map((a) => a.updated).sort((x, y) => Date.parse(y) - Date.parse(x))[0];
+const pub = new Date(advisories.at(-1)?.published ?? Date.now());
+const month = (d: string) => new Date(d).toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' });
+const day = (d: string) => new Date(d).getUTCDate();
+---
+
+<Layout
+  title="Security advisories · gl-i.net (unofficial)"
+  description="Security issues in GL.iNet routers and services, explained by the community with what to do. Unofficial, not affiliated with GL.iNet."
+  url={url}
+>
+  <link slot="head" rel="alternate" type="application/rss+xml" title="gl-i.net security advisories" href="/security/feed.xml" />
+  <SiteHeader site={site} security={security} page="security" />
+
+  <main id="top">
+    <header class="container page-head">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Community Apps</a><span class="sep">/</span><span aria-current="page">Security advisories</span></nav>
+      <h1>Security advisories</h1>
+      <p class="sub">
+        Security issues in GL.iNet routers and services, in plain language and with what to do. We link GL.iNet’s
+        own statements wherever they exist, and say so plainly when they don’t.
+      </p>
+      <div class="head-actions">
+        <a class="btn-soft" href="/security/feed.xml"><Fragment set:html={UI.rss} />RSS feed</a>
+        <a class="btn-soft" href="#report"><Fragment set:html={UI.lock} />Report a vulnerability privately</a>
+      </div>
+      {advisories.length > 0 && (
+        <p class="page-stats">
+          <span><b>{active.length}</b> active</span>
+          <span><b>{advisories.length - active.length}</b> closed</span>
+          <span>Since {pub.getUTCFullYear()}</span>
+          <span>Last update {when(latest)}</span>
+        </p>
+      )}
+    </header>
+
+    <div class="container">
+      <section class="section" aria-labelledby="h-active">
+        <div class="section-head"><h2 id="h-active">Active</h2><span class="count">{active.length} advisor{active.length === 1 ? 'y' : 'ies'}</span></div>
+        {active.length === 0 ? (
+          <p class="sa-none"><Fragment set:html={UI.okCircle} /><span><b>No open advisories right now.</b> Anything new appears here, in the banner on every page and in the RSS feed.</span></p>
+        ) : active.map((a) => (
+          <div class="sa-active">
+            <article class="adv" data-level={a.level} aria-labelledby={`a-${a.slug}`}>
+              <div class="adv-head">
+                <span class="tile lg adv-tile" aria-hidden="true" set:html={UI.shield} />
+                <div class="adv-meta">
+                  <div class="adv-tags"><AdvisoryTags advisory={a} /></div>
+                  <p class="adv-updated">Updated {when(a.updated)} · <Confirmed value={a.confirmed} /></p>
+                </div>
+              </div>
+              <h3 id={`a-${a.slug}`}><a href={a.url}>{a.title}</a></h3>
+              <p class="adv-lead">{a.summary}</p>
+              <div class="kv sa-kv">
+                <div>
+                  <span>Affected</span>
+                  <b>{a.models.length ? `${a.models.length} models` : a.affected.products.join(', ') || 'See advisory'}</b>
+                  <small>{a.affected.firmware ?? 'versions not published'}</small>
+                </div>
+                <div>
+                  <span>Fixed in</span>
+                  <b>{a.fixedIn ?? 'Not released yet'}</b>
+                  {a.rollout && <small>out for {a.rollout.released} of {a.rollout.total} models</small>}
+                </div>
+                <div><span>Severity</span><b>{SEVERITY[a.severity].label}</b><small>{SEVERITY[a.severity].hint}</small></div>
+                <div><span>Exploited</span><b>{a.exploited ? 'Yes' : 'Not known'}</b><small>{a.exploited ? 'attacks have been seen' : 'no attacks reported'}</small></div>
+              </div>
+              <div class="adv-foot">
+                <a class="btn-install lg" href={a.url}>Read the advisory</a>
+                <a class="btn-soft" href={`${a.url}#do`}>What to do now</a>
+              </div>
+            </article>
+          </div>
+        ))}
+      </section>
+
+      <section class="section" aria-labelledby="h-read">
+        <div class="section-head"><h2 id="h-read">How to read these advisories</h2></div>
+        <div class="explain">
+          <div class="panel">
+            <h3>Where it comes from</h3>
+            <p>GL.iNet doesn’t publish an advisory for every issue. So every entry here names its sources and says how sure we are.</p>
+            <ul class="legend conf-legend">
+              {Object.entries(CONFIRMED).map(([k, c]) => (
+                <li><Confirmed value={k as Advisory['confirmed']} />{c.hint}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>CVE or not</h3>
+            <p>Many issues never get a CVE: cloud services usually don’t, and someone has to request one. That says nothing about how serious an issue is.</p>
+            <p>Every advisory gets a community ID such as <b class="mono">CSA-2026-01</b>, so you can refer to it either way. If a CVE comes later, we add it.</p>
+            <ul class="legend">
+              <li><span class="pill cve">CVE-…</span>Published CVE</li>
+              <li><span class="pill nocve">Requested</span>Asked for, not out yet</li>
+              <li><span class="pill nocve">No CVE</span>None assigned</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>Severity</h3>
+            <p>Our rating, based on who can attack and what they get. GL.iNet’s own rating, if there is one, is listed on the advisory.</p>
+            <ul class="legend">
+              {Object.entries(SEVERITY).map(([k, s]) => <li><span class={`pill sev sev-${k}`}>{s.label}</span>{s.hint}</li>)}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="h-all">
+        <div class="section-head"><h2 id="h-all">All advisories</h2><span class="count" id="sa-count">{advisories.length} advisor{advisories.length === 1 ? 'y' : 'ies'}</span></div>
+        {advisories.length === 0 ? (
+          <p class="intro">Nothing published yet.</p>
+        ) : (
+          <Fragment>
+            <div class="sa-filters">
+              <div class="chips" role="toolbar" aria-label="Status">
+                <button class="chip-btn" type="button" data-f="all" aria-pressed="true">All<span>{advisories.length}</span></button>
+                {([['active', 'Active'], ['fixed', 'Fixed'], ['nofix', 'No fix']] as const).map(([b, label]) => count(b) > 0 && (
+                  <button class="chip-btn" type="button" data-f={b} aria-pressed="false">{label}<span>{count(b)}</span></button>
+                ))}
+              </div>
+              {models.length > 1 && (
+                <label class="sort" for="sa-model"><span>Device</span>
+                  <select id="sa-model">
+                    <option value="">All devices</option>
+                    {models.map((m) => <option value={key(m)}>{m}</option>)}
+                  </select>
+                </label>
+              )}
+            </div>
+            <div id="sa-archive">
+              {years.map((y) => (
+                <Fragment>
+                  <h3 class="sa-year" data-year={y}>{y}</h3>
+                  <ol class="sa-list" data-year={y}>
+                    {advisories.filter((a) => a.year === y).map((a) => (
+                      <li data-status={a.bucket} data-models={names(a).map(key).join(' ')}>
+                        <a class="sa-row" href={a.url}>
+                          <span class="lead-col when"><b>{day(a.published)}</b>{month(a.published)}</span>
+                          <div class="main">
+                            <h4>{a.title}</h4>
+                            <span class="sum">{a.summary}</span>
+                            <span class="meta"><AdvisoryTags advisory={a} /><Confirmed value={a.confirmed} short /></span>
+                          </div>
+                          <Fragment set:html={UI.chevron.replace('<svg', '<svg class="go"')} />
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </Fragment>
+              ))}
+            </div>
+            <p class="empty sa-empty" id="sa-empty" hidden>No advisory matches this filter.</p>
+          </Fragment>
+        )}
+      </section>
+
+      <section class="section" aria-labelledby="h-more">
+        <div class="duo">
+          <div class="panel" id="feed">
+            <h3 id="h-more">Get notified</h3>
+            <p>New advisories and every update to one appear in the RSS feed. No account, no e-mail address, no tracking.</p>
+            <a class="btn-soft" href="/security/feed.xml">Subscribe to the RSS feed</a>
+          </div>
+          <div class="panel" id="report">
+            <h3>Found a vulnerability?</h3>
+            <p>
+              Please don’t post details in public issues or the forum. Report it privately: we check it, pass it on to
+              GL.iNet and publish only once a fix or a workaround exists. You can also write to GL.iNet’s security team
+              directly at <a href="mailto:security@gl-inet.com">security@gl-inet.com</a>.
+            </p>
+            <a class="btn-soft" href={site.security.report}>Report privately on GitHub ↗</a>
+          </div>
+        </div>
+        <p class="adv-trust spaced">
+          <Fragment set:html={UI.okCircle} />
+          <span><b>Community-run, not GL.iNet.</b> These advisories are written by the maintainers of gl-i.net. Get firmware
+          only from GL.iNet; we never host firmware ourselves and never ask for passwords or router access.</span>
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer site={site} generatedAt={generatedAt} />
+
+  <script>
+    import '../../scripts/alerts.ts';
+    import '../../scripts/security.ts';
+  </script>
+</Layout>
