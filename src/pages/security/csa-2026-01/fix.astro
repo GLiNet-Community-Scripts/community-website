@@ -120,6 +120,11 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           <code>INFO</code> when a package installed it. All of this only shows what is running right now.
         </p>
         <p>
+          The report lists the open network connections with their program, and every line of the firewall
+          configuration that is not in the firmware image. Your own port forwards appear there too. It also shows the
+          running firewall rules that redirect traffic.
+        </p>
+        <p>
           The script also finds system tools that were replaced (for example <code>netstat</code>), processes started
           from these paths, and autostart entries that point to them: crontabs, <code>rc.local</code>, init scripts and
           the lists of files a firmware update keeps. <a href={`${repo}#-indicators`}>All details are in the README&nbsp;↗</a>
