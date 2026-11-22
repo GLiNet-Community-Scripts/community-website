@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: fix-rolling-out
 published: 2026-11-21
-updated: 2026-11-22T19:00Z
+updated: 2026-11-22T21:54Z
 fixed_in: firmwares released on 2026-11-22
 cve: []
 confirmed: gl-inet-public
@@ -17,7 +17,7 @@ banner: >-
   A flaw in GL.iNet's cloud remote management is being used to attack routers and KVM devices. Switch GoodCloud off and check your device before you restart it.
 
 summary: >-
-  An unauthorized party used a vulnerability in GL.iNet's cloud remote management (GoodCloud) to access some GL.iNet routers and KVM devices and install malicious software on them. GL.iNet says it fixed the vulnerability in its cloud and blocked the attack path, which does not clean devices that are already infected. It asks everyone to check their device, and has scheduled stable security firmware for 22 November 2026.
+  An unauthorized party used a vulnerability in GL.iNet's cloud remote management (GoodCloud) to access some GL.iNet routers and KVM devices and install malicious software on them. GL.iNet says it fixed the vulnerability in its cloud and blocked the attack path, which does not clean devices that are already infected. It asks everyone to check their device, and has been releasing security firmware model by model since 22 November 2026.
 
 affected:
   summary: >-
@@ -84,7 +84,7 @@ actions:
       Look for programs, browser extensions or accounts you don't know, unexpected startup items or scheduled tasks, changed settings and unusual network activity. Run a full scan with up-to-date security software.
   - title: Install the stable security firmware
     text: >-
-      Scheduled for 22 November 2026. Beta builds with the security fixes are available now, 1.10.2 for RM1, RM1V2, RM1PE, RM4PE, RM10 and RM10RC, 1.8.6 for RMQ1.
+      Released on 22 November 2026, by the firmware archive: 1.10.3 for RM1, RM1V2, RM1PE, RM4PE, RM10 and RM10RC, 1.8.7 for RMQ1.
     link: { label: Firmware downloads, url: https://dl.gl-inet.com/ }
 - audience: Routers
   steps:
@@ -100,7 +100,7 @@ actions:
     text: >-
       GL.iNet says no factory reset or other cleanup is needed. GL.iNet staff and the community have found cases this check misses, so run the other checks too.
   - title: Install the stable security firmware
-    text: Scheduled for 22 November 2026. GL.iNet recommends it for every device.
+    text: Being released model by model since 22 November 2026; GL.iNet recommends it for every device. By the firmware archive it is out so far for GL-MT6000, GL-MT3000 and GL-MG1300 (4.11.1), GL-BE9300 (4.10.2), GL-BE14000 (4.9.3) and GL-X2000 (4.7.14). Run the community script before you install it.
     link: { label: Firmware downloads, url: https://dl.gl-inet.com/ }
 
 check:
@@ -171,20 +171,27 @@ unknowns:
 - Why routers on firmware 4.11 show no traces in the reports, and whether that firmware is safe.
 - Which models and firmware versions were affected, and how many devices. GL.iNet has not published this; the table above shows only where traces were reported.
 - When it started. GL.iNet names 20 November; one user recorded a takeover of a KVM on 19 November.
-- Whether the cause RemoteToHome found in the GoodCloud client is right, and which firmware removes it. GL.iNet has not commented.
+- Whether the flaw in the cloud client's AstroWarp handler was the way in. The security firmware changes exactly that code, and RemoteToHome had pointed at the cloud client before. GL.iNet has not said so.
+- Whether the other cloud functions that took unchecked input were used, and what trace they leave. The trace the checks know, the state file, belongs to one of them.
 - What the malicious software itself does once it runs. The installer has been read; the gl-helper program it installs has not.
 - What was run through the remote shells, and which other addresses are involved.
 - Whether a device that was only bound to a GoodCloud account, with remote SSH and remote web access switched off, was at risk. By everything the community has read in the code it was, because the command came over the cloud connection itself and those settings play no part. GL.iNet has not said. The community script now reports these settings so that the reports can show it.
 - Whether the attacker could reach anything on GoodCloud's own side, such as its WireGuard service, or only the devices. Only GL.iNet can answer that.
 - How to tell whether a device was compromised earlier. No check can show that after a restart.
 - Whether a factory reset is enough. GL.iNet says it is; RemoteToHome found that the image a reset restores from can be changed by root.
-- Whether the older backdoor has to do with this incident, and how it got onto devices.
+- Whether the older backdoor has to do with this incident, and how it got onto devices. GL.iNet's security firmware puts back the start script that backdoor changes, so GL.iNet appears to know of it; its notice does not mention it.
 - Whether data such as cloud account details or passwords was exposed. The notice doesn't say.
 - Whether computers connected to affected KVM devices were affected. GL.iNet is still investigating.
 
 timeline:
+- at: 2026-11-22T21:38Z
+  text: "Community script 2.46 follows a comparison of firmware 4.9.2 and 4.9.3 for the GL-BE14000: the security firmware checks what the cloud sends before it reaches a shell, and it deletes known traces of the malware at its first start. The script now says when firmware has cleaned up, and finds the malware's lines in the firmware's own cron directory."
+  tag: Community
 - at: 2026-11-22T19:45Z
   text: "GL.iNet announces that the fix is rolling out in firmwares released on 2026-11-22 or 2026-11-23."
+  tag: Vendor
+- at: 2026-11-22
+  text: "The first security firmware appears in the firmware archive: 1.10.3 for the Comet KVMs (1.8.7 for the RMQ1), and for routers 4.11.1, 4.10.2, 4.9.3 and 4.7.14, model by model."
   tag: Vendor
 - at: 2026-11-22T10:47Z
   text: "RemoteToHome Consulting has checked 183 routers it manages: 152 show the attack of 20 November, the older backdoor or both."
@@ -389,6 +396,11 @@ sources:
   url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070/80
   note: Staff says the stable security updates are rolled out model by model as each is ready.
   date: 2026-11-22
+- type: community
+  label: "Firmware archive on gl-i.net"
+  url: https://firmware.gl-i.net/
+  note: Lists GL.iNet's firmware per model with its release date. The versions of the security firmware named on this page come from it.
+  date: 2026-11-22
 
 contacts:
 - { label: Is my device affected?, email: support@gl-inet.com }
@@ -439,6 +451,19 @@ community:
 
       This lowers the risk from now on. It does not clean a device that was already hit.
     link: { label: RemoteToHome's commands for switching it off, url: "https://github.com/RemoteToHome-io/gl-security-incident-2026#reducing-exposure-until-fixed-firmware-is-installed" }
+  - id: security-firmware
+    title: Run the community script before you install the security firmware
+    before: >-
+      Run the community script before you install the security firmware. The update deletes traces.
+    text: |
+      GL.iNet says the fix is in the firmware it released on 22 and 23 November. By the firmware archive that is, so far: for the Comet KVMs 1.10.3 (1.8.7 for the RMQ1); for routers 4.11.1 (GL-MT6000, GL-MT3000, GL-MG1300), 4.10.2 (GL-BE9300), 4.9.3 (GL-BE14000) and 4.7.14 (GL-X2000). For the GL-MT5000 (4.9.1) and the GL-E5800 (4.10.3) the archive shows a new build under a version number on which devices also reported traces. There the number alone does not tell you whether you have the fix; look at the build date.
+
+      A comparison of firmware 4.9.2 and 4.9.3 for the GL-BE14000 shows what changed. The cloud client's handler for AstroWarp put values it received from the cloud into shell commands without checking them, so whoever could send such a message could run any command as root. The new firmware checks and quotes these values, and eight cloud functions now refuse input that contains shell syntax. That fits GL.iNet's "vulnerability in our cloud remote management services"; GL.iNet has not confirmed that this was the way in. The comparison was passed on to us; we have not repeated it ourselves.
+
+      The new router firmware also cleans up, once, at its first start. Where the directory /etc/config/.gl exists, it deletes it, removes the malware's line from /etc/rc.local and its lines from the crontabs. It always puts the start script /etc/init.d/urandom_seed back. It leaves the scripts in /etc/glinet/.cache on the device, does nothing when /etc/config/.gl is missing, and does not remove the older backdoor's programs (/bin/ulogd, /usr/bin/monitord).
+
+      So the order matters. Run the community script first and, if it finds something, save the evidence with --archive. Then install the firmware and run the script again. After the update a clean result no longer shows what was on the device before; from version 2.46 the script says so. The cleanup removes files, not what an attacker took: the advice on keys and passwords below still applies.
+    link: { label: Firmware archive, url: "https://firmware.gl-i.net/" }
   - id: insurer
     title: In a business network, talk to your cyber insurer before you reset
     before: >-

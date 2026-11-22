@@ -226,7 +226,9 @@ const markers = [
             <b>Run it before you restart, reset or update the device.</b> Some
             traces exist only until the next restart, and the KVM firmware
             1.10.2 for the RM1PE deletes the malware’s files at boot without
-            keeping a copy.
+            keeping a copy. GL.iNet’s security firmware for routers does the
+            same at its first start, so check first, then update, then check
+            again. <a href={`${advisory.url}#security-firmware`}>Why</a>
           </li>
           <li>
             <b>
