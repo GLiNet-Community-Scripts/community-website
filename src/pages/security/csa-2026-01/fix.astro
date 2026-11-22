@@ -50,6 +50,7 @@ const verdicts = [
 ];
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
+  { v: '2.46', text: 'also finds and removes the malware’s lines in the firmware’s own cron directory (/etc/gl_crontabs/crontabs.d). It notices firmware that brings GL.iNet’s cleanup, which deletes known traces at its first start, and says that a clean result then does not cover the time before the update. A clean result now also says that it is not proof.' },
   { v: '2.45', text: 'adds the model and its firmware version to the code of the result page. The page then says whether newer firmware exists for the device.' },
   { v: '2.44', text: 'makes the line with the address of the result page stand out, in a way that can be read in dark and light terminal themes.' },
   { v: '2.42', text: 'prints the result last, after the GoodCloud advice, and keeps the question about the anonymous report to a few lines. Typing v there shows everything that would be sent.' },
