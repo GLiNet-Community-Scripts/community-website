@@ -50,6 +50,7 @@ const verdicts = [
 ];
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
+  { v: '2.38', text: 'no longer calls a device infected because a copy of the script itself is saved on it, for example in /etc/config. Earlier versions did.' },
   { v: '2.37', text: 'checks that the libraries its trusted tools load come from the firmware too, no longer runs a firewall or download tool that is not the firmware’s own, and shows what it is doing while it builds the evidence archive.' },
   { v: '2.36', text: 'explains below an ATTACKED verdict what it means and what it does not: a command ran, but which one and what it did is not known. It may have been a first scan with nothing installed yet.' },
   { v: '2.35', text: 'shows the first and the last call of the cloud handler that the attack came through, where the file system keeps both times, recognises the older backdoor’s known second program by its fingerprint, marks file times from a router whose clock was not set yet, and takes a note of your own for the report with --note.' },
