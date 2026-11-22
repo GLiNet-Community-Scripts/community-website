@@ -8,12 +8,12 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-22T09:00Z
+updated: 2026-11-22T09:17Z
 cve: []
 confirmed: gl-inet-public
 
 banner: >-
-  A flaw in GL.iNet's cloud remote management was used to install malware on some routers and KVM devices. Check your device now, before you restart or update it.
+  A flaw in GL.iNet's cloud remote management is being used to attack routers and KVM devices. Switch GoodCloud off and check your device before you restart it.
 
 summary: >-
   An unauthorized party used a vulnerability in GL.iNet's cloud remote management (GoodCloud) to access some GL.iNet routers and KVM devices and install malicious software on them. GL.iNet says it fixed the vulnerability in its cloud and blocked the attack path, which does not clean devices that are already infected. It asks everyone to check their device, and has scheduled stable security firmware for 22 November 2026.
@@ -144,9 +144,13 @@ details: |
 
   The same files everywhere. A forum user took the installer's programs apart and published their fingerprints. They are the same as the fingerprints of gl-helper and its helper gb in the anonymous reports of the community script, so the analysis and the reports describe the same malware. Another user checked six routers: the four that were never bound to GoodCloud were clean, the two that were bound had been hit, one by the remote shell and one by the older backdoor. One user reports entries in GoodCloud's own log for his router at times when he did nothing; that log may be worth a look.
 
+  What the anonymous reports show, as of 22 November, 09:08 UTC. 857 devices have sent a report, 739 routers and 118 KVM devices. These are unverified reports from people who chose to send one, so the shares say something about them, not about all devices. Of the routers, 46 percent show traces of the attack. On most of those a command from the attacker ran and nothing else was found; 27 had a remote shell. The share depends on the firmware. On versions 4.7 to 4.10 about three in four routers were hit. On 4.11.0 and 4.11.1 none of 226 was, and neither was any router on 4.6 or older. Why 4.11 shows no traces is not known: others have read the unchecked code in 4.11.0 too, so the attacker may have left it out, or the command may fail there before it leaves a trace. It does not show that 4.11 is safe. The commands came in waves: on 20 November from 20:00 UTC, then on 21 November around 00:00 to 02:00 and 06:00 to 08:00. With GoodCloud switched on at the time of the check, 63 percent of routers show traces; with it off, 26 percent. On nine KVM devices the link /usr/bin/netstat was made anew on the evening of 20 November; seven of them have none of the malware's files left.
+
   Earlier than 20 November. One forum user recorded the network traffic of a GL-RM1 that was taken over on 19 November at 02:35 UTC, a day before the date in GL.iNet's notice: it connected to 65.20.71.131, fetched files from 66.245.219.252 and looked up gl-inet.top. That is a name GL.iNet used in the past. The registry shows it as registered anew on 16 November 2026, and a forum user who read the malware's helper program found it in there as a fallback server (gl-inet.top, port 8899). So today the name belongs to the attacker's side, whatever it was before. Separately, forum users found an older backdoor on routers, see our note below.
 
 unknowns:
+- Whether the attack is over. GL.iNet says the path is blocked. RemoteToHome reports routers that are still being exploited.
+- Why routers on firmware 4.11 show no traces in the reports, and whether that firmware is safe.
 - Which models and firmware versions were affected, and how many devices. GL.iNet has not published this; the table above shows only where traces were reported.
 - When it started. GL.iNet names 20 November; one user recorded a takeover of a KVM on 19 November.
 - Whether the cause RemoteToHome found in the GoodCloud client is right, and which firmware removes it. GL.iNet has not commented.
@@ -161,6 +165,12 @@ unknowns:
 - Whether computers connected to affected KVM devices were affected. GL.iNet is still investigating.
 
 timeline:
+- at: 2026-11-22T09:08Z
+  text: "The anonymous reports of the community script cover 857 devices. Of the routers 46 percent show traces; none on firmware 4.11 does."
+  tag: Community
+- at: 2026-11-22
+  text: RemoteToHome Consulting tells the community team that it keeps finding routers that are being exploited, and new devices hit soon after going online.
+  tag: Community
 - at: 2026-11-22T08:11Z
   text: "GL.iNet staff names three cases in the forum, with the community script's project as its reference: the gl-helper malware, the remote shell, and the older backdoor."
 - at: 2026-11-22T06:30Z
@@ -285,6 +295,11 @@ sources:
   note: A remote shell on a Slate AX and the older backdoor on a Puli AX with files from December 2025, both behind NAT. With a quick check by hand and what the owner did.
   date: 2026-11-22
 - type: community
+  label: "Forum user Romer: what the older backdoor adds to the keep list"
+  url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/19
+  note: The lines the backdoor adds to /lib/upgrade/keep.d/netifd, written in the same second as its files, and the WireGuard server configuration written eleven seconds later. With what the loader sends and how it fetches its second program.
+  date: 2026-11-22
+- type: community
   label: "Forum user rdizzie: the malware's programs and their fingerprints"
   url: https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056/101
   note: Fingerprints of the installer and its programs, the server names in them, and what their traffic looks like. Made with an AI tool. The fingerprints match those in the anonymous reports of the community script.
@@ -372,9 +387,13 @@ community:
 
       Delete the router's VPN profile on the server or with the VPN provider and create a new one, remove its SSH keys from every machine that trusts them, and change the Wi-Fi, admin, DDNS and cloud passwords. If the router was a VPN server, give it a new key and issue new profiles.
     link: { label: RemoteToHome's steps for each kind of VPN, url: "https://github.com/RemoteToHome-io/gl-security-incident-2026#if-you-find-something" }
-  - title: Until the security firmware is installed, switch GoodCloud off
+  - title: Switch GoodCloud and AstroWarp off now
+    before: >-
+      The attack may still be going on. Switch GoodCloud and AstroWarp off now, if you can.
     text: |
-      GL.iNet says the attack path is blocked on its side. RemoteToHome reports that the unchecked code is still in the router firmware it read, and that the cloud client only runs when GoodCloud is enabled. Switching GoodCloud off in the admin panel takes that code out of play. The device then disappears from GoodCloud, so make sure you can reach a remote device another way first.
+      GL.iNet says the attack path is blocked on its side. RemoteToHome told us on 22 November that it keeps finding routers that are being exploited, and that new devices are hit shortly after they go online. We cannot confirm that from our own data: in the anonymous reports the last command arrived on 21 November at 18:58 UTC. But the code that was used is still in the firmware of most devices and runs whenever the cloud client runs, with AstroWarp on or off.
+
+      So switch GoodCloud off until fixed firmware is installed: in the admin panel under Applications, GoodCloud, or with the commands below. The community script says so at the end of every run and shows the command. The device then disappears from GoodCloud and AstroWarp stops working, so make sure you can reach a remote device another way first.
 
       This lowers the risk from now on. It does not clean a device that was already hit.
     link: { label: RemoteToHome's commands for switching it off, url: "https://github.com/RemoteToHome-io/gl-security-incident-2026#reducing-exposure-until-fixed-firmware-is-installed" }
@@ -385,7 +404,9 @@ community:
     before: >-
       Forum users found a second, older backdoor that GL.iNet's check does not see.
     text: |
-      While looking for traces of 20 November, forum users found a different backdoor, so far on GL-AX1800, GL-X2000, GL-XE3000, GL-MT3000 and GL-MT2500 routers, on firmware from 4.7.13 to 4.11.0 where the version was given. The files are dated from October 2025 to March 2026, and one user says since September 2025. How it got onto the devices is not known. These are user reports; GL.iNet's notice does not mention it.
+      While looking for traces of 20 November, forum users found a different backdoor, so far on GL-MT2500, GL-MT6000, GL-AX1800, GL-MT3000, GL-X2000, GL-XE3000 and GL-A1300 routers, on firmware from 4.7.13 to 4.11.0 where the version was given. The files are dated from October 2025 to March 2026, and one user says since September 2025. How it got onto the devices is not known. These are user reports; GL.iNet's notice does not mention it.
+
+      The anonymous reports show it on 15 devices, most of them GL-MT2500, all on firmware 4.7.0 to 4.8.3. Each has its own variant of the file /bin/ulogd, but there are only two sizes: one with files from September 2025, one from December 2025 on. Two owners found /etc/config/wireguard_server written eleven seconds after the backdoor's files, which may point to how it got in.
 
       The quickest check compares the start script with the one in the firmware. No output means they are the same: /rom/bin/busybox cmp /etc/init.d/urandom_seed /rom/etc/init.d/urandom_seed
 
@@ -395,5 +416,5 @@ community:
     link: { label: "The forum thread, with one owner's steps to contain it remotely", url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/6 }
   - title: Thanks to the people doing this work
     text: |
-      Admon builds and maintains the community script, the service that collects the anonymous reports, and this page. They stand on the work of others: RemoteToHome Consulting for the analysis of the remote shell, the KVM firmware and the recovery steps, the forum users kosrkosr and TakashiSasaki for the first reports of the shell, AdamK for the connection checks, ehidle, acs, ikangshen, nick2 and the other forum users who found and described the older backdoor, dja for the network logs of an infected KVM, rdizzie for reading the malware's installer and its programs, UnhappyCloud for the six-router comparison, joska252 for reviewing the script line by line, and everyone who sent a report or posted their output in GL.iNet's forum.
+      Admon builds and maintains the community script, the service that collects the anonymous reports, and this page. They stand on the work of others: RemoteToHome Consulting for the analysis of the remote shell, the KVM firmware and the recovery steps, the forum users kosrkosr and TakashiSasaki for the first reports of the shell, AdamK for the connection checks, ehidle, acs, ikangshen, nick2 and the other forum users who found and described the older backdoor, dja for the network logs of an infected KVM, rdizzie for reading the malware's installer and its programs, UnhappyCloud for the six-router comparison, Romer for the keep list and the WireGuard timing, joska252 for reviewing the script line by line, and everyone who sent a report or posted their output in GL.iNet's forum.
     link: { label: RemoteToHome's findings, url: https://github.com/RemoteToHome-io/gl-security-incident-2026 }
