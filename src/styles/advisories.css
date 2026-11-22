@@ -388,3 +388,10 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 .ver-now b { font-family: var(--font-mono); }
 .ver-now [data-script-released] { color: var(--text-2); }
 .ver-now [data-script-released]::before { content: '·'; margin: 0 7px; }
+.ver-log { margin-top: 12px; }
+.ver-log > summary { display: flex; align-items: center; gap: 8px; width: fit-content; cursor: pointer; list-style: none; font-size: 15px; font-weight: 600; color: var(--accent); }
+.ver-log > summary::-webkit-details-marker { display: none; }
+.ver-log > summary::before { content: ''; margin-left: 4px; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .15s; }
+.ver-log[open] > summary::before { transform: rotate(45deg); }
+.ver-log > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+.ver-log > ul { margin-top: 10px; }

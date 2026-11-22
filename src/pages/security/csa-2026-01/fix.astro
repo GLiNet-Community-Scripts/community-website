@@ -103,9 +103,12 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           Current version: <b data-script-version>shown in the first line of the script’s output</b>
           <span data-script-released hidden></span>
         </p>
-        <ul class="unknowns">
-          {versions.map((v) => <li><b>{v.v}</b> {v.text}</li>)}
-        </ul>
+        <details class="ver-log">
+          <summary>What changed in which version</summary>
+          <ul class="unknowns">
+            {versions.map((v) => <li><b>{v.v}</b> {v.text}</li>)}
+          </ul>
+        </details>
       </section>
 
       <section id="run" class="do-box" aria-labelledby="h-run">
