@@ -433,7 +433,7 @@ community:
 
       RemoteToHome found it installed and running on 29 routers it manages. By the file dates it was put there in batches, from October 2025 to March 2026, once on seven routers of seven different networks on the same day. Most of those routers cannot be reached from the internet, and each was bound to GoodCloud before. That points to the cloud as the way in, but how it was installed is not known.
 
-      The anonymous reports show it on 15 devices, most of them GL-MT2500, all on firmware 4.7.0 to 4.8.3. Each has its own variant of the file /bin/ulogd, but there are only two sizes: one with files from September 2025, one from December 2025 on. Three owners found /etc/config/wireguard_server written eleven seconds after the backdoor's files; one of them compared it with a backup and found the content unchanged. That looks like an automated installer and may point to how it got in.
+      The anonymous reports show it on 32 devices as of 22 November, 10:09 UTC: 18 of them GL-MT2500, the others GL-MT6000, GL-AX1800, GL-AXT1800, GL-MT3000, GL-A1300 and GL-XE300, all on firmware 4.7.0 to 4.8.3. Each has its own variant of the file /bin/ulogd, but there are only two sizes: one with files from September 2025, one from December 2025 on. Most are dated December 2025, a few February to May 2026. Three owners found /etc/config/wireguard_server written eleven seconds after the backdoor's files; one of them compared it with a backup and found the content unchanged. That looks like an automated installer and may point to how it got in.
 
       The quickest check compares the start script with the one in the firmware. No output means they are the same: /rom/bin/busybox cmp /etc/init.d/urandom_seed /rom/etc/init.d/urandom_seed
 
