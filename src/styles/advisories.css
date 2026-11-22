@@ -405,10 +405,13 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 .ver-log > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
 .ver-log > ul { margin-top: 10px; }
 
-/* Menu of the sections beside the article, only where there is room for it. */
+/* Menu of the sections beside the article, only where there is room for it. It starts
+   level with the breadcrumb and then stays below the page's header while scrolling: an
+   element without height of its own, so it takes no room in the article. */
 .sa-toc { display: none; }
 @media (min-width: 1400px) {
-  .sa-toc { display: flex; flex-direction: column; gap: 2px; position: fixed; top: 130px; left: calc(50% - 464px - 216px); width: 190px; max-height: calc(100vh - 160px); overflow-y: auto; font-size: 13.5px; line-height: 1.35; }
+  .sa-toc { display: block; position: sticky; top: var(--toc-top, 96px); height: 0; z-index: 1; }
+  .sa-toc > div { display: flex; flex-direction: column; gap: 2px; width: 190px; margin-left: -216px; max-height: calc(100vh - var(--toc-top, 96px) - 24px); overflow-y: auto; font-size: 13.5px; line-height: 1.35; }
   .sa-toc a { color: var(--text-2); padding: 5px 10px; border-left: 2px solid transparent; }
   .sa-toc a:hover { color: var(--accent); text-decoration: none; }
   .sa-toc a.on { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
