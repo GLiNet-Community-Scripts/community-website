@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-22T02:20Z
+updated: 2026-11-22T02:35Z
 cve: []
 confirmed: gl-inet-public
 
@@ -184,7 +184,7 @@ timeline:
 - at: 2026-11-21T13:56Z
   text: "GL.iNet posts a quick check for routers in its forum: look for a running process \"crond -i /tmp/.log\"."
 - at: 2026-11-21T13:27Z
-  text: A community member publishes a script that checks devices for the known malware files.
+  text: Admon publishes a community script that checks devices for the known malware files.
   tag: Community
 - at: 2026-11-21T04:25Z
   text: GL.iNet updates its notice. It doesn't say what changed.
@@ -233,6 +233,11 @@ sources:
   label: "RemoteToHome Consulting: findings on the incident, how to check and how to recover"
   url: https://github.com/RemoteToHome-io/gl-security-incident-2026
   note: The remote shell on GL-AXT1800 routers and its cause in the GoodCloud client, what the KVM firmware 1.10.2 does, the address the shells connect to, and what to revoke after a hit. Each finding says how it was checked.
+  date: 2026-11-21
+- type: community
+  label: "Admon: the community script and its anonymous reports"
+  url: https://github.com/admonstrator/glinet-csa-2026-01
+  note: The script that checks a device for the known traces, with its source and tests. The table of models and firmware versions on this page comes from the reports its users chose to send.
   date: 2026-11-21
 - type: community
   label: "Forum user ehidle: a second, older backdoor"
@@ -347,5 +352,5 @@ community:
     link: { label: "The forum thread, with one owner's steps to contain it remotely", url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/6 }
   - title: Thanks to the people doing this work
     text: |
-      This page stands on the work of others: RemoteToHome Consulting for the analysis of the remote shell, the KVM firmware and the recovery steps, the forum users kosrkosr and TakashiSasaki for the first reports of the shell, AdamK for the connection checks, ehidle, acs, ikangshen, nick2 and the other forum users who found and described the older backdoor, dja for the network logs of an infected KVM, and everyone who sent a report or posted their output in GL.iNet's forum.
+      Admon builds and maintains the community script, the service that collects the anonymous reports, and this page. They stand on the work of others: RemoteToHome Consulting for the analysis of the remote shell, the KVM firmware and the recovery steps, the forum users kosrkosr and TakashiSasaki for the first reports of the shell, AdamK for the connection checks, ehidle, acs, ikangshen, nick2 and the other forum users who found and described the older backdoor, dja for the network logs of an infected KVM, and everyone who sent a report or posted their output in GL.iNet's forum.
     link: { label: RemoteToHome's findings, url: https://github.com/RemoteToHome-io/gl-security-incident-2026 }
