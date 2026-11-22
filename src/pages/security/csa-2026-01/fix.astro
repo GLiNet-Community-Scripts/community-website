@@ -50,6 +50,7 @@ const verdicts = [
 ];
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
+  { v: '2.39', text: 'ends every run with an address. The page behind it explains the result in plain words, in English, German and Chinese.' },
   { v: '2.38', text: 'no longer calls a device infected because a copy of the script itself is saved on it, for example in /etc/config. Earlier versions did.' },
   { v: '2.37', text: 'checks that the libraries its trusted tools load come from the firmware too, no longer runs a firewall or download tool that is not the firmware’s own, and shows what it is doing while it builds the evidence archive.' },
   { v: '2.36', text: 'explains below an ATTACKED verdict what it means and what it does not: a command ran, but which one and what it did is not known. It may have been a first scan with nothing installed yet.' },
@@ -173,6 +174,14 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
 
       <section id="report" aria-labelledby="h-report">
         <h2 id="h-report">Reading the report</h2>
+        <p class="ver-now plain">
+          <b>The short way:</b> every run ends with an address that begins with{' '}
+          <a href="https://csa.gl-i.net/2026-01/"><code>csa.gl-i.net/2026-01/</code></a>. Open it in a browser. The page explains
+          what was found, what that means and what to do, in plain words, in English, German and Chinese. The address
+          holds only short codes for the result, nothing about you or the device, and opening it sends nothing from
+          the device. You can post it in the forum as it is.
+        </p>
+        <p>The rest of this section is for those who want to read the output itself.</p>
         <div class="sa-table-wrap fix-table">
           <table>
             <thead><tr><th>Label</th><th>Meaning</th><th>What <span class="mono">--fix</span> does</th></tr></thead>

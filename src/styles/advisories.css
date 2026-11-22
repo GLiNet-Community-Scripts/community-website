@@ -394,6 +394,7 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 /* fix guide: the version of the script as served right now */
 .sa-article section > p.ver-now { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: var(--accent-soft); font-size: 15px; }
 .ver-now b { font-family: var(--font-mono); }
+.ver-now.plain b { font-family: inherit; }
 .ver-now [data-script-released] { color: var(--text-2); }
 .ver-now [data-script-released]::before { content: '·'; margin: 0 7px; }
 .ver-log { margin-top: 12px; }
