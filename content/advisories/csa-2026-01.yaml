@@ -6,9 +6,10 @@ id: CSA-2026-01
 title: Cloud remote management flaw used to install malware on routers and KVM devices
 severity: critical
 exploited: true
-status: investigating
+status: fix-rolling-out
 published: 2026-11-21
 updated: 2026-11-22T19:00Z
+fixed_in: firmwares released on 2026-11-22
 cve: []
 confirmed: gl-inet-public
 
@@ -177,6 +178,9 @@ unknowns:
 - Whether computers connected to affected KVM devices were affected. GL.iNet is still investigating.
 
 timeline:
+- at: 2026-11-22T19:45Z
+  text: "GL.iNet announces that the fix is rolling out in firmwares released on 2026-11-22 or 2026-11-23."
+  tag: Vendor
 - at: 2026-11-22T10:47Z
   text: "RemoteToHome Consulting has checked 183 routers it manages: 152 show the attack of 20 November, the older backdoor or both."
   tag: Community
@@ -193,6 +197,7 @@ timeline:
   tag: Community
 - at: 2026-11-22T08:11Z
   text: "GL.iNet staff names three cases in the forum, with the community script's project as its reference: the gl-helper malware, the remote shell, and the older backdoor."
+  tag: Vendor
 - at: 2026-11-22T06:30Z
   text: A forum user reports six routers checked. The two bound to GoodCloud were hit, the four never bound were clean.
   tag: Community
@@ -201,6 +206,7 @@ timeline:
   tag: Community
 - at: 2026-11-22T00:22Z
   text: "GL.iNet staff updates its list in the forum from the anonymous reports of the community script: 13 router models and 4 KVM models."
+  tag: Vendor
 - at: 2026-11-21T21:34Z
   text: A forum user reports a second, older backdoor on a GL-AX1800, with files from December 2025. Others confirm it on further models within hours.
   tag: Community
@@ -212,31 +218,40 @@ timeline:
   tag: Community
 - at: 2026-11-21T18:54Z
   text: "GL.iNet staff points users to the community script as the best available check for known traces."
+  tag: Vendor
 - at: 2026-11-21T18:45Z
   text: "GL.iNet staff lists in the forum the models and firmware versions on which traces were reported: eight router models and one KVM."
+  tag: Vendor
 - at: 2026-11-21T17:24Z
   text: RemoteToHome Consulting reports the address the remote shells connect to, 170.39.226.219, to its hosting provider.
   tag: Community
 - at: 2026-11-21T16:27Z
   text: "GL.iNet staff warns in the forum that netstat can be replaced on an infected device and that running it starts the malware."
+  tag: Vendor
 - at: 2026-11-21T16:15Z
   text: "RemoteToHome Consulting reports the same remote shell on one of its own GL-AXT1800 routers and traces it to a handler in the GoodCloud client on the router. Not confirmed by GL.iNet."
   tag: Community
 - at: 2026-11-21T16:10Z
   text: "GL.iNet staff says in the forum that the first check is not enough, adds checks for open connections and processes, and says what to do when a remote shell is found."
+  tag: Vendor
 - at: 2026-11-21T16:00Z
   text: "By now GL.iNet's notice says: the attack path is blocked, infected devices are not cleaned by that, a process \"crond -i /tmp/.log\" is the sign of an infection, KVM beta firmware with fixes is available, and stable security firmware is scheduled for 22 November."
+  tag: Vendor
 - at: 2026-11-21T13:56Z
   text: "GL.iNet posts a quick check for routers in its forum: look for a running process \"crond -i /tmp/.log\"."
+  tag: Vendor
 - at: 2026-11-21T13:27Z
   text: Admon publishes a community script that checks devices for the known malware files.
   tag: Community
 - at: 2026-11-21T04:25Z
   text: GL.iNet updates its notice. It doesn't say what changed.
+  tag: Vendor
 - at: 2026-11-20
   text: GL.iNet publishes a security notice on its blog and in its forum.
+  tag: Vendor
 - at: 2026-11-20
   text: GL.iNet identifies the vulnerability and fixes it in its cloud services.
+  tag: Vendor
 
 sources:
 - type: gl-inet-forum
