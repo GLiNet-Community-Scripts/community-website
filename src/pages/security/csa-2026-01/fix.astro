@@ -50,6 +50,7 @@ const verdicts = [
 ];
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
+  { v: '2.41', text: 'prints the address of the result page in a form short enough to type: csa.gl-i.net and nine characters. The long addresses of 2.39 and 2.40 still work.' },
   { v: '2.40', text: 'shows the address of the page that explains the result directly under the verdict. Before, it came last and was missed by anyone who stopped at the question about the report.' },
   { v: '2.39', text: 'prints an address with every result. The page behind it explains the result in plain words, in English, German and Chinese.' },
   { v: '2.38', text: 'no longer calls a device infected because a copy of the script itself is saved on it, for example in /etc/config. Earlier versions did.' },
@@ -176,11 +177,12 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
       <section id="report" aria-labelledby="h-report">
         <h2 id="h-report">Reading the report</h2>
         <p class="ver-now plain">
-          <b>The short way:</b> directly under the verdict the script prints an address that begins with{' '}
-          <a href="https://csa.gl-i.net/2026-01/"><code>csa.gl-i.net/2026-01/</code></a>. Open it in a browser. The page explains
-          what was found, what that means and what to do, in plain words, in English, German and Chinese. The address
-          holds only short codes for the result, nothing about you or the device, and opening it sends nothing from
-          the device. You can post it in the forum as it is.
+          <b>The short way:</b> directly under the verdict the script prints an address like{' '}
+          <a href="https://csa.gl-i.net/"><code>csa.gl-i.net/#AA006011D</code></a>. Open it in a browser, or type it if you
+          cannot click it; capitals do not matter. The page explains what was found, what that means and what to do,
+          in plain words, in English, German and Chinese. The nine characters stand for the result only, nothing
+          about you or the device, and opening the address sends nothing from the device. You can post it in the
+          forum as it is.
         </p>
         <p>The rest of this section is for those who want to read the output itself.</p>
         <div class="sa-table-wrap fix-table">
