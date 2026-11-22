@@ -83,6 +83,10 @@ const verdicts = [
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
   {
+    v: "2.47",
+    text: "no longer reports an attack on a router that was just updated to the security firmware. That firmware can write the empty state file itself at its first start; version 2.46 took it for a trace.",
+  },
+  {
     v: "2.46",
     text: "also finds and removes the malware’s lines in the firmware’s own cron directory (/etc/gl_crontabs/crontabs.d). It notices firmware that brings GL.iNet’s cleanup, which deletes known traces at its first start, and says that a clean result then does not cover the time before the update. A clean result now also says that it is not proof.",
   },
