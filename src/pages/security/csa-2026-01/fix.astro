@@ -45,11 +45,12 @@ const labels = [
 // The last line of the report, as the script prints it.
 const verdicts = [
   { verdict: 'INFECTED', text: 'The malware’s files, a remote shell, GL.iNet’s indicator process or the older backdoor were found. Save the evidence and follow the steps under “Afterwards”.' },
-  { verdict: 'ATTACKED', text: 'A command sent through GoodCloud ran on the device as root, or the malware’s installer left traces, but no malware files and no remote shell are there now. The one such command that was recovered only looked for the malware; others opened a remote shell. What ran on your device cannot be told afterwards, so treat it like an infected one: every key and password on it may have been read.' },
+  { verdict: 'ATTACKED', text: 'A command sent through GoodCloud ran on the device as root, but no malware files and no remote shell are there now. Which commands ran, and what they did, cannot be told afterwards. It may have been a first scan with nothing installed yet, or something not known so far: the one such command that was recovered only looked for the malware, others opened a remote shell. If the script names traces of the malware’s installer instead, the installer was at work and its files are gone. Either way, treat the device like an infected one: every key and password on it may have been read.' },
   { verdict: 'no gl-helper indicators found', text: 'None of the known traces. Below it the script says when the device last started. If that was after the attacks began, a remote shell and what it left in memory are gone, so the result says little about the time before.' },
 ];
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
+  { v: '2.36', text: 'explains below an ATTACKED verdict what it means and what it does not: a command ran, but which one and what it did is not known. It may have been a first scan with nothing installed yet.' },
   { v: '2.35', text: 'shows the first and the last call of the cloud handler that the attack came through, where the file system keeps both times, recognises the older backdoor’s known second program by its fingerprint, marks file times from a router whose clock was not set yet, and takes a note of your own for the report with --note.' },
   { v: '2.34', text: 'no longer shows GoodCloud’s remote SSH and web access as on when GoodCloud itself is off. The stored setting is on by default on many firmware versions.' },
   { v: '2.33', text: 'says at the end to check the GoodCloud switch again after every firmware upgrade: one owner reports that an upgrade switched it back on.' },
