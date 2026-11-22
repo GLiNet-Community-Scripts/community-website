@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-22T09:17Z
+updated: 2026-11-22T09:19Z
 cve: []
 confirmed: gl-inet-public
 
@@ -106,6 +106,10 @@ check:
   text: >-
     No output is the good result. nc, netcat, socat, "/bin/sh -i" or mkfifo in the output need a closer look.
   command: ps ww | grep -E '[n]c |[n]etcat|[s]ocat|[/]bin/sh -i|[m]kfifo'
+- title: The trace that is still there after a restart
+  text: >-
+    This file is written by the part of the cloud client that the attack came through. If it exists, is empty (the number before the date is 0) and is dated 20 November 2026 or later, on a router where you do not use AstroWarp, a command from the attacker ran. "No such file" is the good result. This is the only check here that still works after a restart.
+  command: ls -la /etc/mp_ip_mapping_info
 - title: The shell's pipe
   text: >-
     The remote shell's pipe /tmp/f stays after the shell was stopped and only goes away at a restart. If the line starts with "p", the shell has run since the last restart. "No such file" is the good result.
@@ -132,7 +136,9 @@ details: |
 
   The remote shell. Forum users and RemoteToHome Consulting found the same remote root shell on GL-AXT1800 routers with firmware 4.8.3, connected to 170.39.226.219 on a different port each time. Where the start was measured, it was about 21:40 UTC on 20 November. GL.iNet's indicator process was not running on those routers. The shell leaves no file behind and its pipe /tmp/f is gone after a restart, so a router that was restarted or updated since can pass every check of running processes even if it was hit. The anonymous reports have since shown the same traces on many more models, see the table above.
 
-  The cause. RemoteToHome read the GoodCloud client taken from such a router (package gl-sdk4-cloud). According to its findings, a handler for an AstroWarp / SD-WAN command puts an address from the cloud message into an iptables command without checking it, so a crafted address runs as a command, whether or not AstroWarp is switched on. It found the same code in the 4.8.4 beta for the GL-AXT1800 and in firmware 4.11.0 for the GL-MT3000. GL.iNet has not confirmed this.
+  The cause. RemoteToHome read the GoodCloud client taken from such a router (package gl-sdk4-cloud). According to its findings, a handler for an AstroWarp / SD-WAN command puts an address from the cloud message into an iptables command without checking it, so a crafted address runs as a command, whether or not AstroWarp is switched on. It found the same code in the 4.8.4 beta for the GL-AXT1800 and in firmware 4.11.0 for the GL-MT3000. The earliest firmware in which it found the code is 4.7.0 of 5 December 2024; the 4.6 images do not have it. That fits the anonymous reports, in which no router on 4.6 or older shows a trace. So for almost two years a router with GoodCloud switched on would have run whatever command arrived over that channel. GL.iNet has not confirmed this, and has not said since when its cloud could be used by an outsider.
+
+  RemoteToHome's own routers. RemoteToHome manages routers for clients and is checking them one by one. As of 22 November, 08:48 UTC, 93 of 107 routers it reached show the attack of 20 November, the older backdoor, or both. It did not find GL.iNet's indicator process on any of them. On seven routers it recovered the attacker's command from the memory of the cloud client; it is the same on all seven and only looks for the malware's folders. Another owner recovered the same command from a GL-BE9300.
 
   The attacker's server. The address the shells connect to was a rented server. After RemoteToHome's abuse report the hosting provider confirmed on 21 November that it has suspended the server and preserved it for an investigation.
 
@@ -141,6 +147,8 @@ details: |
   KVM firmware. Admon and RemoteToHome compared GL.iNet's firmware images. The 1.10.2 build for the RM1PE deletes the malware's files at boot and keeps no copy, so updating an infected RM1PE removes the evidence that it was infected. The 1.10.2 builds for the RM1 and RM1V2 contain no such cleanup. On an RM1, an update that keeps settings carries over the password file, the SSH keys and everything under /etc/kvmd/user.
 
   The installer on KVM devices. A forum user fetched the installer that the KVM above downloaded and read it with an AI tool. The file names and addresses in it decode as stated; the description of what it does is not verified by us. According to it, the installer puts the malware (gl-helper and a helper named gb) into /etc/glinet/.cache or, when it cannot write there, into /etc/gl_nas/.cache, /userdata/.gl, /overlay/.gl or /tmp/.gl, and keeps a copy of everything in /etc/config/.gl because that directory survives a firmware update with settings kept. It adds itself to /etc/rc.local and to the crontab, where a script named watch.sh puts everything back every three minutes. The process GL.iNet's check looks for, "crond -i /tmp/.log", is the name the malware gives its own process. Other options of the installer set the dates of its files back to those of the firmware, add an SSH key named gl-agent, and point the remote terminal service (rtty) at the attacker's server 65.20.71.131. Its files come from 66.245.219.252. It knows eleven router models and five KVM models by name.
+
+  A trace on GL.iNet's side. One owner reports that the device log which can be exported from a GoodCloud account shows the attacker's command: responses that contain "astrowarp" with the id 1, where ordinary commands carry an id of 32 characters. That log is kept by GL.iNet and so survives a restart of the device. Neither RemoteToHome nor we have checked this.
 
   The same files everywhere. A forum user took the installer's programs apart and published their fingerprints. They are the same as the fingerprints of gl-helper and its helper gb in the anonymous reports of the community script, so the analysis and the reports describe the same malware. Another user checked six routers: the four that were never bound to GoodCloud were clean, the two that were bound had been hit, one by the remote shell and one by the older backdoor. One user reports entries in GoodCloud's own log for his router at times when he did nothing; that log may be worth a look.
 
@@ -294,6 +302,11 @@ sources:
   url: https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056/105
   note: A remote shell on a Slate AX and the older backdoor on a Puli AX with files from December 2025, both behind NAT. With a quick check by hand and what the owner did.
   date: 2026-11-22
+- type: researcher
+  label: "RemoteToHome Consulting: field survey of the routers it manages"
+  url: https://github.com/RemoteToHome-io/gl-security-incident-2026/blob/main/docs/field-survey.md
+  note: Counts by model and firmware, without anything that identifies a client or device. 93 of 107 routers reached show the attack, the older backdoor or both, as of 22 November, 08:48 UTC. Not a random sample.
+  date: 2026-11-22
 - type: community
   label: "Forum user Romer: what the older backdoor adds to the keep list"
   url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/19
@@ -393,7 +406,7 @@ community:
     text: |
       GL.iNet says the attack path is blocked on its side. RemoteToHome told us on 22 November that it keeps finding routers that are being exploited, and that new devices are hit shortly after they go online. We cannot confirm that from our own data: in the anonymous reports the last command arrived on 21 November at 18:58 UTC. But the code that was used is still in the firmware of most devices and runs whenever the cloud client runs, with AstroWarp on or off.
 
-      So switch GoodCloud off until fixed firmware is installed: in the admin panel under Applications, GoodCloud, or with the commands below. The community script says so at the end of every run and shows the command. The device then disappears from GoodCloud and AstroWarp stops working, so make sure you can reach a remote device another way first.
+      So switch GoodCloud off until fixed firmware is installed: with the GoodCloud switch in the admin panel, or with the commands below. On a KVM, switch the cloud service off in its settings. That you never used AstroWarp, or that remote access was off, does not help, because the code runs regardless. The community script says so at the end of every run and shows the command. The device then disappears from GoodCloud and AstroWarp stops working, so make sure you can reach a remote device another way first.
 
       This lowers the risk from now on. It does not clean a device that was already hit.
     link: { label: RemoteToHome's commands for switching it off, url: "https://github.com/RemoteToHome-io/gl-security-incident-2026#reducing-exposure-until-fixed-firmware-is-installed" }
@@ -405,6 +418,8 @@ community:
       Forum users found a second, older backdoor that GL.iNet's check does not see.
     text: |
       While looking for traces of 20 November, forum users found a different backdoor, so far on GL-MT2500, GL-MT6000, GL-AX1800, GL-MT3000, GL-X2000, GL-XE3000 and GL-A1300 routers, on firmware from 4.7.13 to 4.11.0 where the version was given. The files are dated from October 2025 to March 2026, and one user says since September 2025. How it got onto the devices is not known. These are user reports; GL.iNet's notice does not mention it.
+
+      RemoteToHome found it installed and running on 29 routers it manages. By the file dates it was put there in batches, from October 2025 to March 2026, once on seven routers of seven different networks on the same day. Most of those routers cannot be reached from the internet, and each was bound to GoodCloud before. That points to the cloud as the way in, but how it was installed is not known.
 
       The anonymous reports show it on 15 devices, most of them GL-MT2500, all on firmware 4.7.0 to 4.8.3. Each has its own variant of the file /bin/ulogd, but there are only two sizes: one with files from September 2025, one from December 2025 on. Two owners found /etc/config/wireguard_server written eleven seconds after the backdoor's files, which may point to how it got in.
 
