@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-22T02:35Z
+updated: 2026-11-22T03:42Z
 cve: []
 confirmed: gl-inet-public
 
@@ -110,7 +110,7 @@ check:
   command: ls -la /tmp/f
 - title: Is netstat still the original?
   text: >-
-    GL.iNet staff warns that netstat can be replaced on an infected device and that running the replacement starts the malware. On a router the line must end in "-> busybox". If it does not, don't run netstat.
+    The malware replaces netstat with a script that hides its own connections, so the output of a replaced netstat cannot be trusted. On a router the line must end in "-> busybox". If it does not, the device is infected, and netstat will not show you the truth.
   command: ls -l /bin/netstat
 - title: Connections to the reported address
   text: >-
@@ -138,13 +138,15 @@ details: |
 
   KVM firmware. Admon and RemoteToHome compared GL.iNet's firmware images. The 1.10.2 build for the RM1PE deletes the malware's files at boot and keeps no copy, so updating an infected RM1PE removes the evidence that it was infected. The 1.10.2 builds for the RM1 and RM1V2 contain no such cleanup. On an RM1, an update that keeps settings carries over the password file, the SSH keys and everything under /etc/kvmd/user.
 
+  The installer on KVM devices. A forum user fetched the installer that the KVM above downloaded and read it with an AI tool. The file names and addresses in it decode as stated; the description of what it does is not verified by us. According to it, the installer puts the malware (gl-helper and a helper named gb) into /etc/glinet/.cache or, when it cannot write there, into /etc/gl_nas/.cache, /userdata/.gl, /overlay/.gl or /tmp/.gl, and keeps a copy of everything in /etc/config/.gl because that directory survives a firmware update with settings kept. It adds itself to /etc/rc.local and to the crontab, where a script named watch.sh puts everything back every three minutes. The process GL.iNet's check looks for, "crond -i /tmp/.log", is the name the malware gives its own process. Other options of the installer set the dates of its files back to those of the firmware, add an SSH key named gl-agent, and point the remote terminal service (rtty) at the attacker's server 65.20.71.131. Its files come from 66.245.219.252. It knows eleven router models and five KVM models by name.
+
   Earlier than 20 November. One forum user recorded the network traffic of a GL-RM1 that was taken over on 19 November at 02:35 UTC, a day before the date in GL.iNet's notice: it connected to 65.20.71.131, fetched files from 66.245.219.252 and looked up gl-inet.top. That is a name GL.iNet used in the past. The registry shows it as registered anew on 16 November 2026, so whether GL.iNet still holds it is not known. Separately, forum users found an older backdoor on routers, see our note below.
 
 unknowns:
 - Which models and firmware versions were affected, and how many devices. GL.iNet has not published this; the table above shows only where traces were reported.
 - When it started. GL.iNet names 20 November; one user recorded a takeover of a KVM on 19 November.
 - Whether the cause RemoteToHome found in the GoodCloud client is right, and which firmware removes it. GL.iNet has not commented.
-- What the malicious software does, and how the process GL.iNet names relates to the "gl-helper" files found on KVM devices.
+- What the malicious software itself does once it runs. The installer has been read; the gl-helper program it installs has not.
 - What was run through the remote shells, and which other addresses are involved.
 - Who holds gl-inet.top now. GL.iNet used the name in the past; the registry shows a new registration on 16 November 2026.
 - How to tell whether a device was compromised earlier. No check can show that after a restart.
@@ -154,6 +156,9 @@ unknowns:
 - Whether computers connected to affected KVM devices were affected. GL.iNet is still investigating.
 
 timeline:
+- at: 2026-11-22T03:17Z
+  text: A forum user posts what the malware's installer for KVM devices does, where it puts its files and which servers it uses.
+  tag: Community
 - at: 2026-11-22T00:22Z
   text: "GL.iNet staff updates its list in the forum from the anonymous reports of the community script: 13 router models and 4 KVM models."
 - at: 2026-11-21T21:34Z
@@ -260,6 +265,11 @@ sources:
   note: Tests on several routers. Post 70 of the same thread has the hosting provider's answer about the attacker's server.
   date: 2026-11-21
 - type: community
+  label: "Forum user rdizzie: what the malware's installer does"
+  url: https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056/90
+  note: The installer for KVM devices, decoded with an AI tool. It covers its directories and files, how it starts again, the servers it uses, and that it replaces netstat with a script that hides its connections. We checked that the names and addresses decode as stated, not the rest.
+  date: 2026-11-22
+- type: community
   label: "Forum user dja: a GL-RM1 taken over on 19 November, from network logs"
   url: https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056/79
   note: Timeline, addresses and behaviour of an infected KVM, recorded by the owner's firewall. The entry point is not confirmed.
@@ -337,7 +347,7 @@ community:
     link: { label: RemoteToHome's commands for switching it off, url: "https://github.com/RemoteToHome-io/gl-security-incident-2026#reducing-exposure-until-fixed-firmware-is-installed" }
   - title: Don't rely on netstat on a device you suspect
     text: |
-      The malware is known to replace netstat, and GL.iNet staff says that running the replacement starts the malware. Check /bin/netstat first, as shown under "Check your device". The community script does not call netstat.
+      The malware replaces netstat. GL.iNet staff says that running the replacement starts the malware. The installer that a forum user read shows something else: the replacement is a two-line script that calls the real netstat and removes the connections to the malware's server from its output. Either way a replaced netstat tells you nothing, and its presence alone means the device is infected. Check /bin/netstat first, as shown under "Check your device". The community script does not call netstat.
   - title: Forum users found a second, older backdoor
     before: >-
       Forum users found a second, older backdoor that GL.iNet's check does not see.
@@ -352,5 +362,5 @@ community:
     link: { label: "The forum thread, with one owner's steps to contain it remotely", url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/6 }
   - title: Thanks to the people doing this work
     text: |
-      Admon builds and maintains the community script, the service that collects the anonymous reports, and this page. They stand on the work of others: RemoteToHome Consulting for the analysis of the remote shell, the KVM firmware and the recovery steps, the forum users kosrkosr and TakashiSasaki for the first reports of the shell, AdamK for the connection checks, ehidle, acs, ikangshen, nick2 and the other forum users who found and described the older backdoor, dja for the network logs of an infected KVM, and everyone who sent a report or posted their output in GL.iNet's forum.
+      Admon builds and maintains the community script, the service that collects the anonymous reports, and this page. They stand on the work of others: RemoteToHome Consulting for the analysis of the remote shell, the KVM firmware and the recovery steps, the forum users kosrkosr and TakashiSasaki for the first reports of the shell, AdamK for the connection checks, ehidle, acs, ikangshen, nick2 and the other forum users who found and described the older backdoor, dja for the network logs of an infected KVM, rdizzie for reading the malware's installer, joska252 for reviewing the script line by line, and everyone who sent a report or posted their output in GL.iNet's forum.
     link: { label: RemoteToHome's findings, url: https://github.com/RemoteToHome-io/gl-security-incident-2026 }
