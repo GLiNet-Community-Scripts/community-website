@@ -139,6 +139,9 @@ const AdvisorySchema = z.object({
         as_of: Moment,
         source: z.object({ label: z.string().min(1), url: Https }),
         note: z.string().min(1).optional(),
+        // Optional: a list worked out from the reports, added to the models below at
+        // build time and in the browser. Its shape: see parseLive in lib/reported.ts.
+        live: Https.optional(),
         models: z.array(z.object({ name: z.string().min(1), sku: z.string().min(1).optional(), kind: z.string().min(1).optional(), firmware: z.array(z.string().min(1)).default([]) })).min(1),
       })
       .optional(),

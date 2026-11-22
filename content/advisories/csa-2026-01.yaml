@@ -23,10 +23,15 @@ affected:
     A subset of GL.iNet routers and KVM devices, reached through GL.iNet's cloud remote management. GL.iNet has not published which models or firmware versions; it is emailing affected customers individually. The table below shows where traces were reported.
   products: [ Routers, KVM devices (Comet) ]
   firmware: Not published
-  # From the anonymous reports of the community script (export of the dashboard):
-  # where traces were reported, not a list of affected devices.
+  # From the anonymous reports of the community script: where traces were reported, not a
+  # list of affected devices. Two sources, shown as one table:
+  #   - "live": worked out by the report service every 15 minutes. It lists a model and
+  #     firmware once five different devices reported traces on them.
+  #   - "models": kept by hand from the dashboard, for what the live list leaves out
+  #     (fewer than five devices, reports of the first day without a device id).
   reported:
     as_of: 2026-11-22T16:46Z
+    live: https://csa.gl-i.net/2026-01/reported.json
     source:
       label: Anonymous reports of the community script
       url: https://gl-i.net/security/csa-2026-01/fix/
@@ -57,7 +62,7 @@ affected:
     - { name: GL-RMQ1, sku: GL-RMQ1, kind: KVM, firmware: [ 1.8.5 ] }
 
     note: |
-      These are anonymous, unverified reports from people who ran the community script, and some devices were scanned more than once. It is not a list of affected devices from GL.iNet's investigation, and a model or firmware that is missing here is not thereby unaffected. GL.iNet staff posts the same list in its forum.
+      These are anonymous, unverified reports from people who ran the community script, and some devices were scanned more than once. A model and firmware with reports from at least five devices are added automatically, within a quarter of an hour; the others we add by hand. It is not a list of affected devices from GL.iNet's investigation, and a model or firmware that is missing here is not thereby unaffected. GL.iNet staff posts the same list in its forum.
 
       According to GL.iNet staff, what matters most is whether GoodCloud was enabled and connected during the attack, not the firmware version. The firmware still matters because the code that handles the command is on the device, and staff does not know yet which router firmware contains the fix.
 
