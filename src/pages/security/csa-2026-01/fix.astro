@@ -44,6 +44,7 @@ const labels = [
 ];
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
+  { v: '2.28', text: 'finds the older backdoor’s loader under any name, by looking for compiled Lua in the writable part of the system, and counts gl-inet.top as a server of the malware.' },
   { v: '2.22', text: 'finds the malware in the other directories its installer can use, its line in the running crontab, an SSH key it adds, and the remote terminal service set to the attacker’s server.' },
   { v: '2.18', text: 'no longer reports an updated Tailscale as an infection. Versions 2.16 and 2.17 did.' },
   { v: '2.17', text: 'finds the trace that a command from the attacker ran, also after a restart. Earlier versions called such a device clean once the firewall rule was gone.' },
