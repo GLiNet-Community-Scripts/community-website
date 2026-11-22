@@ -83,6 +83,10 @@ const verdicts = [
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
   {
+    v: "2.48",
+    text: "tells whether the state file was written before or after the update by the day the firmware was built. Version 2.47 used a file whose date is wrong on real devices.",
+  },
+  {
     v: "2.47",
     text: "no longer reports an attack on a router that was just updated to the security firmware. That firmware can write the empty state file itself at its first start; version 2.46 took it for a trace.",
   },
