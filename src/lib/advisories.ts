@@ -221,10 +221,14 @@ const AdvisorySchema = z.object({
       notes: z
         .array(
           z.object({
+            // Optional anchor of the note on the page (#goodcloud), for links to it.
+            // Must not repeat another note's id or a section id of the page.
+            id: z.string().regex(/^[a-z0-9-]+$/).optional(),
             title: z.string().min(1).max(90),
             text: z.string().min(1),
             // Optional one-liner shown at the top of "Do this now", before the steps,
-            // when people should read this note before they act.
+            // when people should read this note before they act. All of them share one
+            // box, each linked to its note.
             before: z.string().min(1).max(160).optional(),
             // Optional link to community work (a script, a write-up): a page of
             // this site ("/security/csa-2026-01/fix/") or an https:// address.
@@ -318,6 +322,12 @@ function readAdvisories(appIds: Set<string>, now: number): Advisory[] {
         }
       }
       for (const id of a.apps) if (!appIds.has(id)) die(`apps: unknown app "${id}" (use the id from the app's page anchor)`);
+      const noteIds = (a.community?.notes ?? []).flatMap((n) => (n.id ? [n.id] : []));
+      const sectionIds = ['top', 'do', 'community-fix', 'community', 'models', 'check', 'details', 'timeline', 'sources', 'apps'];
+      for (const id of noteIds) {
+        if (noteIds.indexOf(id) !== noteIds.lastIndexOf(id)) die(`community.notes: duplicate id "${id}"`);
+        if (sectionIds.includes(id)) die(`community.notes: id "${id}" is already a section of the page`);
+      }
 
       // Colour of the advisory everywhere; the bar uses it while it is shown.
       const tone: BannerLevel = status.active ? (RANK[a.severity] <= RANK.high ? 'critical' : 'warning') : 'resolved';

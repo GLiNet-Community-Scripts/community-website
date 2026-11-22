@@ -42,8 +42,15 @@ const labels = [
   { label: 'REVIEW', meaning: 'An unusual change, not proof of an infection. Check whether it is yours.', fix: 'Never touches it' },
   { label: 'INFO', meaning: 'Context, for example files installed by a package', fix: 'Never touches it' },
 ];
+// The last line of the report, as the script prints it.
+const verdicts = [
+  { verdict: 'INFECTED', text: 'The malware’s files, a remote shell, GL.iNet’s indicator process or the older backdoor were found. Save the evidence and follow the steps under “Afterwards”.' },
+  { verdict: 'ATTACKED', text: 'A command sent through GoodCloud ran on the device as root, or the malware’s installer left traces, but no malware files and no remote shell are there now. The one such command that was recovered only looked for the malware; others opened a remote shell. What ran on your device cannot be told afterwards, so treat it like an infected one: every key and password on it may have been read.' },
+  { verdict: 'no gl-helper indicators found', text: 'None of the known traces. Below it the script says when the device last started. If that was after the attacks began, a remote shell and what it left in memory are gone, so the result says little about the time before.' },
+];
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
+  { v: '2.35', text: 'shows the first and the last call of the cloud handler that the attack came through, where the file system keeps both times, recognises the older backdoor’s known second program by its fingerprint, marks file times from a router whose clock was not set yet, and takes a note of your own for the report with --note.' },
   { v: '2.34', text: 'no longer shows GoodCloud’s remote SSH and web access as on when GoodCloud itself is off. The stored setting is on by default on many firmware versions.' },
   { v: '2.33', text: 'says at the end to check the GoodCloud switch again after every firmware upgrade: one owner reports that an upgrade switched it back on.' },
   { v: '2.32', text: 'no longer calls a device infected because it blocks the older backdoor’s server names, says under a clean result when the device last restarted and what that means, and leaves your own autostart files alone when only a remote shell was found.' },
@@ -90,16 +97,16 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           <li><b>This is community work, not a GL.iNet tool.</b> GL.iNet has not reviewed or endorsed it. Use it at your own risk.</li>
           <li><b>Run it before you restart, reset or update the device.</b> Some traces exist only until the next restart, and the KVM firmware 1.10.2 for the RM1PE deletes the malware’s files at boot without keeping a copy.</li>
           <li><b>It does not replace a factory reset or GL.iNet’s security firmware.</b> The script finds and removes only the traces we know of.</li>
-          <li><b>In a business network, wait.</b> Talk to your cyber insurer or incident response provider before you change or reset the device. <a href={`${advisory.url}#community`}>Why</a></li>
+          <li><b>In a business network, wait.</b> Talk to your cyber insurer or incident response provider before you change or reset the device. <a href={`${advisory.url}#insurer`}>Why</a></li>
         </ul>
       </section>
 
       <section id="versions" aria-labelledby="h-versions">
         <h2 id="h-versions">Checked before? Check again</h2>
         <p>
-          The script changes as the community learns more. A device that an early version called clean may not be.{' '}
-          <b>If you ran it before 22 November, run it again</b>: it costs a minute and changes nothing on the device.
-          The first line of its output shows the version you ran.
+          The script changes as the community learns more. A device that an early version called clean may not be.
+          The first line of its output shows the version you ran.{' '}
+          <b>If it is older than the one below, run it again</b>: it costs a minute and changes nothing on the device.
         </p>
         <p class="ver-now" data-version-src="https://app.gl-i.net/csa-2026-01-fix">
           Current version: <b data-script-version>shown in the first line of the script’s output</b>
@@ -171,6 +178,10 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
             </tbody>
           </table>
         </div>
+        <h3 class="sa-h3">The verdict</h3>
+        <ul class="unknowns">
+          {verdicts.map((v) => <li><b>{v.verdict}</b> {v.text}</li>)}
+        </ul>
         <p>Exit codes: <code>0</code> clean, <code>1</code> traces found, <code>2</code> fixed and clean, <code>3</code> fix incomplete, <code>4</code> error.</p>
       </section>
 
@@ -214,14 +225,17 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
         <h3 class="sa-h3">An older backdoor, found by forum users</h3>
         <p>
           While looking for traces of 20 November, users of GL.iNet’s forum found a second backdoor that is not part
-          of GL.iNet’s notice, on GL-AX1800, GL-X2000 and GL-MT3000 routers, on some since 2025
-          (<a href="https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097">ehidle’s report&nbsp;↗</a>).
+          of GL.iNet’s notice, on routers of many models, on some since September 2025
+          (<a href="https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097">ehidle’s report&nbsp;↗</a>,
+          <a href={`${advisory.url}#older-backdoor`}>what is known so far</a>).
           GL.iNet’s quick check does not see it. The script reports it with its own verdict when it finds
         </p>
         <ul class="unknowns">
           <li><code>/etc/init.d/urandom_seed</code> with extra lines that mention <code>monitord</code> or <code>ulogd</code></li>
           <li><code>/bin/ulogd</code>, or <code>/usr/bin/monitord</code> as a copy of the Lua interpreter</li>
-          <li>a running <code>monitord</code> or <code>ujaild</code></li>
+          <li>a running <code>monitord</code> or <code>ujaild</code>; the known second program is recognised by its fingerprint</li>
+          <li>its two files added to the list a firmware update keeps (<code>/lib/upgrade/keep.d/netifd</code>). Not every device with the backdoor has this</li>
+          <li>compiled Lua in the writable part of the system that no package installed: with the loader’s function names in it, the loader under another name</li>
           <li>one of its server names in the configuration: <code>adguardns.com</code>, <code>adguardns.org</code>, <code>lede-openproject.org</code>, <code>adxinsight.com</code>, <code>openwrt-project.org</code>. None of them belongs to AdGuard or OpenWrt</li>
         </ul>
         <p>
@@ -237,9 +251,9 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           <li>Keep the evidence archive.</li>
           <li>KVM: install GL.iNet’s security firmware. Only the 1.10.2 build for the RM1PE removes the malware’s files by itself; the builds for the RM1 and RM1V2 do not.</li>
           <li>Router: update <b>without keeping settings</b>. The malware hides in <code>/etc/config</code>, which an update with kept settings preserves.</li>
-          <li>A factory reset wipes everything the malware could have written and is the safe option on both.</li>
+          <li>A factory reset wipes the writable part of the system. RemoteToHome found that root can also write to the image a reset restores from, so a reflash without kept settings is safer. <a href={`${advisory.url}#reflash`}>Why</a></li>
           <li>Check the computer attached to a KVM, and the devices behind a router.</li>
-          <li>Change the device password, your GL.iNet cloud account password and your SSH keys.</li>
+          <li>Change the device password, your GL.iNet cloud account password and your SSH keys. Export the device log from your GoodCloud account first: it may show the attacker’s command. <a href={`${advisory.url}#keys`}>Why</a></li>
           <li>
             If the device was hit, everything it held a key for is exposed too. Remove the router’s VPN profile on the
             server or with the VPN provider and create a new one, and remove the router’s SSH keys from every machine

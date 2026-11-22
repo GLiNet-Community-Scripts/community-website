@@ -173,9 +173,13 @@ apps: []
 # community:
 #   date: 2026-11-21
 #   notes:
-#     - title: In a business network, talk to your cyber insurer before you reset
+#     # Optional: the note's anchor on the page (#insurer), for links to it.
+#     # Lowercase letters, digits and hyphens; not a section id such as "do".
+#     - id: insurer
+#       title: In a business network, talk to your cyber insurer before you reset
 #       # Optional: one line at the top of "Do this now", before the steps,
 #       # when people should read this note before they act (max. 160 characters).
+#       # All of them share one box; with an id the line links to its note.
 #       before: A reset destroys logs that your insurer may need.
 #       text: |
 #         First paragraph.

@@ -208,11 +208,14 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 .sa-article .do-first p.do-first-link { margin-top: 12px; font-size: 15px; font-weight: 650; }
 .sa-article .do-first p.do-first-foot { grid-column: 1 / -1; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--ok-line); font-size: 12px; line-height: 1.45; color: var(--text-2); }
 .do-box h3.do-alt { margin-top: 26px; font-size: 17px; }
-/* "Before you start": a community note to read before the steps */
+/* "Before you start": the community notes to read before the steps, in one box */
 .do-before { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: var(--accent-soft); border: 1px solid var(--ok-line); font-size: 14.5px; line-height: 1.5; text-wrap: pretty; color: var(--text); }
 .do-before b { color: var(--accent); font-weight: 650; }
 .do-before a { font-weight: 600; white-space: nowrap; }
+.do-before ul { margin: 6px 0 0; padding-left: 20px; }
+.do-before li + li { margin-top: 4px; }
 .sa-article .do-box .do-before { margin-top: 14px; font-size: 15px; }
+.community-box h3[id] { scroll-margin-top: 90px; }
 
 .unknowns { margin: 10px 0 0; padding-left: 20px; font-size: 16px; line-height: 1.6; }
 .unknowns li + li { margin-top: 4px; }
