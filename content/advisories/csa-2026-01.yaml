@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-22T02:12Z
+updated: 2026-11-22T02:20Z
 cve: []
 confirmed: gl-inet-public
 
@@ -138,7 +138,7 @@ details: |
 
   KVM firmware. Admon and RemoteToHome compared GL.iNet's firmware images. The 1.10.2 build for the RM1PE deletes the malware's files at boot and keeps no copy, so updating an infected RM1PE removes the evidence that it was infected. The 1.10.2 builds for the RM1 and RM1V2 contain no such cleanup. On an RM1, an update that keeps settings carries over the password file, the SSH keys and everything under /etc/kvmd/user.
 
-  Earlier than 20 November. One forum user recorded the network traffic of a GL-RM1 that was taken over on 19 November at 02:35 UTC, a day before the date in GL.iNet's notice: it connected to 65.20.71.131, fetched files from 66.245.219.252 and looked up gl-inet.top, a look-alike name registered on 16 November that is not GL.iNet's. Separately, forum users found an older backdoor on routers, see our note below.
+  Earlier than 20 November. One forum user recorded the network traffic of a GL-RM1 that was taken over on 19 November at 02:35 UTC, a day before the date in GL.iNet's notice: it connected to 65.20.71.131, fetched files from 66.245.219.252 and looked up gl-inet.top. That is a name GL.iNet used in the past. The registry shows it as registered anew on 16 November 2026, so whether GL.iNet still holds it is not known. Separately, forum users found an older backdoor on routers, see our note below.
 
 unknowns:
 - Which models and firmware versions were affected, and how many devices. GL.iNet has not published this; the table above shows only where traces were reported.
@@ -146,6 +146,7 @@ unknowns:
 - Whether the cause RemoteToHome found in the GoodCloud client is right, and which firmware removes it. GL.iNet has not commented.
 - What the malicious software does, and how the process GL.iNet names relates to the "gl-helper" files found on KVM devices.
 - What was run through the remote shells, and which other addresses are involved.
+- Who holds gl-inet.top now. GL.iNet used the name in the past; the registry shows a new registration on 16 November 2026.
 - How to tell whether a device was compromised earlier. No check can show that after a restart.
 - Whether a factory reset is enough. GL.iNet says it is; RemoteToHome found that the image a reset restores from can be changed by root.
 - Whether the older backdoor has to do with this incident, and how it got onto devices.
