@@ -236,23 +236,38 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 .sa-table td:first-child b { display: block; font-weight: 650; }
 .sa-table td:first-child small { font-size: 12.5px; color: var(--text-2); font-family: var(--font-mono); }
 .sa-table .fix { font-weight: 650; }
-/* models and firmware on which traces were reported: a grid, models down, versions across.
-   Not the "affected / fixed" table above. Scrolls sideways with the model column kept in view. */
-.rep-wrap { overflow-x: auto; }
-.rep-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14.5px; }
-.rep-table thead th { text-align: left; font-size: 13px; color: var(--text-2); font-weight: 600; padding: 11px 14px; background: var(--surface-2); white-space: nowrap; }
-.rep-table thead th.v { text-align: center; font-family: var(--font-mono); font-size: 12.5px; color: var(--text); padding-inline: 8px; }
-.rep-table tbody th, .rep-table td { padding: 9px 14px; border-top: 1px solid var(--border); vertical-align: middle; }
-.rep-table tbody th { text-align: left; font-weight: 400; white-space: nowrap; }
-.rep-table th:first-child { position: sticky; left: 0; z-index: 1; padding-left: 18px; }
-.rep-table tbody th:first-child { background: var(--surface); box-shadow: 1px 0 0 var(--border); }
-.rep-table thead th:first-child { box-shadow: 1px 0 0 var(--border); }
+/* models and firmware on which traces were reported. Not the "affected / fixed" table
+   above. One table per kind of device; a column is a release series, a cell holds the
+   versions of that series with reports. Fits without scrolling; on a phone each model
+   becomes a block with its versions in a row. */
+.rep-wrap + .rep-wrap { margin-top: 14px; }
+.rep-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14.5px; table-layout: fixed; }
+.rep-table caption { text-align: left; padding: 12px 18px 10px; font-weight: 650; font-size: 15px; }
+.rep-table caption span { margin-left: 8px; font-weight: 400; font-size: 13px; color: var(--text-2); }
+.rep-table thead th { text-align: left; font-size: 13px; color: var(--text-2); font-weight: 600; padding: 9px 10px; background: var(--surface-2); border-top: 1px solid var(--border); }
+.rep-table thead th.v { font-family: var(--font-mono); font-size: 12.5px; color: var(--text); }
+.rep-table thead th.v::after { content: '.x'; color: var(--text-2); }
+.rep-table tbody th, .rep-table td { padding: 9px 10px; border-top: 1px solid var(--border); vertical-align: middle; }
+.rep-table th:first-child { width: 31%; padding-left: 18px; }
+.rep-table tbody th { text-align: left; font-weight: 400; }
 .rep-table tbody th b { display: block; font-weight: 650; }
-.rep-table tbody th small { font-size: 12.5px; color: var(--text-2); }
-.rep-table td.c { text-align: center; padding-inline: 8px; }
-.rep-table td.c:nth-child(even) { background: color-mix(in srgb, var(--surface-2) 45%, transparent); }
+.rep-table tbody th small { font-size: 12.5px; color: var(--text-2); font-family: var(--font-mono); }
+.rep-table td.c + td.c, .rep-table th.v + th.v { border-left: 1px solid var(--border); }
 .rep-table td.unknown { font-size: 13.5px; color: var(--text-2); }
-.hit { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--a-fg); vertical-align: -1px; }
+.ver { display: inline-block; margin: 2px 4px 2px 0; padding: 1px 8px; border-radius: 980px; background: var(--a-bg); color: var(--a-fg); font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; line-height: 1.6; white-space: nowrap; }
+@media (max-width: 600px) {
+  .rep-table { table-layout: auto; }
+  .rep-table, .rep-table tbody, .rep-table tr, .rep-table caption { display: block; }
+  .rep-table thead { display: none; }
+  .rep-table tr { padding: 10px 14px; border-top: 1px solid var(--border); }
+  .rep-table tbody th, .rep-table td { display: inline; padding: 0; border: 0; }
+  .rep-table tbody th:first-child { display: block; width: auto; padding: 0 0 4px; }
+  .rep-table tbody th b, .rep-table tbody th small { display: inline; }
+  .rep-table tbody th small { margin-left: 8px; }
+  .rep-table td.c + td.c { border-left: 0; }
+  .rep-table td.none { display: none; }
+  .rep-table caption { padding-inline: 14px; }
+}
 .sa-article section > p.rep-legend { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--text-2); }
 .rep-legend .sep { opacity: .6; margin-inline: 6px; }
 .sa-article section > .sa-h3 + p.adv-refs { margin-top: 6px; }
