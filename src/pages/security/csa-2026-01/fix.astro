@@ -44,6 +44,8 @@ const labels = [
 ];
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
+  { v: '2.34', text: 'no longer shows GoodCloud’s remote SSH and web access as on when GoodCloud itself is off. The stored setting is on by default on many firmware versions.' },
+  { v: '2.33', text: 'says at the end to check the GoodCloud switch again after every firmware upgrade: one owner reports that an upgrade switched it back on.' },
   { v: '2.32', text: 'no longer calls a device infected because it blocks the older backdoor’s server names, says under a clean result when the device last restarted and what that means, and leaves your own autostart files alone when only a remote shell was found.' },
   { v: '2.28', text: 'finds the older backdoor’s loader under any name, by looking for compiled Lua in the writable part of the system, and counts gl-inet.top as a server of the malware.' },
   { v: '2.22', text: 'finds the malware in the other directories its installer can use, its line in the running crontab, an SSH key it adds, and the remote terminal service set to the attacker’s server.' },
