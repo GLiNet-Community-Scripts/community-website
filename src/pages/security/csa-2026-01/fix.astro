@@ -44,6 +44,7 @@ const labels = [
 ];
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
+  { v: '2.32', text: 'no longer calls a device infected because it blocks the older backdoor’s server names, says under a clean result when the device last restarted and what that means, and leaves your own autostart files alone when only a remote shell was found.' },
   { v: '2.28', text: 'finds the older backdoor’s loader under any name, by looking for compiled Lua in the writable part of the system, and counts gl-inet.top as a server of the malware.' },
   { v: '2.22', text: 'finds the malware in the other directories its installer can use, its line in the running crontab, an SSH key it adds, and the remote terminal service set to the attacker’s server.' },
   { v: '2.18', text: 'no longer reports an updated Tailscale as an infection. Versions 2.16 and 2.17 did.' },
@@ -98,7 +99,10 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           <b>If you ran it before 22 November, run it again</b>: it costs a minute and changes nothing on the device.
           The first line of its output shows the version you ran.
         </p>
-        <p class="ver-now">Current version: <b data-script-version>shown in the first line of the script’s output</b></p>
+        <p class="ver-now">
+          Current version: <b data-script-version>shown in the first line of the script’s output</b>
+          <span data-script-released hidden></span>
+        </p>
         <ul class="unknowns">
           {versions.map((v) => <li><b>{v.v}</b> {v.text}</li>)}
         </ul>
@@ -279,7 +283,22 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
       .then((r) => (r.ok ? r.text() : ''))
       .then((t) => {
         const m = /^VERSION=([0-9.]+)$/m.exec(t);
-        if (m) for (const el of document.querySelectorAll('[data-script-version]')) el.textContent = m[1];
+        if (!m) return;
+        for (const el of document.querySelectorAll('[data-script-version]')) el.textContent = m[1];
+        // when that version went out: "released 3 hours ago", with the UTC time behind it
+        const d = /^RELEASED='(\d{4}-\d\d-\d\d) (\d\d:\d\d) UTC'$/m.exec(t);
+        const at = d ? new Date(`${d[1]}T${d[2]}:00Z`) : null;
+        if (!d || !at || Number.isNaN(at.getTime())) return;
+        const min = Math.round((Date.now() - at.getTime()) / 60000);
+        const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+        let ago = 'just now';
+        if (min >= 2880) ago = rtf.format(-Math.round(min / 1440), 'day');
+        else if (min >= 90) ago = rtf.format(-Math.round(min / 60), 'hour');
+        else if (min >= 1) ago = rtf.format(-min, 'minute');
+        for (const el of document.querySelectorAll<HTMLElement>('[data-script-released]')) {
+          el.textContent = `released ${ago} (${d[1]} ${d[2]} UTC)`;
+          el.hidden = false;
+        }
       })
       .catch(() => { /* the fallback text stays */ });
   </script>
