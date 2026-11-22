@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-22T11:45Z
+updated: 2026-11-22T19:00Z
 cve: []
 confirmed: gl-inet-public
 
@@ -26,13 +26,13 @@ affected:
   # From the anonymous reports of the community script (export of the dashboard):
   # where traces were reported, not a list of affected devices.
   reported:
-    as_of: 2026-11-22T16:46Z
+    as_of: 2026-11-22T18:59Z
     source:
       label: Anonymous reports of the community script
       url: https://gl-i.net/security/csa-2026-01/fix/
     models:
     - { name: Flint 3, sku: GL-BE9300, kind: Router, firmware: [ 4.8.4, 4.9.0, 4.10.0, 4.10.1 ] }
-    - { name: Flint 2, sku: GL-MT6000, kind: Router, firmware: [ 4.7.7, 4.7.13, 4.8.2, 4.8.3, 4.8.3-op24, 4.8.4, 4.9.0, 4.9.1 ] }
+    - { name: Flint 2, sku: GL-MT6000, kind: Router, firmware: [ 4.7.7, 4.7.13, 4.8.2, 4.8.3, 4.8.3-op24, 4.8.4, 4.9.0, 4.9.0-op24, 4.9.1 ] }
     - { name: Brume 3, sku: GL-MT5000, kind: Router, firmware: [ 4.8.4, 4.8.6, 4.9.0 ] }
     - { name: Brume 2, sku: GL-MT2500, kind: Router, firmware: [ 4.7.0, 4.7.4, 4.7.13, 4.9.0 ] }
     - { name: Beryl AX, sku: GL-MT3000, kind: Router, firmware: [ 4.7.4, 4.8.0, 4.8.1, 4.8.2, 4.9.0 ] }
@@ -52,7 +52,7 @@ affected:
     - { name: Comet, sku: GL-RM1, kind: KVM, firmware: [ 1.8.0, 1.8.2, 1.9.2, 1.10.0, 1.10.1 ] }
     - { name: Comet Pro, sku: GL-RM10, kind: KVM, firmware: [ 1.7.0, 1.8.2, 1.10.0, 1.10.1, 1.10.3, 1.11.0 ] }
     - { name: Comet PoE, sku: GL-RM1PE, kind: KVM, firmware: [ 1.9.1, 1.10.1 ] }
-    - { name: GL-RM4PE, sku: GL-RM4PE, kind: KVM, firmware: [ 1.10.1 ] }
+    - { name: GL-RM4PE, sku: GL-RM4PE, kind: KVM, firmware: [ 1.8.1, 1.10.1 ] }
     - { name: GL-RM10RC, sku: GL-RM10RC, kind: KVM, firmware: [ 1.10.1 ] }
     - { name: GL-RMQ1, sku: GL-RMQ1, kind: KVM, firmware: [ 1.8.5 ] }
 
