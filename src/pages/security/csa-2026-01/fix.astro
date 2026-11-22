@@ -172,6 +172,24 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           from these paths, and autostart entries that point to them: crontabs, <code>rc.local</code>, init scripts and
           the lists of files a firmware update keeps. <a href={`${repo}#-indicators`}>All details are in the README&nbsp;↗</a>
         </p>
+        <h3 class="sa-h3">An older backdoor, found by forum users</h3>
+        <p>
+          While looking for traces of 20 November, users of GL.iNet’s forum found a second backdoor that is not part
+          of GL.iNet’s notice, on some devices since 2025
+          (<a href="https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097">ehidle’s report&nbsp;↗</a>).
+          GL.iNet’s quick check does not see it. The script reports it with its own verdict when it finds
+        </p>
+        <ul class="unknowns">
+          <li><code>/etc/init.d/urandom_seed</code> with extra lines that mention <code>monitord</code> or <code>ulogd</code></li>
+          <li><code>/bin/ulogd</code>, or <code>/usr/bin/monitord</code> as a copy of the Lua interpreter</li>
+          <li>a running <code>monitord</code> or <code>ujaild</code></li>
+          <li><code>adguardns.com</code> or <code>adguardns.org</code> in the configuration. These names do not belong to AdGuard</li>
+        </ul>
+        <p>
+          <code>--fix</code> does not remove this backdoor. Its second part runs in memory only and nobody has taken it
+          apart yet, so a cleanup could not promise a clean device. Install the firmware again with “keep settings”
+          off, and do not restore a backup taken from that device.
+        </p>
       </section>
 
       <section id="after" aria-labelledby="h-after">
