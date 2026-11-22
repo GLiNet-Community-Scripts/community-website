@@ -13,44 +13,43 @@ cve: []
 confirmed: gl-inet-public
 
 banner: >-
-  A flaw in GL.iNet's cloud remote management was used to install malware on
-  some routers and KVM devices. Check your device now, before you restart or
-  update it.
+  A flaw in GL.iNet's cloud remote management was used to install malware on some routers and KVM devices. Check your device now, before you restart or update it.
 
 summary: >-
-  An unauthorized party used a vulnerability in GL.iNet's cloud remote
-  management (GoodCloud) to access some GL.iNet routers and KVM devices and
-  install malicious software on them. GL.iNet says it fixed the vulnerability
-  in its cloud and blocked the attack path, which does not clean devices that
-  are already infected. It asks everyone to check their device, and has
-  scheduled stable security firmware for 22 November 2026.
+  An unauthorized party used a vulnerability in GL.iNet's cloud remote management (GoodCloud) to access some GL.iNet routers and KVM devices and install malicious software on them. GL.iNet says it fixed the vulnerability in its cloud and blocked the attack path, which does not clean devices that are already infected. It asks everyone to check their device, and has scheduled stable security firmware for 22 November 2026.
 
 affected:
   summary: >-
-    A subset of GL.iNet routers and KVM devices, reached through GL.iNet's
-    cloud remote management. GL.iNet has not published which models or
-    firmware versions; it is emailing affected customers individually. GL.iNet
-    staff has listed the models and firmware versions on which traces were
-    reported, see the table below.
-  products: [Routers, KVM devices (Comet)]
+    A subset of GL.iNet routers and KVM devices, reached through GL.iNet's cloud remote management. GL.iNet has not published which models or firmware versions; it is emailing affected customers individually. GL.iNet staff has listed the models and firmware versions on which traces were reported, see the table below.
+  products: [ Routers, KVM devices (Comet) ]
   firmware: Not published
   # From a post by GL.iNet staff in the forum: where traces were reported,
   # not a list of affected devices.
   reported:
-    as_of: 2026-11-21T18:45Z
+    as_of: 2026-11-22T02:01Z
     source:
-      label: GL.iNet staff in the forum
-      url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070/55
+      label: Anonymous reports of the community script
+      url: https://gl-i.net/security/csa-2026-01/fix/
     models:
-      - { name: Flint 3, sku: GL-BE9300, kind: Router, firmware: [4.10.1] }
-      - { name: Flint 2, sku: GL-MT6000, kind: Router, firmware: [4.8.3, 4.9.0] }
-      - { name: Brume 3, sku: GL-MT5000, kind: Router, firmware: [4.9.0] }
-      - { name: Beryl AX, sku: GL-MT3000, kind: Router, firmware: [4.8.0, 4.8.1] }
-      - { name: Brume 2, sku: GL-MT2500, kind: Router, firmware: [4.7.4, 4.7.13] }
-      - { name: Slate AX, sku: GL-AXT1800, kind: Router, firmware: [4.8.3] }
-      - { name: Mudi 7, sku: GL-E5800, kind: Router, firmware: [4.10.3] }
-      - { name: Spitz AX, sku: GL-X3000, kind: Router, firmware: [4.7.4] }
-      - { name: Comet, sku: GL-RM1, kind: KVM, firmware: [] }
+    - { name: Flint 3, sku: GL-BE9300, kind: Router, firmware: [ 4.9.0, 4.10.1 ] }
+    - { name: Brume 3, sku: GL-MT5000, kind: Router, firmware: [ 4.8.4, 4.9.0 ] }
+    - { name: Brume 2, sku: GL-MT2500, kind: Router, firmware: [ 4.7.4, 4.7.13 ] }
+    - { name: Flint 2, sku: GL-MT6000, kind: Router, firmware: [ 4.7.13, 4.8.3, 4.9.0, 4.9.1 ] }
+    - { name: Beryl AX, sku: GL-MT3000, kind: Router, firmware: [ 4.7.4, 4.8.0, 4.8.1, 4.9.0 ] }
+    - { name: Slate AX, sku: GL-AXT1800, kind: Router, firmware: [ 4.8.3, 4.8.4 ] }
+    - { name: GL-SFT1200, sku: GL-SFT1200, kind: Router, firmware: [ 4.8.3 ] }
+    - { name: GL-MT3600BE, sku: GL-MT3600BE, kind: Router, firmware: [ 4.9.0 ] }
+    - { name: Flint, sku: GL-AX1800, kind: Router, firmware: [ 4.8.3, 4.8.4 ] }
+    - { name: GL-BE14000, sku: GL-BE14000, kind: Router, firmware: [ 4.9.1, 4.9.2 ] }
+    - { name: GL-BE3600, sku: GL-BE3600, kind: Router, firmware: [ 4.10.1 ] }
+    - { name: Spitz AX, sku: GL-X3000, kind: Router, firmware: [ 4.7.4, 4.8.3, 4.8.4 ] }
+    - { name: GL-BE6500, sku: GL-BE6500, kind: Router, firmware: [ 4.9.0 ] }
+    - { name: Mudi 7, sku: GL-E5800, kind: Router, firmware: [ 4.10.3 ] }
+    - { name: GL-MG1300, sku: GL-MG1300, kind: Router, firmware: [ 4.10.1 ] }
+    - { name: Comet, sku: GL-RM1, kind: KVM, firmware: [ 1.8.0, 1.8.2, 1.10.0, 1.10.1 ] }
+    - { name: Comet Pro, sku: GL-RM10, kind: KVM, firmware: [ 1.8.2, 1.10.1, 1.10.3, 1.11.0 ] }
+    - { name: Comet PoE, sku: GL-RM1PE, kind: KVM, firmware: [ 1.10.1 ] }
+    - { name: GL-RMQ1, sku: GL-RMQ1, kind: KVM, firmware: [ 1.8.5 ] }
     note: |
       These are the models and firmware versions with reported traces, as listed by GL.iNet staff in the forum. It is not a list of affected devices from GL.iNet's investigation. If your model or firmware isn't listed, that does not mean it is unaffected.
 
@@ -58,95 +57,65 @@ affected:
 
 # GL.iNet's steps, from its notice as last updated on 21 November 2026.
 actions:
-  - audience: KVM devices (Comet)
-    steps:
-      - title: Check the KVM
-        text: >-
-          In the KVM's web interface open Toolbox, Terminal, Access and run
-          "ps -aux | grep tmp" (on the RMQ1 "ps -a | grep tmp"), in the KVM's
-          terminal, not on the connected computer. A process with "crond -i
-          /tmp/.log" means GL.iNet treats the device as infected.
-        link: { label: GL.iNet's notice, url: https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056 }
-      - title: If it is infected, reset it or install the security firmware
-        text: >-
-          GL.iNet says you can restore the device to factory settings to
-          address the infection, and still recommends the latest stable
-          security firmware.
-        link: { label: Reset guide, url: https://docs.gl-inet.com/kvm/en/faq/factory_reset/ }
-      - title: If it is infected, check the computer connected to it
-        text: >-
-          Look for programs, browser extensions or accounts you don't know,
-          unexpected startup items or scheduled tasks, changed settings and
-          unusual network activity. Run a full scan with up-to-date security
-          software.
-      - title: Install the stable security firmware
-        text: >-
-          Scheduled for 22 November 2026. Beta builds with the security fixes
-          are available now, 1.10.2 for RM1, RM1V2, RM1PE, RM4PE, RM10 and
-          RM10RC, 1.8.6 for RMQ1.
-        link: { label: Firmware downloads, url: https://dl.gl-inet.com/ }
-  - audience: Routers
-    steps:
-      - title: Check the router
-        text: >-
-          Over SSH run "ps | grep tmp", or search the process list in LuCI
-          for "tmp/.log". A process with "crond -i /tmp/.log" means GL.iNet
-          treats the router as infected.
-        link: { label: GL.iNet's notice, url: https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056 }
-      - title: If it is infected, reset it or install the security firmware
-        text: >-
-          GL.iNet says you can restore the router to factory settings to
-          address the infection, and still recommends the latest stable
-          security firmware. A reset erases your settings and installed apps.
-        link: { label: Reset guide, url: "https://docs.gl-inet.com/router/en/4/faq/repair_network_or_reset_firmware/#reset-to-factory" }
-      - title: If the check finds nothing
-        text: >-
-          GL.iNet says no factory reset or other cleanup is needed. The
-          community has found cases this check misses. See our note below.
-      - title: Install the stable security firmware
-        text: Scheduled for 22 November 2026. GL.iNet recommends it for every device.
-        link: { label: Firmware downloads, url: https://dl.gl-inet.com/ }
+- audience: KVM devices (Comet)
+  steps:
+  - title: Check the KVM
+    text: >-
+      In the KVM's web interface open Toolbox, Terminal, Access and run "ps -aux | grep tmp" (on the RMQ1 "ps -a | grep tmp"), in the KVM's terminal, not on the connected computer. A process with "crond -i /tmp/.log" means GL.iNet treats the device as infected.
+    link: { label: GL.iNet's notice, url: https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056 }
+  - title: If it is infected, reset it or install the security firmware
+    text: >-
+      GL.iNet says you can restore the device to factory settings to address the infection, and still recommends the latest stable security firmware.
+    link: { label: Reset guide, url: https://docs.gl-inet.com/kvm/en/faq/factory_reset/ }
+  - title: If it is infected, check the computer connected to it
+    text: >-
+      Look for programs, browser extensions or accounts you don't know, unexpected startup items or scheduled tasks, changed settings and unusual network activity. Run a full scan with up-to-date security software.
+  - title: Install the stable security firmware
+    text: >-
+      Scheduled for 22 November 2026. Beta builds with the security fixes are available now, 1.10.2 for RM1, RM1V2, RM1PE, RM4PE, RM10 and RM10RC, 1.8.6 for RMQ1.
+    link: { label: Firmware downloads, url: https://dl.gl-inet.com/ }
+- audience: Routers
+  steps:
+  - title: Check the router
+    text: >-
+      Over SSH run "ps | grep tmp", or search the process list in LuCI for "tmp/.log". A process with "crond -i /tmp/.log" means GL.iNet treats the router as infected.
+    link: { label: GL.iNet's notice, url: https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056 }
+  - title: If it is infected, reset it or install the security firmware
+    text: >-
+      GL.iNet says you can restore the router to factory settings to address the infection, and still recommends the latest stable security firmware. A reset erases your settings and installed apps.
+    link: { label: Reset guide, url: "https://docs.gl-inet.com/router/en/4/faq/repair_network_or_reset_firmware/#reset-to-factory" }
+  - title: If the check finds nothing
+    text: >-
+      GL.iNet says no factory reset or other cleanup is needed. The community has found cases this check misses. See our note below.
+  - title: Install the stable security firmware
+    text: Scheduled for 22 November 2026. GL.iNet recommends it for every device.
+    link: { label: Firmware downloads, url: https://dl.gl-inet.com/ }
 
 check:
-  - title: GL.iNet's check
-    text: >-
-      If the output contains "crond -i /tmp/.log", the device is infected
-      according to GL.iNet. The line with "grep tmp" is the check itself. A
-      line with "cat /tmp/f" is the remote shell the community found, so it
-      is a hit as well. GL.iNet staff has said that a clean result here is
-      not enough, so run the other checks too. On a KVM the command is
-      "ps -aux | grep tmp", on the RMQ1 "ps -a | grep tmp".
-    command: ps | grep tmp
-  - title: The same in the admin panel
-    menu: [System, Advanced Settings, LuCI, Status, Processes]
-    text: >-
-      Search the page (Ctrl+F, on a Mac Cmd+F) for "tmp/.log" and look for
-      "crond -i /tmp/.log".
-  - title: Processes that remote shells use
-    text: >-
-      No output is the good result. nc, netcat, socat, "/bin/sh -i" or mkfifo
-      in the output need a closer look.
-    command: ps ww | grep -E '[n]c |[n]etcat|[s]ocat|[/]bin/sh -i|[m]kfifo'
-  - title: The shell's pipe
-    text: >-
-      The remote shell's pipe /tmp/f stays after the shell was stopped and
-      only goes away at a restart. If the line starts with "p", the shell has
-      run since the last restart. "No such file" is the good result.
-    command: ls -la /tmp/f
-  - title: Is netstat still the original?
-    text: >-
-      GL.iNet staff warns that netstat can be replaced on an infected device
-      and that running the replacement starts the malware. On a router the
-      line must end in "-> busybox". If it does not, don't run netstat.
-    command: ls -l /bin/netstat
-  - title: Connections to the reported address
-    text: >-
-      Only after the check above. The remote shells connect to
-      170.39.226.219. Any output here means such a connection is open; the
-      last column shows the process and its number (PID). "netstat -tnp"
-      without the filter lists all connections: look for ones held by nc,
-      netcat, sh or ash.
-    command: netstat -tnp | grep '170.39.226.219'
+- title: GL.iNet's check
+  text: >-
+    If the output contains "crond -i /tmp/.log", the device is infected according to GL.iNet. The line with "grep tmp" is the check itself. A line with "cat /tmp/f" is the remote shell the community found, so it is a hit as well. GL.iNet staff has said that a clean result here is not enough, so run the other checks too. On a KVM the command is "ps -aux | grep tmp", on the RMQ1 "ps -a | grep tmp".
+  command: ps | grep tmp
+- title: The same in the admin panel
+  menu: [ System, Advanced Settings, LuCI, Status, Processes ]
+  text: >-
+    Search the page (Ctrl+F, on a Mac Cmd+F) for "tmp/.log" and look for "crond -i /tmp/.log".
+- title: Processes that remote shells use
+  text: >-
+    No output is the good result. nc, netcat, socat, "/bin/sh -i" or mkfifo in the output need a closer look.
+  command: ps ww | grep -E '[n]c |[n]etcat|[s]ocat|[/]bin/sh -i|[m]kfifo'
+- title: The shell's pipe
+  text: >-
+    The remote shell's pipe /tmp/f stays after the shell was stopped and only goes away at a restart. If the line starts with "p", the shell has run since the last restart. "No such file" is the good result.
+  command: ls -la /tmp/f
+- title: Is netstat still the original?
+  text: >-
+    GL.iNet staff warns that netstat can be replaced on an infected device and that running the replacement starts the malware. On a router the line must end in "-> busybox". If it does not, don't run netstat.
+  command: ls -l /bin/netstat
+- title: Connections to the reported address
+  text: >-
+    Only after the check above. The remote shells connect to 170.39.226.219. Any output here means such a connection is open; the last column shows the process and its number (PID). "netstat -tnp" without the filter lists all connections: look for ones held by nc, netcat, sh or ash.
+  command: netstat -tnp | grep '170.39.226.219'
 
 details: |
   On 20 November 2026 GL.iNet identified a vulnerability in its cloud remote management services. According to GL.iNet, an unauthorized party exploited it to access a subset of GL.iNet routers and KVM devices and to install malicious software on them.
@@ -172,183 +141,174 @@ details: |
   GL.iNet will email affected customers individually, at the address of their GoodCloud account, with guidance for their devices, and says you do not need to wait for that email to check your device or install the update. It says it will update its notice as new information becomes available.
 
 unknowns:
-  - Which models and firmware versions were affected, in which time window, and how many devices. GL.iNet has not published this; the table above shows only where traces were reported.
-  - Whether the cause RemoteToHome found in the GoodCloud client on the router is right, and which firmware removes it. GL.iNet has not commented.
-  - What the malicious software does, and how the process GL.iNet names relates to the "gl-helper" files found on KVM devices.
-  - What was run through the remote shells, and whether 170.39.226.219 is the only address involved.
-  - How to tell whether a device was compromised earlier. Neither GL.iNet's check nor the community's can show that after a restart.
-  - Whether a factory reset is enough or the bootloader (U-Boot) has to be flashed again. GL.iNet staff has raised the question.
-  - Whether data such as cloud account details or passwords was exposed. The notice doesn't say.
-  - Whether computers connected to affected KVM devices were affected. GL.iNet is still investigating.
-  - Whether to keep using cloud remote management until the firmware is out. The notice doesn't say. See our note below.
+- Which models and firmware versions were affected, in which time window, and how many devices. GL.iNet has not published this; the table above shows only where traces were reported.
+- Whether the cause RemoteToHome found in the GoodCloud client on the router is right, and which firmware removes it. GL.iNet has not commented.
+- What the malicious software does, and how the process GL.iNet names relates to the "gl-helper" files found on KVM devices.
+- What was run through the remote shells, and whether 170.39.226.219 is the only address involved.
+- How to tell whether a device was compromised earlier. Neither GL.iNet's check nor the community's can show that after a restart.
+- Whether a factory reset is enough or the bootloader (U-Boot) has to be flashed again. GL.iNet staff has raised the question.
+- Whether data such as cloud account details or passwords was exposed. The notice doesn't say.
+- Whether computers connected to affected KVM devices were affected. GL.iNet is still investigating.
+- Whether to keep using cloud remote management until the firmware is out. The notice doesn't say. See our note below.
 
 timeline:
-  - at: 2026-11-21T18:45Z
-    text: "GL.iNet staff lists in the forum the models and firmware versions on which traces were reported: eight router models and one KVM."
-  - at: 2026-11-21T17:24Z
-    text: RemoteToHome Consulting reports the address the remote shells connect to, 170.39.226.219, to its hosting provider.
-    tag: Community
-  - at: 2026-11-21T16:27Z
-    text: "GL.iNet staff warns in the forum that netstat can be replaced on an infected device and that running it starts the malware."
-  - at: 2026-11-21T16:15Z
-    text: "RemoteToHome Consulting reports the same remote shell on one of its own GL-AXT1800 routers and traces it to a handler in the GoodCloud client on the router. Not confirmed by GL.iNet."
-    tag: Community
-  - at: 2026-11-21T16:10Z
-    text: "GL.iNet staff says in the forum that the first check is not enough, adds checks for open connections and processes, and says what to do when a remote shell is found."
-  - at: 2026-11-21T16:00Z
-    text: "By now GL.iNet's notice says: the attack path is blocked, infected devices are not cleaned by that, a process \"crond -i /tmp/.log\" is the sign of an infection, KVM beta firmware with fixes is available, and stable security firmware is scheduled for 22 November."
-  - at: 2026-11-21T13:56Z
-    text: "GL.iNet posts a quick check for routers in its forum: look for a running process \"crond -i /tmp/.log\"."
-  - at: 2026-11-21T13:27Z
-    text: A community member publishes a script that checks devices for the known malware files.
-    tag: Community
-  - at: 2026-11-21T04:25Z
-    text: GL.iNet updates its notice. It doesn't say what changed.
-  - at: 2026-11-20
-    text: GL.iNet publishes a security notice on its blog and in its forum.
-  - at: 2026-11-20
-    text: GL.iNet identifies the vulnerability and fixes it in its cloud services.
+- at: 2026-11-21T18:45Z
+  text: "GL.iNet staff lists in the forum the models and firmware versions on which traces were reported: eight router models and one KVM."
+- at: 2026-11-21T17:24Z
+  text: RemoteToHome Consulting reports the address the remote shells connect to, 170.39.226.219, to its hosting provider.
+  tag: Community
+- at: 2026-11-21T16:27Z
+  text: "GL.iNet staff warns in the forum that netstat can be replaced on an infected device and that running it starts the malware."
+- at: 2026-11-21T16:15Z
+  text: "RemoteToHome Consulting reports the same remote shell on one of its own GL-AXT1800 routers and traces it to a handler in the GoodCloud client on the router. Not confirmed by GL.iNet."
+  tag: Community
+- at: 2026-11-21T16:10Z
+  text: "GL.iNet staff says in the forum that the first check is not enough, adds checks for open connections and processes, and says what to do when a remote shell is found."
+- at: 2026-11-21T16:00Z
+  text: "By now GL.iNet's notice says: the attack path is blocked, infected devices are not cleaned by that, a process \"crond -i /tmp/.log\" is the sign of an infection, KVM beta firmware with fixes is available, and stable security firmware is scheduled for 22 November."
+- at: 2026-11-21T13:56Z
+  text: "GL.iNet posts a quick check for routers in its forum: look for a running process \"crond -i /tmp/.log\"."
+- at: 2026-11-21T13:27Z
+  text: A community member publishes a script that checks devices for the known malware files.
+  tag: Community
+- at: 2026-11-21T04:25Z
+  text: GL.iNet updates its notice. It doesn't say what changed.
+- at: 2026-11-20
+  text: GL.iNet publishes a security notice on its blog and in its forum.
+- at: 2026-11-20
+  text: GL.iNet identifies the vulnerability and fixes it in its cloud services.
 
 sources:
-  - type: gl-inet-forum
-    label: "2026-11-20: GL.iNet Security Notice – GoodCloud / KVM / Routers"
-    url: https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056
-    note: The notice by the GL.iNet Security Team in the official forum, last updated 21 November 2026. This advisory follows this version.
-    date: 2026-11-21
-  - type: gl-inet
-    label: GL.iNet Security Notice 2026-11-20
-    url: https://www.gl-inet.com/blogs/blog/glinet-security-notice-2026-11-20
-    note: GL.iNet's notice on its blog.
-    date: 2026-11-20
-  - type: gl-inet-forum
-    label: Quickly check if your Router is under attack
-    url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070
-    note: GL.iNet's quick check for routers, with answers from GL.iNet to users who posted their results.
-    date: 2026-11-21
-  - type: gl-inet-forum
-    label: Further checks and what to do when you find a remote shell
-    url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070/32
-    note: Two posts by GL.iNet staff in the same thread. A clean result of the first check is not sufficient.
-    date: 2026-11-21
-  - type: gl-inet-forum
-    label: Check that netstat is still linked to busybox
-    url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070/41
-    note: GL.iNet staff in the same thread. The command itself can be compromised, and running it starts the malware.
-    date: 2026-11-21
-  - type: gl-inet-forum
-    label: Models and firmware versions with reported indicators
-    url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070/55
-    note: GL.iNet staff in the same thread, as of 21 November 2026, 18:45 UTC. What matters most is whether GoodCloud was enabled and connected during the attack.
-    date: 2026-11-21
-  - type: researcher
-    label: "RemoteToHome Consulting: findings on the incident, how to check and how to recover"
-    url: https://github.com/RemoteToHome-io/gl-security-incident-2026
-    note: The remote shell on GL-AXT1800 routers and its cause in the GoodCloud client, what the KVM firmware 1.10.2 does, the address the shells connect to, and what to revoke after a hit. Each finding says how it was checked.
-    date: 2026-11-21
-  - type: community
-    label: "Forum user ehidle: a second, older backdoor"
-    url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097
-    note: A backdoor in /etc/init.d/urandom_seed and /bin/ulogd on a GL-AX1800, dated December 2025. Posts 26, 63 and 65 of the notice's thread describe the same on a GL-X2000. Not confirmed by GL.iNet.
-    date: 2026-11-21
-  - type: community
-    label: "Forum user acs: the backdoor's server names and its second program"
-    url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/2
-    note: The same backdoor on a GL-X2000 with files from October 2025. The server names are built character by character inside /bin/ulogd; acs decoded three of them and found that two were registered in July 2025. ikangshen reports it on a GL-MT3000 (4.11.0) in the next post.
-    date: 2026-11-21
-  - type: community
-    label: "Forum user nick2: an infected and a clean router of the same model compared"
-    url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/6
-    note: Two GL-AX1800 with firmware 4.8.3, both on GoodCloud, one infected and one clean. With the commands used to check, to keep the samples and to contain the backdoor on a router that could not be reset. The author calls it containment, not a replacement for a reflash.
-    date: 2026-11-22
-  - type: community
-    label: User reports in the forum thread
-    url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070
-    note: Forum users kosrkosr and TakashiSasaki posted the first two reports of the remote shell on a GL-AXT1800 with firmware 4.8.3.
-    date: 2026-11-21
+- type: gl-inet-forum
+  label: "2026-11-20: GL.iNet Security Notice – GoodCloud / KVM / Routers"
+  url: https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056
+  note: The notice by the GL.iNet Security Team in the official forum, last updated 21 November 2026. This advisory follows this version.
+  date: 2026-11-21
+- type: gl-inet
+  label: GL.iNet Security Notice 2026-11-20
+  url: https://www.gl-inet.com/blogs/blog/glinet-security-notice-2026-11-20
+  note: GL.iNet's notice on its blog.
+  date: 2026-11-20
+- type: gl-inet-forum
+  label: Quickly check if your Router is under attack
+  url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070
+  note: GL.iNet's quick check for routers, with answers from GL.iNet to users who posted their results.
+  date: 2026-11-21
+- type: gl-inet-forum
+  label: Further checks and what to do when you find a remote shell
+  url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070/32
+  note: Two posts by GL.iNet staff in the same thread. A clean result of the first check is not sufficient.
+  date: 2026-11-21
+- type: gl-inet-forum
+  label: Check that netstat is still linked to busybox
+  url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070/41
+  note: GL.iNet staff in the same thread. The command itself can be compromised, and running it starts the malware.
+  date: 2026-11-21
+- type: gl-inet-forum
+  label: Models and firmware versions with reported indicators
+  url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070/55
+  note: GL.iNet staff in the same thread, as of 21 November 2026, 18:45 UTC. What matters most is whether GoodCloud was enabled and connected during the attack.
+  date: 2026-11-21
+- type: researcher
+  label: "RemoteToHome Consulting: findings on the incident, how to check and how to recover"
+  url: https://github.com/RemoteToHome-io/gl-security-incident-2026
+  note: The remote shell on GL-AXT1800 routers and its cause in the GoodCloud client, what the KVM firmware 1.10.2 does, the address the shells connect to, and what to revoke after a hit. Each finding says how it was checked.
+  date: 2026-11-21
+- type: community
+  label: "Forum user ehidle: a second, older backdoor"
+  url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097
+  note: A backdoor in /etc/init.d/urandom_seed and /bin/ulogd on a GL-AX1800, dated December 2025. Posts 26, 63 and 65 of the notice's thread describe the same on a GL-X2000. Not confirmed by GL.iNet.
+  date: 2026-11-21
+- type: community
+  label: "Forum user acs: the backdoor's server names and its second program"
+  url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/2
+  note: The same backdoor on a GL-X2000 with files from October 2025. The server names are built character by character inside /bin/ulogd; acs decoded three of them and found that two were registered in July 2025. ikangshen reports it on a GL-MT3000 (4.11.0) in the next post.
+  date: 2026-11-21
+- type: community
+  label: "Forum user nick2: an infected and a clean router of the same model compared"
+  url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/6
+  note: Two GL-AX1800 with firmware 4.8.3, both on GoodCloud, one infected and one clean. With the commands used to check, to keep the samples and to contain the backdoor on a router that could not be reset. The author calls it containment, not a replacement for a reflash.
+  date: 2026-11-22
+- type: community
+  label: User reports in the forum thread
+  url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070
+  note: Forum users kosrkosr and TakashiSasaki posted the first two reports of the remote shell on a GL-AXT1800 with firmware 4.8.3.
+  date: 2026-11-21
 
 contacts:
-  - { label: Is my device affected?, email: support@gl-inet.com }
-  - { label: Report a security issue, email: security@gl-inet.com }
+- { label: Is my device affected?, email: support@gl-inet.com }
+- { label: Report a security issue, email: security@gl-inet.com }
 
 apps_note: >-
-  None of the community apps on this site are named in GL.iNet's notice. A
-  factory reset removes installed apps and their settings, so re-run their
-  installers afterwards.
+  None of the community apps on this site are named in GL.iNet's notice. A factory reset removes installed apps and their settings, so re-run their installers afterwards.
 
 community_fix:
   title: Run the community script first
   text: |
     GL.iNet's check looks for one process that is running right now. A community script by Admon runs that check and the wider ones, and also looks at the files on a GL.iNet router or KVM device: the ones this malware is known to leave behind, including the entries that would start it again after a restart. It can save evidence from the device first and, if you ask it to, remove what it found.
   caveat: >-
-    Community work, not a GL.iNet tool. GL.iNet has not reviewed or endorsed
-    it. The script knows only the known traces, so a clean result does not
-    prove that a device is clean, and it does not replace a factory reset or
-    GL.iNet's security firmware. Use it at your own risk.
+    Community work, not a GL.iNet tool. GL.iNet has not reviewed or endorsed it. The script knows only the known traces, so a clean result does not prove that a device is clean, and it does not replace a factory reset or GL.iNet's security firmware. Use it at your own risk.
   before: >-
-    One command does the checks below for you and more. Run it before you
-    restart, reset or update the device: those wipe traces of the attack.
+    One command does the checks below for you and more. Run it before you restart, reset or update the device: those wipe traces of the attack.
   command: curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh
   command_variants:
-    - { name: curl, command: curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh }
-    - { name: wget, command: wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh }
+  - { name: curl, command: curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh }
+  - { name: wget, command: wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh }
   author: >-
-    By Admon and the community: RemoteToHome Consulting and users of
-    GL.iNet's forum contributed findings and checks. An independent community
-    project.
+    By Admon and the community: RemoteToHome Consulting and users of GL.iNet's forum contributed findings and checks. An independent community project.
   does:
-    - Runs GL.iNet's check and the wider ones GL.iNet staff recommends
-    - Looks at files, autostart entries and the firewall, not only at what is running
-    - Only reads. It saves evidence or removes what it found when you ask it to
-    - Offers to send a short anonymous report, so everyone sees which devices were hit
+  - Runs GL.iNet's check and the wider ones GL.iNet staff recommends
+  - Looks at files, autostart entries and the firewall, not only at what is running
+  - Only reads. It saves evidence or removes what it found when you ask it to
+  - Offers to send a short anonymous report, so everyone sees which devices were hit
   link: { label: How to run it and read the result, url: /security/csa-2026-01/fix/ }
   image: /img/csa-2026-01-fix.svg
 
 community:
   date: 2026-11-21
   notes:
-    - title: In a business network, talk to your cyber insurer before you reset
-      before: >-
-        In a business network, a reset destroys logs that your insurer or
-        investigators may need.
-      text: |
-        A factory reset wipes the device, and with it the logs that could show how someone got access and when it started. On GL.iNet routers the system log is kept in memory by default, so even a restart clears it.
+  - title: In a business network, talk to your cyber insurer before you reset
+    before: >-
+      In a business network, a reset destroys logs that your insurer or investigators may need.
+    text: |
+      A factory reset wipes the device, and with it the logs that could show how someone got access and when it started. On GL.iNet routers the system log is kept in memory by default, so even a restart clears it.
 
-        If the device runs in a business network and you have cyber insurance or an incident response provider, contact them before you reset it. They may want logs and configuration secured first, and many policies expect you to report an incident before you change affected systems. Until then, disconnect the device from the internet instead of resetting it.
-    - title: A clean result of GL.iNet's check does not clear a device
-      text: |
-        GL.iNet's notice says that no cleanup is needed when its check finds nothing. We would not rely on that. The remote shell found on GL-AXT1800 routers does not run the process GL.iNet names: RemoteToHome found the shell on a router where that process was absent. The shell leaves no file behind and is gone after a restart.
+      If the device runs in a business network and you have cyber insurance or an incident response provider, contact them before you reset it. They may want logs and configuration secured first, and many policies expect you to report an incident before you change affected systems. Until then, disconnect the device from the internet instead of resetting it.
+  - title: A clean result of GL.iNet's check does not clear a device
+    text: |
+      GL.iNet's notice says that no cleanup is needed when its check finds nothing. We would not rely on that. The remote shell found on GL-AXT1800 routers does not run the process GL.iNet names: RemoteToHome found the shell on a router where that process was absent. The shell leaves no file behind and is gone after a restart.
 
-        Run the wider checks on this page or the community script. And if a device had GL.iNet's cloud service switched on and has been restarted or updated since the evening of 20 November, no check can clear it for that night.
-    - title: If a device was hit, take its keys back at the other end too
-      text: |
-        The attacker had a root shell, so every key, password and profile stored on the device could be copied. Cleaning or resetting the device does not take those back.
+      Run the wider checks on this page or the community script. And if a device had GL.iNet's cloud service switched on and has been restarted or updated since the evening of 20 November, no check can clear it for that night.
+  - title: If a device was hit, take its keys back at the other end too
+    text: |
+      The attacker had a root shell, so every key, password and profile stored on the device could be copied. Cleaning or resetting the device does not take those back.
 
-        Remove that access where it is granted: delete the router's VPN profile on the server or with the VPN provider and create a new one, remove SSH keys of the router from every machine that trusts them, and change the Wi-Fi, admin, DDNS and cloud passwords. If the router was itself a VPN server, give it a new key and issue new profiles. RemoteToHome's page has the steps for each kind of VPN.
-      link: { label: RemoteToHome's recovery steps, url: "https://github.com/RemoteToHome-io/gl-security-incident-2026#if-you-find-something" }
-    - title: Until the security firmware is installed, switch GoodCloud off
-      text: |
-        GL.iNet says the attack path is blocked on its side. RemoteToHome reports that the unchecked code is still in the router firmware it read, and that the cloud client on the router only starts when GoodCloud is enabled on the device. Switching GoodCloud off in the admin panel therefore takes that code out of play until fixed firmware is installed. The device then disappears from GoodCloud, so make sure you have another way to reach a remote device first.
+      Remove that access where it is granted: delete the router's VPN profile on the server or with the VPN provider and create a new one, remove SSH keys of the router from every machine that trusts them, and change the Wi-Fi, admin, DDNS and cloud passwords. If the router was itself a VPN server, give it a new key and issue new profiles. RemoteToHome's page has the steps for each kind of VPN.
+    link: { label: RemoteToHome's recovery steps, url: "https://github.com/RemoteToHome-io/gl-security-incident-2026#if-you-find-something" }
+  - title: Until the security firmware is installed, switch GoodCloud off
+    text: |
+      GL.iNet says the attack path is blocked on its side. RemoteToHome reports that the unchecked code is still in the router firmware it read, and that the cloud client on the router only starts when GoodCloud is enabled on the device. Switching GoodCloud off in the admin panel therefore takes that code out of play until fixed firmware is installed. The device then disappears from GoodCloud, so make sure you have another way to reach a remote device first.
 
-        This lowers the risk from now on. It does not clean a device that was already hit.
-      link: { label: RemoteToHome's commands for switching it off, url: "https://github.com/RemoteToHome-io/gl-security-incident-2026#reducing-exposure-until-fixed-firmware-is-installed" }
-    - title: Don't rely on netstat on a device you suspect
-      text: |
-        GL.iNet's cleanup in the KVM firmware 1.10.2 for the RM1PE removes a netstat that the malware had replaced, and GL.iNet staff says the same can happen on routers and that running the replacement starts the malware. Check /bin/netstat first, as shown under "Check your device".
+      This lowers the risk from now on. It does not clean a device that was already hit.
+    link: { label: RemoteToHome's commands for switching it off, url: "https://github.com/RemoteToHome-io/gl-security-incident-2026#reducing-exposure-until-fixed-firmware-is-installed" }
+  - title: Don't rely on netstat on a device you suspect
+    text: |
+      GL.iNet's cleanup in the KVM firmware 1.10.2 for the RM1PE removes a netstat that the malware had replaced, and GL.iNet staff says the same can happen on routers and that running the replacement starts the malware. Check /bin/netstat first, as shown under "Check your device".
 
-        The community script reads the list of connections from the system directly and does not call netstat.
-    - title: Forum users found a second, older backdoor
-      before: >-
-        Not part of GL.iNet's notice, and GL.iNet's check does not see it.
-      text: |
-        While looking for traces of 20 November, users of GL.iNet's forum found a different backdoor. At least five devices are described so far: two GL-AX1800 (4.8.3), a GL-X2000 (4.7.13), a GL-MT3000 (4.11.0) and one whose model was not given. The files are dated from October 2025 to March 2026, and one user says since September 2025. One of the owners has a second GL-AX1800 with the same firmware, also on GoodCloud, that is clean. How it got onto the devices is not known. These are user reports; GL.iNet's notice does not mention it.
+      The community script reads the list of connections from the system directly and does not call netstat.
+  - title: Forum users found a second, older backdoor
+    before: >-
+      Not part of GL.iNet's notice, and GL.iNet's check does not see it.
+    text: |
+      While looking for traces of 20 November, users of GL.iNet's forum found a different backdoor. At least five devices are described so far: two GL-AX1800 (4.8.3), a GL-X2000 (4.7.13), a GL-MT3000 (4.11.0) and one whose model was not given. The files are dated from October 2025 to March 2026, and one user says since September 2025. One of the owners has a second GL-AX1800 with the same firmware, also on GoodCloud, that is clean. How it got onto the devices is not known. These are user reports; GL.iNet's notice does not mention it.
 
-        Signs: /etc/init.d/urandom_seed has extra lines at the top that mention monitord and ulogd, a file /bin/ulogd exists, /usr/bin/monitord exists, or a process monitord or ujaild is running. It reports the device to servers with names made to look familiar. Known so far: adguardns.com, adguardns.org, lede-openproject.org, adxinsight.com and openwrt-project.org. None of them belongs to AdGuard or OpenWrt. It survives a firmware update that keeps settings.
+      Signs: /etc/init.d/urandom_seed has extra lines at the top that mention monitord and ulogd, a file /bin/ulogd exists, /usr/bin/monitord exists, or a process monitord or ujaild is running. It reports the device to servers with names made to look familiar. Known so far: adguardns.com, adguardns.org, lede-openproject.org, adxinsight.com and openwrt-project.org. None of them belongs to AdGuard or OpenWrt. It survives a firmware update that keeps settings.
 
-        The quickest check is to compare the start script with the one in the firmware: /rom/bin/busybox cmp /etc/init.d/urandom_seed /rom/etc/init.d/urandom_seed. No output means the two are the same.
+      The quickest check is to compare the start script with the one in the firmware: /rom/bin/busybox cmp /etc/init.d/urandom_seed /rom/etc/init.d/urandom_seed. No output means the two are the same.
 
-        The community script reports it with its own verdict and does not try to remove it. If you find it, install the firmware again with "keep settings" off, do not restore a backup taken from that device, and change every password and key that was stored on it.
-      link: { label: "The forum thread, with one owner's steps to contain it remotely", url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/6 }
-    - title: Thanks to the people doing this work
-      text: |
-        This page stands on the work of others: RemoteToHome Consulting for the analysis of the remote shell, the KVM firmware and the recovery steps, the forum users kosrkosr and TakashiSasaki for the first reports of the shell, AdamK for the connection checks, ehidle, acs, ikangshen, nick2 and the other forum users who found and described the older backdoor, and everyone who posted their output in GL.iNet's forum.
-      link: { label: RemoteToHome's findings, url: https://github.com/RemoteToHome-io/gl-security-incident-2026 }
+      The community script reports it with its own verdict and does not try to remove it. If you find it, install the firmware again with "keep settings" off, do not restore a backup taken from that device, and change every password and key that was stored on it.
+    link: { label: "The forum thread, with one owner's steps to contain it remotely", url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/6 }
+  - title: Thanks to the people doing this work
+    text: |
+      This page stands on the work of others: RemoteToHome Consulting for the analysis of the remote shell, the KVM firmware and the recovery steps, the forum users kosrkosr and TakashiSasaki for the first reports of the shell, AdamK for the connection checks, ehidle, acs, ikangshen, nick2 and the other forum users who found and described the older backdoor, and everyone who posted their output in GL.iNet's forum.
+    link: { label: RemoteToHome's findings, url: https://github.com/RemoteToHome-io/gl-security-incident-2026 }
