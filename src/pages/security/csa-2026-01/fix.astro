@@ -99,7 +99,7 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           <b>If you ran it before 22 November, run it again</b>: it costs a minute and changes nothing on the device.
           The first line of its output shows the version you ran.
         </p>
-        <p class="ver-now">
+        <p class="ver-now" data-version-src="https://app.gl-i.net/csa-2026-01-fix">
           Current version: <b data-script-version>shown in the first line of the script’s output</b>
           <span data-script-released hidden></span>
         </p>
@@ -281,28 +281,6 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
   <script>
     import '../../../scripts/alerts.ts';
     import '../../../scripts/security.ts';
-    // the version of the script as it is served right now, read from the script itself
-    fetch('https://app.gl-i.net/csa-2026-01-fix')
-      .then((r) => (r.ok ? r.text() : ''))
-      .then((t) => {
-        const m = /^VERSION=([0-9.]+)$/m.exec(t);
-        if (!m) return;
-        for (const el of document.querySelectorAll('[data-script-version]')) el.textContent = m[1];
-        // when that version went out: "released 3 hours ago", with the UTC time behind it
-        const d = /^RELEASED='(\d{4}-\d\d-\d\d) (\d\d:\d\d) UTC'$/m.exec(t);
-        const at = d ? new Date(`${d[1]}T${d[2]}:00Z`) : null;
-        if (!d || !at || Number.isNaN(at.getTime())) return;
-        const min = Math.round((Date.now() - at.getTime()) / 60000);
-        const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
-        let ago = 'just now';
-        if (min >= 2880) ago = rtf.format(-Math.round(min / 1440), 'day');
-        else if (min >= 90) ago = rtf.format(-Math.round(min / 60), 'hour');
-        else if (min >= 1) ago = rtf.format(-min, 'minute');
-        for (const el of document.querySelectorAll<HTMLElement>('[data-script-released]')) {
-          el.textContent = `released ${ago} (${d[1]} ${d[2]} UTC)`;
-          el.hidden = false;
-        }
-      })
-      .catch(() => { /* the fallback text stays */ });
+    import '../../../scripts/script-version.ts';
   </script>
 </Layout>

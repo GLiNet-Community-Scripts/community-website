@@ -315,6 +315,11 @@ sources:
   note: The lines the backdoor adds to /lib/upgrade/keep.d/netifd, written in the same second as its files, and the WireGuard server configuration written eleven seconds later. With what the loader sends and how it fetches its second program.
   date: 2026-11-22
 - type: community
+  label: "Forum user HubertCumberdale: the older backdoor on a GL-MT3000, and an upgrade that switched GoodCloud back on"
+  url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/22
+  note: The older backdoor on firmware 4.8.0, put there on 1 January 2026 by the file dates and by weekly backups, with the WireGuard server configuration rewritten eleven seconds later and unchanged. GoodCloud's remote SSH and web access were off on that router. After a reflash, an online upgrade to 4.11.0 with settings kept switched the cloud client and remote access back on. One report, not confirmed by others.
+  date: 2026-11-22
+- type: community
   label: "Forum user rdizzie: the malware's programs and their fingerprints"
   url: https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056/101
   note: Fingerprints of the installer and its programs, the server names in them, and what their traffic looks like. Made with an AI tool. The fingerprints match those in the anonymous reports of the community script.
@@ -354,6 +359,9 @@ community_fix:
   command_variants:
   - { name: curl, command: curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh }
   - { name: wget, command: wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh }
+  version_url: https://app.gl-i.net/csa-2026-01-fix
+  rerun: >-
+    The script changes several times a day as the community learns more. A device that an earlier version called clean may not be.
   author: >-
     By Admon and the community: RemoteToHome Consulting and users of GL.iNet's forum contributed findings and checks. An independent community project.
   does:
@@ -410,6 +418,8 @@ community:
 
       So switch GoodCloud off until fixed firmware is installed: with the GoodCloud switch in the admin panel, or with the commands below. On a KVM, switch the cloud service off in its settings. That you never used AstroWarp, or that remote access was off, does not help, because the code runs regardless. The community script says so at the end of every run and shows the command. The device then disappears from GoodCloud and AstroWarp stops working, so make sure you can reach a remote device another way first.
 
+      Check the switch again after every firmware upgrade. One owner reports that an online upgrade to 4.11.0 with settings kept switched the cloud client back on, and GoodCloud's remote SSH and web access with it, though all of them had been off.
+
       This lowers the risk from now on. It does not clean a device that was already hit.
     link: { label: RemoteToHome's commands for switching it off, url: "https://github.com/RemoteToHome-io/gl-security-incident-2026#reducing-exposure-until-fixed-firmware-is-installed" }
   - title: Don't rely on netstat on a device you suspect
@@ -423,7 +433,7 @@ community:
 
       RemoteToHome found it installed and running on 29 routers it manages. By the file dates it was put there in batches, from October 2025 to March 2026, once on seven routers of seven different networks on the same day. Most of those routers cannot be reached from the internet, and each was bound to GoodCloud before. That points to the cloud as the way in, but how it was installed is not known.
 
-      The anonymous reports show it on 15 devices, most of them GL-MT2500, all on firmware 4.7.0 to 4.8.3. Each has its own variant of the file /bin/ulogd, but there are only two sizes: one with files from September 2025, one from December 2025 on. Two owners found /etc/config/wireguard_server written eleven seconds after the backdoor's files, which may point to how it got in.
+      The anonymous reports show it on 15 devices, most of them GL-MT2500, all on firmware 4.7.0 to 4.8.3. Each has its own variant of the file /bin/ulogd, but there are only two sizes: one with files from September 2025, one from December 2025 on. Three owners found /etc/config/wireguard_server written eleven seconds after the backdoor's files; one of them compared it with a backup and found the content unchanged. That looks like an automated installer and may point to how it got in.
 
       The quickest check compares the start script with the one in the firmware. No output means they are the same: /rom/bin/busybox cmp /etc/init.d/urandom_seed /rom/etc/init.d/urandom_seed
 

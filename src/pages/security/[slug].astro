@@ -87,6 +87,16 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
               {fix.before && <p>{fix.before}</p>}
               {fix.does.length > 0 && <ul>{fix.does.map((d) => <li>{d}</li>)}</ul>}
               <Terminal command={fix.command} label="root@device" variants={fix.command_variants} />
+              {fix.version_url && (
+                <p class="do-ver" data-version-src={fix.version_url}>
+                  <b class="do-ver-again">Ran it before? Run it again.</b>
+                  {fix.rerun && <span>{fix.rerun}</span>}
+                  <span class="do-ver-now">
+                    Current version: <b data-script-version>shown in the first line of the script’s output</b>
+                    <span data-script-released hidden></span>
+                  </span>
+                </p>
+              )}
               {fix.author && <p class="do-first-author">{fix.author}</p>}
               <p class="do-first-link">
                 <a href={fix.link.url}>{fix.link.label}&nbsp;{fix.link.url.startsWith('/') ? '→' : '↗'}</a>
@@ -324,5 +334,6 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
   <script>
     import '../../scripts/alerts.ts';
     import '../../scripts/security.ts';
+    import '../../scripts/script-version.ts';
   </script>
 </Layout>

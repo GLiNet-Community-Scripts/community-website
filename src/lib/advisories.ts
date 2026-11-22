@@ -202,6 +202,11 @@ const AdvisorySchema = z.object({
       // Optional: the same command with other tools (curl, wget). The reader can
       // switch between them; the first one is shown.
       command_variants: z.array(z.object({ name: z.string().min(1).max(12), command: z.string().min(1) })).max(4).default([]),
+      // Optional: where the script is served. The page reads its version and release time
+      // from there and shows them with the tool, next to `rerun`.
+      version_url: z.string().url().optional(),
+      // Optional: why to run the tool again, one or two sentences, shown with the version.
+      rerun: z.string().min(1).max(260).optional(),
       // Optional: who wrote it, one or two sentences, shown with the tool.
       author: z.string().min(1).max(260).optional(),
       does: z.array(z.string().min(1).max(120)).max(5).default([]),

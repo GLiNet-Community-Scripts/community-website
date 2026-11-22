@@ -199,6 +199,11 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 .sa-article .do-first p:not([class]) { margin-top: 8px; font-size: 15.5px; line-height: 1.55; }
 .do-first ul { margin: 8px 0 0; padding-left: 20px; font-size: 15px; line-height: 1.55; }
 .do-first .term { margin-top: 14px; }
+.sa-article .do-first p.do-ver { display: grid; gap: 4px; margin-top: 12px; padding: 12px 14px; border-radius: 12px; border-left: 4px solid var(--warn); background: var(--warn-bg); font-size: 15px; line-height: 1.5; }
+.do-ver-again { font-size: 16.5px; color: var(--warn); }
+.do-ver-now b { font-family: var(--font-mono); }
+.do-ver-now [data-script-released] { color: var(--text-2); }
+.do-ver-now [data-script-released]::before { content: '·'; margin: 0 7px; }
 .sa-article .do-first p.do-first-author { margin-top: 12px; font-size: 14.5px; line-height: 1.5; }
 .sa-article .do-first p.do-first-link { margin-top: 12px; font-size: 15px; font-weight: 650; }
 .sa-article .do-first p.do-first-foot { grid-column: 1 / -1; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--ok-line); font-size: 12px; line-height: 1.45; color: var(--text-2); }
