@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: fix-rolling-out
 published: 2026-11-21
-updated: 2026-11-22T21:54Z
+updated: 2026-11-22T21:56Z
 fixed_in: firmwares released on 2026-11-22
 cve: []
 confirmed: gl-inet-public
@@ -185,7 +185,7 @@ unknowns:
 
 timeline:
 - at: 2026-11-22T21:38Z
-  text: "Community script 2.46 follows a comparison of firmware 4.9.2 and 4.9.3 for the GL-BE14000: the security firmware checks what the cloud sends before it reaches a shell, and it deletes known traces of the malware at its first start. The script now says when firmware has cleaned up, and finds the malware's lines in the firmware's own cron directory."
+  text: "Admon compares firmware 4.9.2 and 4.9.3 for the GL-BE14000: the security firmware checks what the cloud sends before it reaches a shell, and it deletes known traces of the malware at its first start. Community script 2.46 now says when firmware has cleaned up, and finds the malware's lines in the firmware's own cron directory."
   tag: Community
 - at: 2026-11-22T19:45Z
   text: "GL.iNet announces that the fix is rolling out in firmwares released on 2026-11-22 or 2026-11-23."
@@ -458,7 +458,7 @@ community:
     text: |
       GL.iNet says the fix is in the firmware it released on 22 and 23 November. By the firmware archive that is, so far: for the Comet KVMs 1.10.3 (1.8.7 for the RMQ1); for routers 4.11.1 (GL-MT6000, GL-MT3000, GL-MG1300), 4.10.2 (GL-BE9300), 4.9.3 (GL-BE14000) and 4.7.14 (GL-X2000). For the GL-MT5000 (4.9.1) and the GL-E5800 (4.10.3) the archive shows a new build under a version number on which devices also reported traces. There the number alone does not tell you whether you have the fix; look at the build date.
 
-      A comparison of firmware 4.9.2 and 4.9.3 for the GL-BE14000 shows what changed. The cloud client's handler for AstroWarp put values it received from the cloud into shell commands without checking them, so whoever could send such a message could run any command as root. The new firmware checks and quotes these values, and eight cloud functions now refuse input that contains shell syntax. That fits GL.iNet's "vulnerability in our cloud remote management services"; GL.iNet has not confirmed that this was the way in. The comparison was passed on to us; we have not repeated it ourselves.
+      A comparison of firmware 4.9.2 and 4.9.3 for the GL-BE14000 shows what changed. The cloud client's handler for AstroWarp put values it received from the cloud into shell commands without checking them, so whoever could send such a message could run any command as root. The new firmware checks and quotes these values, and eight cloud functions now refuse input that contains shell syntax. That fits GL.iNet's "vulnerability in our cloud remote management services"; GL.iNet has not confirmed that this was the way in. Admon compared the two firmware images for this page.
 
       The new router firmware also cleans up, once, at its first start. Where the directory /etc/config/.gl exists, it deletes it, removes the malware's line from /etc/rc.local and its lines from the crontabs. It always puts the start script /etc/init.d/urandom_seed back. It leaves the scripts in /etc/glinet/.cache on the device, does nothing when /etc/config/.gl is missing, and does not remove the older backdoor's programs (/bin/ulogd, /usr/bin/monitord).
 
