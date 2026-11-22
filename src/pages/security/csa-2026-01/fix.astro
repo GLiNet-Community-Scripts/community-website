@@ -42,6 +42,14 @@ const labels = [
   { label: 'REVIEW', meaning: 'An unusual change, not proof of an infection. Check whether it is yours.', fix: 'Never touches it' },
   { label: 'INFO', meaning: 'Context, for example files installed by a package', fix: 'Never touches it' },
 ];
+// What later versions of the script find that earlier ones did not. Newest first.
+const versions = [
+  { v: '2.22', text: 'finds the malware in the other directories its installer can use, its line in the running crontab, an SSH key it adds, and the remote terminal service set to the attacker’s server.' },
+  { v: '2.18', text: 'no longer reports an updated Tailscale as an infection. Versions 2.16 and 2.17 did.' },
+  { v: '2.17', text: 'finds the trace that a command from the attacker ran, also after a restart. Earlier versions called such a device clean once the firewall rule was gone.' },
+  { v: '2.16', text: 'no longer skips changed files that belong to the firmware’s own packages. Before, the older backdoor could go unseen on a real device.' },
+  { v: '2.14', text: 'finds the older backdoor (urandom_seed, ulogd, monitord). Earlier versions listed its files without saying what they are.' },
+];
 const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/config/.gl/gl-helper', '/etc/config/.gl/gb'];
 ---
 
@@ -82,6 +90,19 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
         </ul>
       </section>
 
+      <section id="versions" aria-labelledby="h-versions">
+        <h2 id="h-versions">Checked before? Check again</h2>
+        <p>
+          The script changes as the community learns more. A device that an early version called clean may not be.{' '}
+          <b>If you ran it before 22 November, run it again</b>: it costs a minute and changes nothing on the device.
+          The first line of its output shows the version you ran.
+        </p>
+        <p class="ver-now">Current version: <b data-script-version>shown in the first line of the script’s output</b></p>
+        <ul class="unknowns">
+          {versions.map((v) => <li><b>{v.v}</b> {v.text}</li>)}
+        </ul>
+      </section>
+
       <section id="run" class="do-box" aria-labelledby="h-run">
         <h2 id="h-run">Run it</h2>
         <p>Log in to the device over SSH as root. You can <a href={`${repo}/blob/main/gl-helper-triage.sh`}>read the script&nbsp;↗</a> first.</p>
@@ -94,7 +115,7 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
             </li>
           ))}
         </ol>
-        <p class="adv-fine">On an infected device <code>netstat</code> can be replaced, and GL.iNet staff says that running the replacement starts the malware. The script never calls it and reads the connections from the system directly.</p>
+        <p class="adv-fine">On an infected device <code>netstat</code> is replaced by a script that hides the malware’s connections. The script never calls it and reads the list of connections from the system directly.</p>
       </section>
 
       <section id="share" aria-labelledby="h-share">
@@ -252,5 +273,13 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
   <script>
     import '../../../scripts/alerts.ts';
     import '../../../scripts/security.ts';
+    // the version of the script as it is served right now, read from the script itself
+    fetch('https://app.gl-i.net/csa-2026-01-fix')
+      .then((r) => (r.ok ? r.text() : ''))
+      .then((t) => {
+        const m = /^VERSION=([0-9.]+)$/m.exec(t);
+        if (m) for (const el of document.querySelectorAll('[data-script-version]')) el.textContent = m[1];
+      })
+      .catch(() => { /* the fallback text stays */ });
   </script>
 </Layout>
