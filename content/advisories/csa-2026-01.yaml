@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: investigating
 published: 2026-11-21
-updated: 2026-11-22T01:52Z
+updated: 2026-11-22T01:58Z
 cve: []
 confirmed: gl-inet-public
 
@@ -251,6 +251,16 @@ sources:
     note: A backdoor in /etc/init.d/urandom_seed and /bin/ulogd on a GL-AX1800, dated December 2025. Posts 26, 63 and 65 of the notice's thread describe the same on a GL-X2000. Not confirmed by GL.iNet.
     date: 2026-11-21
   - type: community
+    label: "Forum user acs: the backdoor's server names and its second program"
+    url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/2
+    note: The same backdoor on a GL-X2000 with files from October 2025. The server names are built character by character inside /bin/ulogd; acs decoded three of them and found that two were registered in July 2025. ikangshen reports it on a GL-MT3000 (4.11.0) in the next post.
+    date: 2026-11-21
+  - type: community
+    label: "Forum user nick2: an infected and a clean router of the same model compared"
+    url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/6
+    note: Two GL-AX1800 with firmware 4.8.3, both on GoodCloud, one infected and one clean. With the commands used to check, to keep the samples and to contain the backdoor on a router that could not be reset. The author calls it containment, not a replacement for a reflash.
+    date: 2026-11-22
+  - type: community
     label: User reports in the forum thread
     url: https://forum.gl-inet.com/t/quickly-check-if-your-router-is-under-attack/73070
     note: Forum users kosrkosr and TakashiSasaki posted the first two reports of the remote shell on a GL-AXT1800 with firmware 4.8.3.
@@ -330,13 +340,15 @@ community:
       before: >-
         Not part of GL.iNet's notice, and GL.iNet's check does not see it.
       text: |
-        While looking for traces of 20 November, users of GL.iNet's forum found a different backdoor on a GL-AX1800 (4.8.3) and a GL-X2000 (4.7.13). On one device its files are dated December 2025, another user says since September 2025. How it got onto the devices is not known. These are user reports; GL.iNet's notice does not mention it.
+        While looking for traces of 20 November, users of GL.iNet's forum found a different backdoor. At least five devices are described so far: two GL-AX1800 (4.8.3), a GL-X2000 (4.7.13), a GL-MT3000 (4.11.0) and one whose model was not given. The files are dated from October 2025 to March 2026, and one user says since September 2025. One of the owners has a second GL-AX1800 with the same firmware, also on GoodCloud, that is clean. How it got onto the devices is not known. These are user reports; GL.iNet's notice does not mention it.
 
-        Signs: /etc/init.d/urandom_seed has extra lines at the top that mention monitord and ulogd, a file /bin/ulogd exists, /usr/bin/monitord exists, or a process monitord or ujaild is running. It reports the device to adguardns.com or adguardns.org, names that do not belong to AdGuard. It survives a firmware update that keeps settings.
+        Signs: /etc/init.d/urandom_seed has extra lines at the top that mention monitord and ulogd, a file /bin/ulogd exists, /usr/bin/monitord exists, or a process monitord or ujaild is running. It reports the device to servers with names made to look familiar. Known so far: adguardns.com, adguardns.org, lede-openproject.org, adxinsight.com and openwrt-project.org. None of them belongs to AdGuard or OpenWrt. It survives a firmware update that keeps settings.
+
+        The quickest check is to compare the start script with the one in the firmware: /rom/bin/busybox cmp /etc/init.d/urandom_seed /rom/etc/init.d/urandom_seed. No output means the two are the same.
 
         The community script reports it with its own verdict and does not try to remove it. If you find it, install the firmware again with "keep settings" off, do not restore a backup taken from that device, and change every password and key that was stored on it.
-      link: { label: The report in GL.iNet's forum, url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097 }
+      link: { label: "The forum thread, with one owner's steps to contain it remotely", url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/6 }
     - title: Thanks to the people doing this work
       text: |
-        This page stands on the work of others: RemoteToHome Consulting for the analysis of the remote shell, the KVM firmware and the recovery steps, the forum users kosrkosr and TakashiSasaki for the first reports of the shell, AdamK for the connection checks, ehidle and the other forum users who found and described the older backdoor, and everyone who posted their output in GL.iNet's forum.
+        This page stands on the work of others: RemoteToHome Consulting for the analysis of the remote shell, the KVM firmware and the recovery steps, the forum users kosrkosr and TakashiSasaki for the first reports of the shell, AdamK for the connection checks, ehidle, acs, ikangshen, nick2 and the other forum users who found and described the older backdoor, and everyone who posted their output in GL.iNet's forum.
       link: { label: RemoteToHome's findings, url: https://github.com/RemoteToHome-io/gl-security-incident-2026 }

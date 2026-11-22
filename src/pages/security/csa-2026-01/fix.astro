@@ -175,7 +175,7 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
         <h3 class="sa-h3">An older backdoor, found by forum users</h3>
         <p>
           While looking for traces of 20 November, users of GL.iNet’s forum found a second backdoor that is not part
-          of GL.iNet’s notice, on some devices since 2025
+          of GL.iNet’s notice, on GL-AX1800, GL-X2000 and GL-MT3000 routers, on some since 2025
           (<a href="https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097">ehidle’s report&nbsp;↗</a>).
           GL.iNet’s quick check does not see it. The script reports it with its own verdict when it finds
         </p>
@@ -183,7 +183,7 @@ const markers = ['/etc/glinet/.cache/gl-helper', '/etc/glinet/.cache/gb', '/etc/
           <li><code>/etc/init.d/urandom_seed</code> with extra lines that mention <code>monitord</code> or <code>ulogd</code></li>
           <li><code>/bin/ulogd</code>, or <code>/usr/bin/monitord</code> as a copy of the Lua interpreter</li>
           <li>a running <code>monitord</code> or <code>ujaild</code></li>
-          <li><code>adguardns.com</code> or <code>adguardns.org</code> in the configuration. These names do not belong to AdGuard</li>
+          <li>one of its server names in the configuration: <code>adguardns.com</code>, <code>adguardns.org</code>, <code>lede-openproject.org</code>, <code>adxinsight.com</code>, <code>openwrt-project.org</code>. None of them belongs to AdGuard or OpenWrt</li>
         </ul>
         <p>
           <code>--fix</code> does not remove this backdoor. Its second part runs in memory only and nobody has taken it
