@@ -2,7 +2,7 @@
 // shown where the window is wide enough, with the section in view marked.
 const secs = [...document.querySelectorAll<HTMLElement>('.sa-article section[id]')].filter((s) => s.querySelector('h2'));
 if (secs.length > 2) {
-  const nav = document.createElement('nav'), links = new Map<string, HTMLAnchorElement>();
+  const nav = document.createElement('nav'), list = document.createElement('div'), links = new Map<string, HTMLAnchorElement>();
   nav.className = 'sa-toc';
   nav.setAttribute('aria-label', 'On this page');
   for (const s of secs) {
@@ -10,8 +10,9 @@ if (secs.length > 2) {
     a.href = '#' + s.id;
     a.textContent = s.querySelector('h2')!.textContent!.trim();
     links.set(s.id, a);
-    nav.append(a);
+    list.append(a);
   }
+  nav.append(list);
   document.querySelector('.sa-article')!.prepend(nav);
   const mark = () => {
     const now = secs.filter((s) => s.getBoundingClientRect().top < innerHeight * 0.35).pop() ?? secs[0];
