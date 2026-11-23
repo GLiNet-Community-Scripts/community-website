@@ -15,7 +15,7 @@ steps:
     command: sh gl-helper-triage.sh --fix
 notes:
   - title: Community work, not a GL.iNet tool
-    text: GL.iNet’s notice links to this page as an optional third-party check. GL.iNet has not developed, verified or endorsed the script. Use it at your own risk.
+    text: GL.iNet’s notice names this script as the first choice for a broader check, as an independent third-party project, and says to use it to check only. GL.iNet did not write it. Use it at your own risk.
   - title: Run it before you restart, reset or update
     text: A restart removes the remote shell. The security firmware deletes known traces at its first start.
   - title: It does not replace the security firmware
@@ -132,16 +132,17 @@ afterwards:
   - audience: Router
     items:
       - Install GL.iNet’s security firmware for your model. Its notice names the version for each.
-      - If the device was hit, install it without keeping settings, from a file you downloaded yourself. The update deletes the known files. It leaves the older backdoor’s programs and anything else that was changed.
+      - If the device was hit, or you suspect it, install it without keeping settings, from a file you downloaded yourself, set it up again and do not restore a backup. GL.iNet now advises the same. The update deletes the known files. It leaves the older backdoor’s programs and anything else that was changed.
       - Prefer such a reflash to a factory reset. A reset keeps the installed firmware image, and on at least one model root can write to it.
       - Export the device log from your GoodCloud account. It may show the attacker’s command.
-      - Change the device password, the cloud password and your SSH keys.
+      - Change the device password, the cloud password and your SSH keys. GL.iNet advises a new admin password and new VPN and SSH keys for every device that was connected to GoodCloud, even if nothing was found.
       - Delete the router’s VPN profile at the other end and create a new one.
       - Check the devices behind the router.
   - audience: KVM (Comet)
     items:
       - "Install the security firmware: 1.10.3 or later, 1.8.7 or later for the RMQ1."
-      - If the KVM was hit, untick “Save current configuration” when you install it, or reset the KVM afterwards. An update that keeps settings also keeps the password, the SSH keys and everything under `/etc/kvmd/user`, boot scripts there included. GL.iNet says a reset is not needed.
+      - If the KVM was hit, or you suspect it, clear “Save current configuration” when you install it, set it up again and do not restore a backup. GL.iNet now advises the same. An update that keeps settings also keeps the password, the SSH keys and everything under `/etc/kvmd/user`, boot scripts there included.
+      - If it was connected to GoodCloud, change its admin password and any VPN and SSH keys, even if nothing was found.
       - Look for keys and scripts you did not add.
       - Check the computer attached to the KVM.
 more:
