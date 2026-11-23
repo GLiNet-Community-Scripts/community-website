@@ -605,6 +605,10 @@ timeline:
     text: RemoteToHome reports the shell’s server to its host
     more: The address is `170.39.226.219`.
     tag: Community
+  - at: 2026-11-21T16:43Z
+    text: Admon adds an anonymous report to the script
+    more: It is sent only if the owner agrees. The community team has been going through the reports as they come in ever since, and the figures on this page come from them.
+    tag: Community
   - at: 2026-11-21T16:27Z
     text: GL.iNet staff warns about `netstat`
     more: On an infected device it can be replaced, and running it starts the malware.
@@ -624,6 +628,9 @@ timeline:
   - at: 2026-11-21T13:27Z
     text: The community script is published
     more: Admon’s script checks a device for the known malware files.
+    tag: Community
+  - at: 2026-11-21T11:32Z
+    text: This advisory goes online
     tag: Community
   - at: 2026-11-21T05:41Z
     text: "The morning run: eight models in 78 minutes"
