@@ -119,6 +119,8 @@ const GuideSchema = z.object({
   // Up to four figures at the top, the first one highlighted.
   glance: z.array(z.object({ label: Para, value: Para, note: Para })).max(4).default([]),
   glance_note: Para.optional(),
+  // One line at the top of "Do this now", for every kind of device, set off in a box.
+  do_note: z.object({ title: Para, text: Para }).optional(),
   // "Do this now": one list of steps per kind of device. "why" is folded away, "table" is
   // shown (for example firmware versions by model).
   steps: z

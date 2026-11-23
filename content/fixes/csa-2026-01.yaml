@@ -20,6 +20,8 @@ notes:
     text: A restart removes the remote shell. The security firmware deletes known traces at its first start.
   - title: It does not replace the security firmware
     text: The script finds and removes only the traces we know of. Install GL.iNet’s security firmware in any case.
+  - title: Nothing found? New passwords and keys anyway
+    text: If the device was connected to GoodCloud, give it a new admin password and new VPN and SSH keys, even if the script finds nothing. GL.iNet advises this for every such device. An update cannot take back what was already copied.
   - title: In a business network, wait
     text: Talk to your cyber insurer or incident response provider before you change the device.
 result:
@@ -40,7 +42,7 @@ result:
     - verdict: no gl-helper indicators found
       tone: ok
       text: None of the known traces.
-      then: Not proof that nothing happened. If the device restarted or was updated since the attacks began, the result says little about the time before.
+      then: Not proof that nothing happened. If the device restarted or was updated since the attacks began, the result says little about the time before. Was it connected to GoodCloud? Then install the security firmware and give it a new admin password and new VPN and SSH keys anyway.
   labels:
     - label: IOC
       meaning: A known trace of the malware.

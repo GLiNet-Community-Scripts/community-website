@@ -216,6 +216,8 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 .do-before ul { margin: 6px 0 0; padding-left: 20px; }
 .do-before li + li { margin-top: 4px; }
 .sa-article .do-box .do-before { margin-top: 14px; font-size: 15px; }
+.g-donote { margin: 14px 0 0; background: var(--warn-bg); border-color: var(--warn-line); font-size: 15px; }
+.g-donote b { color: var(--warn); }
 .community-box h3[id] { scroll-margin-top: 90px; }
 
 .unknowns { margin: 10px 0 0; padding-left: 20px; font-size: 16px; line-height: 1.6; }

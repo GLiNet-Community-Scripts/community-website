@@ -62,6 +62,7 @@ const share = (hit: number, of: number) => (hit ? Math.max(1, Math.round((100 * 
 <section class="g-blk" id="do" aria-labelledby="h-do">
   <h2 id="h-do">{a.active ? 'Do this now' : 'What to do'}</h2>
   <p class="g-sub">{count(g.steps[0].steps.length)} steps, in this order. Each one says why.</p>
+  {g.do_note && <p class="do-before g-donote"><b><Txt text={g.do_note.title} /></b> <Txt text={g.do_note.text} /></p>}
   {g.steps.length > 1 && (
     <div class="g-seg" data-seg="steps" role="group" aria-label="Kind of device">
       {g.steps.map((s, i) => <button type="button" class:list={{ on: i === 0 }} data-v={s.audience}>{s.audience}</button>)}

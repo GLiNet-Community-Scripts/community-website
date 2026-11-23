@@ -14,7 +14,7 @@ cve: requested
 confirmed: gl-inet-public
 
 banner: >-
-  GL.iNet's cloud remote management was used to install malware on routers and KVM devices. Security firmware is out. Check your device before you install it.
+  GL.iNet's cloud was used to install malware on routers and KVM devices. Check, then install the security firmware. Used GoodCloud? New passwords and keys, even if clean.
 
 summary: >-
   An error in GL.iNet’s cloud remote management (GoodCloud) let outsiders send commands to other people’s routers and KVM devices, and they installed malware on some. GL.iNet has closed the path in its cloud and has released security firmware that removes the known malware. No update takes back what was copied from a device, so check yours before you update.
@@ -119,6 +119,9 @@ guide:
       value: 49 %
       note: 127 of 258 not yet updated
   glance_note: Anonymous reports of the community script, 23 Nov 2026, 21:03 UTC. Unverified, and only from people who chose to send one.
+  do_note:
+    title: Was the device connected to GoodCloud?
+    text: Then give it a new admin password and new VPN and SSH keys after the update, also when the check finds nothing. GL.iNet advises this for every such device. Some KVMs connect before they are linked to an account.
   steps:
     - audience: Router
       steps:
@@ -145,7 +148,8 @@ guide:
           why:
             - The version number alone does not show the fix. Older builds of 4.8.4, 4.9.1, 4.10.3 and 4.11.1 exist, and the reports show traces on some of them. The security builds are dated 22 or 23 November 2026.
             - Your model is not on the list? GL.iNet says that this does not make it unaffected. Look in its download center or write to support@gl-inet.com. Do not install firmware for another model. If you installed a security beta, GL.iNet says to move to the stable firmware.
-            - "GL-AXT1800: GL.iNet says to install the security build from its download link. If the router already shows 4.8.4 and you are not sure which build it is, write to support."
+            - "GL-AXT1800: GL.iNet says to install the security build from its download link. That build reports `4.8.4 release2`, built on 23 November. The 4.8.4 betas of April and of 11 November are not it. If you are not sure which build you have, write to support."
+            - For the GL-MT6000 and the GL-MT3000, GL.iNet also published open builds on OpenWrt 25 on 23 November, as betas. Their changelog names the same security fix. The open builds on OpenWrt 24, from June, do not have it.
             - GL.iNet says the update removes the known malware also when settings are kept, and calls that targeted cleanup, not a general malware scan. Keeping settings stays your choice, with less certainty that the device is clean.
             - "Why reflash a device that was hit: the update deletes the known files and autostart entries. It leaves the older backdoor’s loader, and anything else that was changed. In RemoteToHome’s test, other entries in `rc.local`, cron and `/etc/udhcpc.user.d`, an added account and an added SSH key survived an update with settings kept, and the scripts ran on the new firmware."
             - A factory reset keeps the installed firmware image, and on a GL-AXT1800 root can write to it. A reflash writes the image anew and starts with empty settings, in one step.
