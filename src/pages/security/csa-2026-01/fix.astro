@@ -83,6 +83,10 @@ const verdicts = [
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
   {
+    v: "2.50",
+    text: "can update itself: sh gl-helper-triage.sh --update. It takes a new version only when its signature fits a key built into the script, and never an older one. Where the firmware has no tool to check the signature, it says so and asks first.",
+  },
+  {
     v: "2.49",
     text: "really checks that its own tools load the firmware’s libraries. Since 2.37 that check found nothing on a real router, because the tool it used stops at a certain byte in program files. Run it again if you rely on the line “Trusted tools”.",
   },
