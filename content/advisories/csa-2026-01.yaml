@@ -189,6 +189,7 @@ guide:
           text: Version 1.10.3 or later, 1.8.7 or later for the RMQ1. GL.iNet says no reset is needed. If the KVM was hit, we would reset it to factory settings afterwards.
           why:
             - An update that keeps settings also keeps the password file, the SSH keys and everything under `/etc/kvmd/user`. The malware’s installer can add an SSH key of its own.
+            - "On the GL-RM10, look at the whole version: the security firmware reports `V1.10.3 release1`. Of seven GL-RM10 in the reports on `V1.10.3 release8`, six show traces, five of them the malware’s files."
           link:
             label: GL.iNet’s notice, with the download for each model
             url: https://www.gl-inet.com/blogs/blog/glinet-security-notice-2026-11-20
@@ -265,7 +266,7 @@ guide:
       body:
         - One forum user recorded a GL-RM1 being taken over on 19 November at 02:35 UTC, a day before the date in GL.iNet’s notice. It connected to `65.20.71.131`, fetched files from `66.245.219.252` and looked up `gl-inet.top`, a name that was registered anew on 16 November.
         - Firmware 1.10.2 for the RM1PE deletes the malware’s files at boot and keeps no copy. The 1.10.2 builds for the RM1 and RM1V2 have no such cleanup.
-        - The stable security firmware is 1.10.3, and 1.8.7 for the RMQ1. GL.iNet says it removes the malware.
+        - "The stable security firmware is 1.10.3, and 1.8.7 for the RMQ1. GL.iNet says it removes the malware. All 89 KVM devices in the reports on `V1.10.3 release1` report clean. A `V1.10.3 release8` for the GL-RM10, in the reports since 22 November, 00:10 UTC, does not remove it: six of seven such devices show traces."
     - title: The security firmware
       source: Community
       lead: It closes the flaw and deletes known traces at its first start.
