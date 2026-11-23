@@ -31,13 +31,13 @@ affected:
   #   - "models": kept by hand from the dashboard, for what the live list leaves out
   #     (fewer than five devices, reports of the first day without a device id).
   reported:
-    as_of: 2026-11-22T18:59Z
+    as_of: 2026-11-23T21:03Z
     live: https://csa.gl-i.net/2026-01/reported.json
     source:
       label: Anonymous reports of the community script
       url: https://gl-i.net/security/csa-2026-01/fix/
     models:
-    - { name: Flint 3, sku: GL-BE9300, kind: Router, firmware: [ 4.8.4, 4.9.0, 4.10.0, 4.10.1 ] }
+    - { name: Flint 3, sku: GL-BE9300, kind: Router, firmware: [ 4.8.1, 4.8.4, 4.9.0, 4.10.0, 4.10.1 ] }
     - { name: Flint 2, sku: GL-MT6000, kind: Router, firmware: [ 4.7.7, 4.7.13, 4.8.2, 4.8.3, 4.8.3-op24, 4.8.4, 4.9.0, 4.9.0-op24, 4.9.1 ] }
     - { name: Brume 3, sku: GL-MT5000, kind: Router, firmware: [ 4.8.4, 4.8.6, 4.9.0 ] }
     - { name: Brume 2, sku: GL-MT2500, kind: Router, firmware: [ 4.7.0, 4.7.4, 4.7.13, 4.9.0 ] }
@@ -55,9 +55,9 @@ affected:
     - { name: GL-BE10000, sku: GL-BE10000, kind: Router, firmware: [ 4.8.6 ] }
     - { name: GL-X2000, sku: GL-X2000, kind: Router, firmware: [ 4.8.2, 4.10.0 ] }
     - { name: Puli AX, sku: GL-XE3000, kind: Router, firmware: [ 4.8.3 ] }
-    - { name: Comet, sku: GL-RM1, kind: KVM, firmware: [ 1.8.0, 1.8.2, 1.9.2, 1.10.0, 1.10.1 ] }
-    - { name: Comet Pro, sku: GL-RM10, kind: KVM, firmware: [ 1.7.0, 1.8.2, 1.10.0, 1.10.1, 1.10.3, 1.11.0 ] }
-    - { name: Comet PoE, sku: GL-RM1PE, kind: KVM, firmware: [ 1.9.1, 1.10.1 ] }
+    - { name: Comet, sku: GL-RM1, kind: KVM, firmware: [ 1.7.2, 1.8.0, 1.8.2, 1.9.1, 1.9.2, 1.10.0, 1.10.1 ] }
+    - { name: Comet Pro, sku: GL-RM10, kind: KVM, firmware: [ 1.7.0, 1.7.2, 1.8.2, 1.10.0, 1.10.1, 1.10.3, 1.11.0 ] }
+    - { name: Comet PoE, sku: GL-RM1PE, kind: KVM, firmware: [ 1.8.0, 1.8.2, 1.9.1, 1.10.1 ] }
     - { name: GL-RM4PE, sku: GL-RM4PE, kind: KVM, firmware: [ 1.8.1, 1.10.1 ] }
     - { name: GL-RM10RC, sku: GL-RM10RC, kind: KVM, firmware: [ 1.10.1 ] }
     - { name: GL-RMQ1, sku: GL-RMQ1, kind: KVM, firmware: [ 1.8.5 ] }
@@ -99,22 +99,22 @@ actions:
 
 # The long form of the page. In these texts a path, a command, an option or an address
 # stands between backticks; the page sets it in a monospace face. Figures from the anonymous
-# reports: export of 23 November 2026, 11:33 UTC.
+# reports: export of 23 November 2026, 21:03 UTC.
 guide:
   glance:
     - label: Status
       value: Firmware is out
       note: For 18 router and 7 KVM models, by GL.iNet’s notice of 23 Nov
     - label: In the reports
-      value: 1,901 devices
-      note: 1,632 routers, 269 KVM devices
+      value: 2,365 devices
+      note: 2,018 routers, 347 KVM devices
     - label: Routers with traces
-      value: 44 %
-      note: 634 of 1,427 not yet updated
+      value: 43 %
+      note: 705 of 1,632 not yet updated
     - label: KVM devices with traces
-      value: 41 %
-      note: 111 of 269
-  glance_note: Anonymous reports of the community script, 23 Nov 2026, 11:33 UTC. Unverified, and only from people who chose to send one.
+      value: 49 %
+      note: 127 of 258 not yet updated
+  glance_note: Anonymous reports of the community script, 23 Nov 2026, 21:03 UTC. Unverified, and only from people who chose to send one.
   steps:
     - audience: Router
       steps:
@@ -235,15 +235,15 @@ guide:
         - "@sweep"
         - The time is the last write to a file the attack leaves behind. A later command overwrites an earlier one, so the first command may have come sooner.
         - If this is right, whoever sent the commands knew the model of each device beforehand. The cloud knows it, and the malware’s installer names eleven router models.
-        - On most devices a command ran and nothing else was found. 48 devices had a remote shell. The last trace in the reports dates from 21 November, 18:58 UTC.
+        - On most devices a command ran and nothing else was found. 56 devices had a remote shell. The last trace in the reports dates from 21 November, 18:58 UTC.
     - title: What the reports show
       source: Reports
-      lead: 1,901 devices. The share with traces depends on the firmware.
+      lead: 2,365 devices. The share with traces depends on the firmware.
       body:
-        - 1,632 routers and 269 KVM devices have sent a report. 205 of the routers already run the security firmware and report clean. Of the other 1,427, 44 percent show traces of the attack. Of the KVM devices, 41 percent do.
+        - 2,018 routers and 347 KVM devices have sent a report. 386 of the routers and 89 of the KVM devices already run the security firmware and report clean. Of the other routers, 43 percent show traces of the attack. Of the other KVM devices, 49 percent do.
         - "@series"
         - Nobody knows why 4.11 shows no traces. The unchecked code is in 4.11.0 too, so this does not show that 4.11 was safe.
-        - A router on the security firmware reports clean, also where it showed traces before. We saw 24 routers with traces before their update, and all 24 report clean after it. That is why updated routers are left out of the shares here.
+        - A device on the security firmware reports clean, also where it showed traces before. We saw 43 routers and 20 KVM devices with traces before their update, and all of them report clean after it. That is why updated devices are left out of the shares here.
     - title: The remote shell
       source: Community
       lead: A root shell that leaves no file and is gone after a restart.
@@ -292,101 +292,105 @@ guide:
   series:
     - name: 4.6 and older
       hit: 0
-      of: 105
+      of: 138
     - name: "4.7"
-      hit: 75
-      of: 101
+      hit: 76
+      of: 105
     - name: "4.8"
-      hit: 258
-      of: 326
+      hit: 306
+      of: 409
     - name: "4.9"
-      hit: 179
-      of: 251
+      hit: 192
+      of: 275
     - name: "4.10"
-      hit: 122
-      of: 226
+      hit: 131
+      of: 243
     - name: "4.11"
       hit: 0
-      of: 412
+      of: 454
   sweep:
     - model: GL-AXT1800
       at: 2026-11-20T22:15Z
-      n: 50
-      of: 51
+      n: 54
+      of: 55
     - model: GL-BE9300
       at: 2026-11-21T00:10Z
-      n: 91
-      of: 94
+      n: 96
+      of: 99
     - model: GL-MT3000
       at: 2026-11-21T00:22Z
-      n: 65
-      of: 69
+      n: 71
+      of: 75
+    - model: GL-X3000
+      at: 2026-11-21T01:03Z
+      n: 22
+      of: 51
     - model: GL-E5800
       at: 2026-11-21T02:38Z
-      n: 5
-      of: 8
+      n: 7
+      of: 10
     - model: GL-BE14000
       at: 2026-11-21T02:50Z
-      n: 20
-      of: 20
-    - model: GL-MT3600BE
-      at: 2026-11-21T04:39Z
       n: 23
       of: 23
-    - model: GL-X3000
-      at: 2026-11-21T05:41Z
-      n: 17
-      of: 30
+    - model: GL-MT3600BE
+      at: 2026-11-21T04:39Z
+      n: 29
+      of: 29
+    - model: GL-XE3000
+      at: 2026-11-21T05:20Z
+      n: 6
+      of: 9
     - model: GL-MT6000
       at: 2026-11-21T05:50Z
-      n: 48
-      of: 88
+      n: 51
+      of: 94
     - model: GL-SFT1200
       at: 2026-11-21T06:04Z
-      n: 14
-      of: 21
+      n: 19
+      of: 26
     - model: GL-MT2500
       at: 2026-11-21T06:13Z
-      n: 67
-      of: 74
+      n: 68
+      of: 76
     - model: GL-BE3600
       at: 2026-11-21T06:22Z
-      n: 21
-      of: 24
+      n: 24
+      of: 27
     - model: GL-AX1800
       at: 2026-11-21T06:36Z
       n: 29
       of: 32
     - model: GL-MT5000
       at: 2026-11-21T06:45Z
-      n: 53
-      of: 73
+      n: 54
+      of: 75
     - model: GL-BE6500
       at: 2026-11-21T06:59Z
-      n: 12
-      of: 12
+      n: 13
+      of: 13
   sweep_note: "20 November, 22:00, to 21 November, 08:00 UTC. The dot marks the minute in which most routers of a model were hit. Right: how many of the hit routers of that model fall into that minute or the one next to it."
   hours:
     - hour: 2026-11-20T20
       n: 19
     - hour: 2026-11-20T22
-      n: 50
+      n: 54
     - hour: 2026-11-20T23
       n: 2
     - hour: 2026-11-21T00
-      n: 185
+      n: 199
     - hour: 2026-11-21T01
-      n: 36
+      n: 49
     - hour: 2026-11-21T02
-      n: 25
+      n: 30
     - hour: 2026-11-21T03
-      n: 15
+      n: 16
     - hour: 2026-11-21T04
-      n: 23
+      n: 29
     - hour: 2026-11-21T05
-      n: 71
+      n: 89
     - hour: 2026-11-21T06
-      n: 193
+      n: 204
     - hour: 2026-11-21T07
       n: 7
     - hour: 2026-11-21T08
@@ -395,12 +399,12 @@ guide:
       n: 3
     - hour: 2026-11-21T18
       n: 2
-  hours_note: "Bars: routers hit per hour, by the time of the trace the attack leaves. 632 routers, reports up to 23 Nov, 11:33 UTC."
+  hours_note: "Bars: routers hit per hour, by the time of the trace the attack leaves. 704 routers, reports up to 23 Nov, 21:03 UTC."
   backdoor:
     lead: While they looked for traces of 20 November, forum users found a different backdoor. GL.iNet’s check does not see it. The community script does.
     rows:
       - label: Where
-        text: 76 devices in the reports, 46 of them GL-MT2500. Also GL-MT6000, GL-AX1800, GL-X3000 and others.
+        text: 96 devices in the reports, 53 of them GL-MT2500. Also GL-MT6000, GL-X3000, GL-AX1800 and others.
       - label: Since when
         text: Its files are dated from September 2025 to May 2026. How it got onto the devices is not known.
       - label: What it can do
@@ -411,16 +415,16 @@ guide:
         text: Reflash with “keep settings” off. Do not restore a backup from that device. Change every password and key that was on it.
     command: /rom/bin/busybox cmp /etc/init.d/urandom_seed /rom/etc/init.d/urandom_seed
     command_note: Quick check. No output means the start script is the firmware’s own.
-    note: "GL.iNet’s security firmware puts the start script back and leaves the programs: on three devices in the reports its file is still there after the update. GL.iNet’s notice does not mention this backdoor. The community script reports it and does not remove it."
+    note: "GL.iNet’s security firmware puts the start script back and leaves the programs: on eight devices in the reports its file is still there after the update. GL.iNet’s notice does not mention this backdoor. The community script reports it and does not remove it."
   questions:
     - group: The attack
       items:
         - q: Has the wave of new attacks ended?
           status: likely
-          a: No report shows a new command after 21 November, 18:58 UTC, among 1,901 devices. GL.iNet says devices can no longer be newly infected along this path. RemoteToHome said on 22 November that it still saw routers being exploited.
+          a: No report shows a new command after 21 November, 18:58 UTC, among 2,365 devices. GL.iNet says devices can no longer be newly infected along this path. RemoteToHome said on 22 November that it still saw routers being exploited.
         - q: Is the attacker off the devices that were hit?
           status: no
-          a: "On routers that were not restarted, the remote shell keeps trying to connect: 28 devices showed that on 22 and 23 November. A restart ends it. What was installed or copied before stays."
+          a: "On routers that were not restarted, the remote shell keeps trying to connect: 29 devices showed that on 22 and 23 November. A restart ends it. What was installed or copied before stays."
         - q: When did it start?
           status: open
           a: GL.iNet names 20 November. One KVM was taken over on 19 November.
@@ -523,6 +527,10 @@ guide:
 # The page shows these on a time axis, in the row of their tag (Attack, Vendor, Community).
 # "text" is the headline of an entry, "more" the line below it.
 timeline:
+  - at: 2026-11-23T21:03Z
+    text: 2,365 devices in the anonymous reports
+    more: Of the devices that are not yet updated, 43 percent of the routers and 49 percent of the KVM devices show traces.
+    tag: Community
   - at: 2026-11-23T10:39Z
     text: The community script can update itself
     more: It takes a new version only when its signature fits.
