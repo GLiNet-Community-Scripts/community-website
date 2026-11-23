@@ -83,6 +83,10 @@ const verdicts = [
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
   {
+    v: "2.49",
+    text: "really checks that its own tools load the firmware’s libraries. Since 2.37 that check found nothing on a real router, because the tool it used stops at a certain byte in program files. Run it again if you rely on the line “Trusted tools”.",
+  },
+  {
     v: "2.48",
     text: "tells whether the state file was written before or after the update by the day the firmware was built. Version 2.47 used a file whose date is wrong on real devices.",
   },
