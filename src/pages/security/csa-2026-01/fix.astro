@@ -25,6 +25,10 @@ const arrow = (u: string) => (u.startsWith("/") ? "→" : "↗");
 // A command, a path or an option stands between backticks.
 const versions = [
   {
+    v: "2.52",
+    text: "no longer says “No IOC found” after `--fix` when `/etc/rtty_conf` still names the attacker’s server, as GL.iNet’s cleanup can leave it. `--fix` does not change that file: it now says so and ends with exit code 1, or 3 after removing other traces. A factory reset or reflash puts it right.",
+  },
+  {
     v: "2.51",
     text: "shows in its first lines how old the version is that you run, and the command that gets the current one.",
   },
