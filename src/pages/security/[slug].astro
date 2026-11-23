@@ -97,7 +97,8 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
               {fix.version_url && (
                 <p class="do-ver" data-version-src={fix.version_url}>
                   <b class="do-ver-again">Ran it before? Run it again.</b>
-                  {fix.rerun && <span>{fix.rerun}</span>}
+                  {/* a command in the text stands between backticks and is set as one */}
+                  {fix.rerun && <span>{fix.rerun.split('`').map((part, n) => (n % 2 ? <code>{part}</code> : part))}</span>}
                   <span class="do-ver-now">
                     Current version: <b data-script-version>shown in the first line of the script’s output</b>
                     <span data-script-released hidden></span>

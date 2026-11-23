@@ -201,6 +201,7 @@ li + li > .sa-row { border-top: 1px solid var(--border); }
 .do-first .term { margin-top: 14px; }
 .sa-article .do-first p.do-ver { display: grid; gap: 4px; margin-top: 12px; padding: 12px 14px; border-radius: 12px; border-left: 4px solid var(--warn); background: var(--warn-bg); font-size: 15px; line-height: 1.5; }
 .do-ver-again { font-size: 16.5px; color: var(--warn); }
+.do-ver code { font-family: var(--font-mono); font-size: 13.5px; padding: 2px 7px; border-radius: 6px; background: var(--surface); color: var(--text); white-space: nowrap; }
 .do-ver-now b { font-family: var(--font-mono); }
 .do-ver-now [data-script-released] { color: var(--text-2); }
 .do-ver-now [data-script-released]::before { content: '·'; margin: 0 7px; }

@@ -209,6 +209,7 @@ const AdvisorySchema = z.object({
       // from there and shows them with the tool, next to `rerun`.
       version_url: z.string().url().optional(),
       // Optional: why to run the tool again, one or two sentences, shown with the version.
+      // a command in it goes between backticks
       rerun: z.string().min(1).max(260).optional(),
       // Optional: who wrote it, one or two sentences, shown with the tool.
       author: z.string().min(1).max(260).optional(),
