@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: fix-rolling-out
 published: 2026-11-21
-updated: 2026-11-23T12:00Z
+updated: 2026-11-23T19:00Z
 cve: []
 confirmed: gl-inet-public
 
@@ -133,14 +133,16 @@ guide:
         - title: Switch GoodCloud and AstroWarp off
           text: Use the GoodCloud switch in the admin panel. Leave it off until the security firmware is installed, and look again after every upgrade.
           why:
-            - The flaw sat in the cloud client on the device. It could be used whenever that client ran, with AstroWarp on or off. One owner reports that an upgrade switched the client back on.
+            - The flaw sat in the cloud client on the device. It could be used whenever that client ran, with AstroWarp on or off. One owner reports that an upgrade switched the client back on, with remote access and AstroWarp.
+            - Use the switch on the device. Owners report that the client keeps running and connecting after the device was removed from the GoodCloud account.
             - Switching it off lowers the risk from now on. It does not clean a device that was already hit. The device disappears from GoodCloud, so make sure you can reach a remote device another way.
         - title: Install the security firmware
           text: GL.iNet’s notice names the version for each model. GL.iNet says the update removes the malware and that you can keep your settings. If the device was hit, we would still reflash from a file you downloaded yourself, with “keep settings” off.
           why:
             - The version number alone does not show the fix. Older builds of 4.8.4, 4.9.1, 4.10.3 and 4.11.1 exist, and the reports show traces on some of them. The security builds are dated 22 or 23 November 2026.
             - Your model is not on the list? GL.iNet says that this does not make it unaffected. Look in its download center or write to support@gl-inet.com. Do not install firmware for another model. If you installed a security beta, GL.iNet says to move to the stable firmware.
-            - "Why reflash a device that was hit: the update deletes the known files and autostart entries. It leaves the older backdoor’s programs, and anything else that was changed. A factory reset restores from an image that root can change on most models. A reflash does not."
+            - "Why reflash a device that was hit: the update deletes the known files and autostart entries. It leaves the older backdoor’s loader, and anything else that was changed. In RemoteToHome’s test, other entries in `rc.local`, cron and `/etc/udhcpc.user.d`, an added account and an added SSH key survived an update with settings kept, and the scripts ran on the new firmware."
+            - A factory reset keeps the installed firmware image, and on a GL-AXT1800 root can write to it. A reflash writes the image anew and starts with empty settings, in one step.
           table:
             caption: Security firmware by model, from GL.iNet’s notice of 23 November. Each version or a later one.
             rows:
@@ -180,15 +182,16 @@ guide:
           text: If the script reports traces, run it again with `--archive` before you update.
           command: sh gl-helper-triage.sh --archive
           why:
-            - The security firmware removes the malware’s files. For the RM1PE the firmware itself shows that it keeps no copy. After the update nothing tells that the device was infected.
+            - The security firmware removes the malware’s files and keeps no copy, on all six models RemoteToHome read. After the update nothing tells that the device was infected.
         - title: Switch the cloud service off
           text: In the KVM’s settings, until the security firmware is installed.
           why:
             - The command came over the cloud connection. With the service off it cannot arrive.
-        - title: Install the security firmware, then reset
-          text: Version 1.10.3 or later, 1.8.7 or later for the RMQ1. GL.iNet says no reset is needed. If the KVM was hit, we would reset it to factory settings afterwards.
+        - title: Install the security firmware without the settings
+          text: Version 1.10.3 or later, 1.8.7 or later for the RMQ1. GL.iNet says no reset is needed. If the KVM was hit, we would untick “Save current configuration” when you install it, or reset the KVM afterwards.
           why:
             - An update that keeps settings also keeps the password file, the SSH keys and everything under `/etc/kvmd/user`. The malware’s installer can add an SSH key of its own.
+            - On a test RM1, a boot script and an added SSH key came through an update to 1.10.3 that kept the configuration, and the script ran (RemoteToHome).
             - "On the GL-RM10, look at the whole version: the security firmware reports `V1.10.3 release1`. Of seven GL-RM10 in the reports on `V1.10.3 release8`, six show traces, five of them the malware’s files."
           link:
             label: GL.iNet’s notice, with the download for each model
@@ -249,9 +252,10 @@ guide:
       source: Community
       lead: A root shell that leaves no file and is gone after a restart.
       body:
-        - Forum users and RemoteToHome found a remote root shell on routers. It connected to `170.39.226.219`, on a different port each time, from about 21:40 UTC on 20 November.
+        - Forum users and RemoteToHome found a remote root shell on routers. It connected to `170.39.226.219`, on a different port each time. The shells started between 20:06 and 21:40 UTC on 20 November, on GL-AXT1800 and GL-MT6000 routers.
         - The shell leaves no file. Its pipe `/tmp/f` is gone after a restart. A router that was restarted or updated since can pass every check of running processes even if it was hit.
         - The server was rented. After RemoteToHome’s abuse report the hosting provider suspended it on 21 November and preserved it for an investigation.
+        - One of the attacker’s commands made a router call `66.245.219.252` on port 8899, the server and path the KVM malware reports to. RemoteToHome found it on one of its routers. So the attack on routers and the malware on KVM devices share a server.
     - title: The malware and its installer
       source: Community
       lead: "`gl-helper`, its helper `gb`, and how they survive a restart."
@@ -260,13 +264,14 @@ guide:
         - The installer puts `gl-helper` and a helper named `gb` into `/etc/glinet/.cache`. If it cannot write there, it uses `/etc/gl_nas/.cache`, `/userdata/.gl`, `/overlay/.gl` or `/tmp/.gl`. It keeps a copy in `/etc/config/.gl`, because that directory survives a firmware update that keeps settings.
         - It adds itself to `/etc/rc.local` and to the crontab. A script named `watch.sh` puts everything back every three minutes. `crond -i /tmp/.log`, the process GL.iNet’s check looks for, is the name the malware gives its own process.
         - Other options set the dates of its files back, add an SSH key named `gl-agent`, and point the remote terminal service at the attacker’s server `65.20.71.131`. The files come from `66.245.219.252`.
+        - Forum users have since taken apart the helper `gb`. It runs only commands that carry the operator’s signature. `gl-helper` itself is wrapped in a packer of its own, and nobody has published what is inside.
     - title: KVM devices
       source: Community
       lead: Hit a day earlier, and some firmware deletes the evidence.
       body:
         - One forum user recorded a GL-RM1 being taken over on 19 November at 02:35 UTC, a day before the date in GL.iNet’s notice. It connected to `65.20.71.131`, fetched files from `66.245.219.252` and looked up `gl-inet.top`, a name that was registered anew on 16 November.
         - Firmware 1.10.2 for the RM1PE deletes the malware’s files at boot and keeps no copy. The 1.10.2 builds for the RM1 and RM1V2 have no such cleanup.
-        - "The stable security firmware is 1.10.3, and 1.8.7 for the RMQ1. GL.iNet says it removes the malware. All 89 KVM devices in the reports on `V1.10.3 release1` report clean. A `V1.10.3 release8` for the GL-RM10, in the reports since 22 November, 00:10 UTC, does not remove it: six of seven such devices show traces."
+        - "The stable security firmware is 1.10.3, and 1.8.7 for the RMQ1. GL.iNet says it removes the malware. RemoteToHome read 1.10.3 for all six models, and each deletes the malware’s files at boot and keeps no copy. All 89 KVM devices in the reports on `V1.10.3 release1` report clean. A `V1.10.3 release8` for the GL-RM10, in the reports since 22 November, 00:10 UTC, does not remove it: six of seven such devices show traces."
     - title: The security firmware
       source: Community
       lead: It closes the flaw and deletes known traces at its first start.
@@ -288,8 +293,9 @@ guide:
       body:
         - GL.iNet’s notice of 23 November says the security firmware removes the malware without a factory reset, and that settings can be kept. Earlier versions of the notice named a factory reset.
         - "The firmware comparison shows what the update deletes: the known files and autostart entries. It leaves the older backdoor’s programs. And no update takes back keys and passwords that were copied."
-        - RemoteToHome tested several routers. On most models root can write to the stored firmware image, and in further tests to the boot area as well. A factory reset restores from that image and would keep such a change. Nobody has reported such a change on a hit device.
-        - So for a device that was hit, RemoteToHome advises a full reflash without keeping settings. So do we.
+        - "RemoteToHome tested the update with settings kept on a GL-MT3000: it removes the start-up entries it knows. Other entries in `rc.local`, cron and `/etc/udhcpc.user.d`, an added account and an added SSH key survived and ran on the new firmware."
+        - A factory reset leaves the installed firmware image as it is. On a GL-AXT1800 RemoteToHome found that image writable from a root shell, and on another one the boot loader too. Nobody has reported such a change on a hit device; the boot loader of that router matched the one GL.iNet publishes.
+        - So for a device that was hit, RemoteToHome advises a full reflash without keeping settings, in one step and from a file you downloaded yourself. So do we.
   series:
     - name: 4.6 and older
       hit: 0
@@ -405,18 +411,18 @@ guide:
     lead: While they looked for traces of 20 November, forum users found a different backdoor. GL.iNet’s check does not see it. The community script does.
     rows:
       - label: Where
-        text: 96 devices in the reports, 53 of them GL-MT2500. Also GL-MT6000, GL-X3000, GL-AX1800 and others.
+        text: 96 devices in the reports, 53 of them GL-MT2500. Also GL-MT6000, GL-X3000, GL-AX1800 and others. RemoteToHome found it on 49 of the routers it manages.
       - label: Since when
         text: Its files are dated from September 2025 to May 2026. How it got onto the devices is not known.
       - label: What it can do
-        text: It turns the device into a proxy, also into the network behind it. It gives a root shell, runs commands and drops files. This comes from one researcher’s analysis, which we have not verified.
+        text: Its second program runs in memory only. Whoever controls its server can run any command, write any file and use the router as a doorway into the network behind it. RemoteToHome took apart both builds of it from its routers. In their memory it found check-ins only, no command and no traffic through the doorway.
       - label: Signs
-        text: A file `/bin/ulogd` or `/usr/bin/monitord`, or a running process `monitord` or `ujaild`.
+        text: "A file `/bin/ulogd` or `/usr/bin/monitord`, a running process `monitord` or `ujaild`, or one of its server names in the configuration: `adguardns.com`, `adguardns.org`, `adsanalypro.com`, `lede-openproject.org`, `adxinsight.com`, `openwrt-project.org`."
       - label: What to do
-        text: Reflash with “keep settings” off. Do not restore a backup from that device. Change every password and key that was on it.
+        text: Reflash with “keep settings” off, from a file you downloaded yourself. Do not restore a backup from that device. Until then, take it off the internet or block its server names. Change every password and key that was on it.
     command: /rom/bin/busybox cmp /etc/init.d/urandom_seed /rom/etc/init.d/urandom_seed
     command_note: Quick check. No output means the start script is the firmware’s own.
-    note: "GL.iNet’s security firmware puts the start script back and leaves the programs: on eight devices in the reports its file is still there after the update. GL.iNet’s notice does not mention this backdoor. The community script reports it and does not remove it."
+    note: "GL.iNet’s security firmware puts the start script back and leaves the loader `/bin/ulogd`: on eight devices in the reports it is still there after the update. In RemoteToHome’s test the backdoor’s own entry in the keep list carried it through an update with settings kept, and it no longer started. GL.iNet’s notice does not mention this backdoor. The community script reports it and does not remove it."
   questions:
     - group: The attack
       items:
@@ -437,10 +443,10 @@ guide:
           a: Eight took unchecked input. A trace is known for one of them.
         - q: What ran through the remote shells?
           status: open
-          a: Nobody outside knows, nor which other addresses are involved.
+          a: "RemoteToHome read 106 of them from the memory of its routers: no download command was typed into any. The commands that came through the cloud looked for the KVM malware’s folders, opened the shell, ended it and called the malware’s server. None installed anything. Routers that were restarted are not in this count."
         - q: What does `gl-helper` do once it runs?
           status: open
-          a: The installer has been read. The program itself has not.
+          a: The installer and the helper `gb` have been read. `gl-helper` itself is packed, and nobody has published what is inside.
     - group: Your device
       items:
         - q: Which models and versions were affected?
@@ -457,7 +463,7 @@ guide:
           a: Not after a restart.
         - q: Is the update enough for a device that was hit?
           status: disputed
-          a: GL.iNet says the security firmware removes the malware and that settings can be kept. It deletes the known files. It leaves the older backdoor’s programs, it does not take back copied keys, and RemoteToHome found that root can change the stored firmware image.
+          a: GL.iNet says the security firmware removes the malware and that settings can be kept. It deletes the known files. It leaves the older backdoor’s loader and other added entries, and it does not take back copied keys. In its KVM thread, GL.iNet staff advised on 21 November not to keep the configuration when you upgrade a compromised device.
     - group: Beyond the device
       items:
         - q: Were account details or passwords exposed?
@@ -536,9 +542,25 @@ timeline:
     text: The community script can update itself
     more: It takes a new version only when its signature fits.
     tag: Community
+  - at: 2026-11-23T17:40Z
+    text: The older backdoor is taken apart
+    more: RemoteToHome decodes the loaders from 49 of its routers and both builds of the second program. It runs commands, writes files and opens a doorway into the network. One build reports to a server name not known before, `adsanalypro.com`.
+    tag: Community
+  - at: 2026-11-23T17:32Z
+    text: The router attack and the KVM malware share a server
+    more: RemoteToHome finds a command, sent to one of its routers through the cloud, that calls the server the KVM malware reports to.
+    tag: Community
   - at: 2026-11-23T11:33Z
     text: 1,901 devices in the anonymous reports
     more: Of the routers that are not yet updated, 44 percent show traces. Of the KVM devices, 41 percent.
+    tag: Community
+  - at: 2026-11-23T03:57Z
+    text: KVM firmware 1.10.3 keeps added scripts and keys
+    more: RemoteToHome reads it for all six models, which delete the malware at boot. On a test RM1 a boot script and an SSH key of its own came through an update that kept the configuration.
+    tag: Community
+  - at: 2026-11-23T03:27Z
+    text: The security firmware tested with settings kept
+    more: On a GL-MT3000 it removes the start-up entries it knows. Other added entries survive the update and run on the new firmware.
     tag: Community
   - at: 2026-11-22T21:38Z
     text: Admon compares the old and the new firmware
@@ -657,9 +679,9 @@ timeline:
     text: "The first wave: GL-AXT1800"
     more: In the reports, 50 of 51 hit routers of this model carry this minute.
     tag: Attack
-  - at: 2026-11-20T21:40Z
+  - at: 2026-11-20T20:06Z
     text: Remote shells open on routers
-    more: Where the start was measured on GL-AXT1800 routers, it was about this time.
+    more: The earliest start that was measured, on a GL-MT6000. On GL-AXT1800 routers they opened until about 21:40.
     tag: Attack
   - at: 2026-11-20
     text: GL.iNet finds the flaw, fixes its cloud and publishes a notice
@@ -713,7 +735,7 @@ sources:
 - type: researcher
   label: "RemoteToHome Consulting: findings on the incident, how to check and how to recover"
   url: https://github.com/RemoteToHome-io/gl-security-incident-2026
-  note: The remote shell on GL-AXT1800 routers and its cause in the GoodCloud client, what the KVM firmware 1.10.2 does, the address the shells connect to, and what to revoke after a hit. Each finding says how it was checked.
+  note: The remote shell and its cause in the GoodCloud client, what the KVM firmware does, the older backdoor taken apart, how to recover a device and what to revoke after a hit. Each finding says how it was checked.
   date: 2026-11-21
 - type: community
   label: "Admon: the community script and its anonymous reports"
@@ -753,8 +775,8 @@ sources:
 - type: researcher
   label: "RemoteToHome Consulting: field survey of the routers it manages"
   url: https://github.com/RemoteToHome-io/gl-security-incident-2026/blob/main/docs/field-survey.md
-  note: Counts by model and firmware, without anything that identifies a client or device. 152 of 183 routers reached show the attack, the older backdoor or both, as of 22 November, 10:47 UTC. Not a random sample.
-  date: 2026-11-22
+  note: Counts by model and firmware, without anything that identifies a client or device. 166 of 199 routers reached show the attack, the older backdoor or both, as of 23 November, 08:39 UTC. Not a random sample.
+  date: 2026-11-23
 - type: community
   label: "Forum user Romer: what the older backdoor adds to the keep list"
   url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/19
@@ -788,8 +810,23 @@ sources:
 - type: researcher
   label: "RemoteToHome Consulting: all findings with their evidence"
   url: https://github.com/RemoteToHome-io/gl-security-incident-2026/blob/main/docs/findings.md
-  note: Among them R-11 and R-18, the older backdoor on 47 routers it manages, installed in batches on routers in unrelated networks, each of those it could check bound to GoodCloud before.
-  date: 2026-11-22
+  note: Among them R-11 and R-18, the older backdoor on 49 routers it manages, installed in batches on routers in unrelated networks, each of those it could check bound to GoodCloud before; and R-24, the security firmware tested with settings kept.
+  date: 2026-11-23
+- type: researcher
+  label: "RemoteToHome Consulting: the older backdoor's loader and second program"
+  url: https://github.com/RemoteToHome-io/gl-security-incident-2026/blob/main/docs/older-backdoor-second-stage.md
+  note: Both builds of the second program, from 49 routers, with what they can do and how to find them. The loader is described on a page of its own next to it.
+  date: 2026-11-23
+- type: researcher
+  label: "RemoteToHome Consulting: the attacker's commands, recovered from memory"
+  url: https://github.com/RemoteToHome-io/gl-security-incident-2026/blob/main/docs/attacker-messages.md
+  note: The commands that came through the cloud, with counts by model, and what was typed into the remote shells.
+  date: 2026-11-23
+- type: researcher
+  label: "RemoteToHome Consulting: what the KVM firmware does"
+  url: https://github.com/RemoteToHome-io/gl-security-incident-2026/blob/main/docs/kvm-firmware.md
+  note: The clean-up in 1.10.2 and 1.10.3, and what an update that keeps the configuration carries over.
+  date: 2026-11-23
 - type: community
   label: "Forum user acs: the older backdoor without the keep list change"
   url: https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097/21

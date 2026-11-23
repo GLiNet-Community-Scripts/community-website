@@ -133,7 +133,7 @@ afterwards:
     items:
       - Install GL.iNet’s security firmware for your model. Its notice names the version for each.
       - If the device was hit, install it without keeping settings, from a file you downloaded yourself. The update deletes the known files. It leaves the older backdoor’s programs and anything else that was changed.
-      - Prefer such a reflash to a factory reset. Root can write to the image a reset restores from.
+      - Prefer such a reflash to a factory reset. A reset keeps the installed firmware image, and on at least one model root can write to it.
       - Export the device log from your GoodCloud account. It may show the attacker’s command.
       - Change the device password, the cloud password and your SSH keys.
       - Delete the router’s VPN profile at the other end and create a new one.
@@ -141,7 +141,7 @@ afterwards:
   - audience: KVM (Comet)
     items:
       - "Install the security firmware: 1.10.3 or later, 1.8.7 or later for the RMQ1."
-      - If the KVM was hit, reset it afterwards. An update that keeps settings also keeps the password, the SSH keys and everything under `/etc/kvmd/user`. GL.iNet says a reset is not needed.
+      - If the KVM was hit, untick “Save current configuration” when you install it, or reset the KVM afterwards. An update that keeps settings also keeps the password, the SSH keys and everything under `/etc/kvmd/user`, boot scripts there included. GL.iNet says a reset is not needed.
       - Look for keys and scripts you did not add.
       - Check the computer attached to the KVM.
 more:
