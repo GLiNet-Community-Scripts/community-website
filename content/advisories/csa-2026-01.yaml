@@ -8,7 +8,7 @@ severity: critical
 exploited: true
 status: fix-rolling-out
 published: 2026-11-21
-updated: 2026-11-22T21:56Z
+updated: 2026-11-23T10:52Z
 fixed_in: firmwares released on 2026-11-22
 cve: []
 confirmed: gl-inet-public
@@ -423,7 +423,7 @@ community_fix:
   - { name: wget, command: wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh }
   version_url: https://app.gl-i.net/csa-2026-01-fix
   rerun: >-
-    The script changes several times a day as the community learns more. A device that an earlier version called clean may not be. Running it again takes a minute and changes nothing on the device.
+    The script changes several times a day. A device that an earlier version called clean may not be. Running it again takes a minute and changes nothing. From 2.50 on it updates itself: sh gl-helper-triage.sh --update. Download an older one again.
   author: >-
     By Admon and the community: RemoteToHome Consulting and users of GL.iNet's forum contributed findings and checks. An independent community project.
   does:

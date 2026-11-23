@@ -83,6 +83,10 @@ const verdicts = [
 // What later versions of the script find that earlier ones did not. Newest first.
 const versions = [
   {
+    v: "2.51",
+    text: "shows in its first lines how old the version is that you run, and the command that gets the current one.",
+  },
+  {
     v: "2.50",
     text: "can update itself: sh gl-helper-triage.sh --update. It takes a new version only when its signature fits a key built into the script, and never an older one. Where the firmware has no tool to check the signature, it says so and asks first.",
   },
@@ -269,6 +273,19 @@ const markers = [
           shows the version you ran.{" "}
           <b>If it is older than the one below, run it again</b>: it costs a
           minute and changes nothing on the device.
+        </p>
+        <p>
+          From version 2.50 on the script gets the current version itself. It
+          takes the download only when its signature fits, and never an older
+          version:
+        </p>
+        <Terminal command="sh gl-helper-triage.sh --update" label="root@device" />
+        <p class="adv-fine">
+          Every run shows this command in its first lines, with the age of the
+          version you have. A version before 2.50 does not know it: download
+          the script again with the command under “Run it”. On firmware
+          without the tool that checks the signature, the script says so and
+          asks before it updates.
         </p>
         <p
           class="ver-now"
