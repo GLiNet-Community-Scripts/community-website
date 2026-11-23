@@ -96,6 +96,11 @@ Ground rules, partly enforced by the build:
   team's view" after "Do this now", never into GL.iNet's statements.
   A note there can carry a `link` to community work such as a script; say
   in its text that it is community work and not reviewed by GL.iNet.
+- An incident that needs more than these sections gets a `guide`: steps with
+  their reasons, topics with their source, open questions with their state and
+  a timeline with a chart. `csa-2026-01.yaml` is the example. In its texts a
+  path, a command, an option or an address stands between backticks, and the
+  page sets it in a monospace face.
 - A fix or check tool built by the community goes into `community_fix`: a
   dark green card after "Do this now" and a "Community fix" link in the bar.
   It can get its own page below the advisory, like

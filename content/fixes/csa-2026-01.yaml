@@ -1,0 +1,163 @@
+# The guide of the community script for CSA-2026-01, shown at /security/csa-2026-01/fix/.
+# In these texts a path, a command, an option or an address stands between backticks; the
+# page sets it in a monospace face. The list of versions is kept in the page itself
+# (src/pages/security/csa-2026-01/fix.astro).
+intro: GL.iNet’s quick check looks at running processes. This script runs that check and also looks at the files on the device. It can save the evidence and remove the known traces.
+steps:
+  - title: Check
+    text: Only reads and prints a report.
+    command: curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh
+  - title: Save the evidence
+    text: Writes an archive to `/tmp`. That is in memory, so copy it to your computer before you restart. It holds your configuration, perhaps with Wi-Fi and VPN keys. Do not post it.
+    command: sh gl-helper-triage.sh --archive
+  - title: Clean up
+    text: Only if the check found something. Saves the evidence again, stops the malware, removes its files and autostart entries, and checks again.
+    command: sh gl-helper-triage.sh --fix
+notes:
+  - title: Community work, not a GL.iNet tool
+    text: GL.iNet’s notice links to this page as an optional third-party check. GL.iNet has not developed, verified or endorsed the script. Use it at your own risk.
+  - title: Run it before you restart, reset or update
+    text: A restart removes the remote shell. The security firmware deletes known traces at its first start.
+  - title: It does not replace the security firmware
+    text: The script finds and removes only the traces we know of. Install GL.iNet’s security firmware in any case.
+  - title: In a business network, wait
+    text: Talk to your cyber insurer or incident response provider before you change the device.
+result:
+  address: csa.gl-i.net/#AA006011D-2PJ2W
+  text:
+    - The script ends with an address like this one. Open it in a browser, or type it. Capitals do not matter.
+    - The page says what was found, what it means and what to do, in English, German and Chinese. It also says whether newer firmware exists for your model.
+    - The code stands for the result, the model and its firmware version. It does not tell your device from another of its kind, and opening the address sends nothing from the device. You can post it in the forum as it is.
+  verdicts:
+    - verdict: INFECTED
+      tone: bad
+      text: The malware’s files, a remote shell, GL.iNet’s indicator process or the older backdoor are on the device.
+      then: Save the evidence. Then follow “Afterwards”.
+    - verdict: ATTACKED
+      tone: warn
+      text: A command sent through GoodCloud ran as root. No malware files and no remote shell are there now.
+      then: What ran cannot be told afterwards. Treat the device as one that was hit.
+    - verdict: no gl-helper indicators found
+      tone: ok
+      text: None of the known traces.
+      then: Not proof that nothing happened. If the device restarted or was updated since the attacks began, the result says little about the time before.
+  labels:
+    - label: IOC
+      meaning: A known trace of the malware.
+      fix: Removes it.
+    - label: PERSIST
+      meaning: A changed `rc.local` or root crontab that does not name the malware.
+      fix: Resets it only when an IOC was found.
+    - label: REVIEW
+      meaning: An unusual change. Not proof of an infection. Check whether it is yours.
+      fix: Never touches it.
+    - label: INFO
+      meaning: Context, for example a file a package installed.
+      fix: Never touches it.
+  exit_codes: "Exit codes: 0 clean, 1 traces found, 2 fixed and clean, 3 fix incomplete, 4 error."
+  labels_title: The labels in the output, and what `--fix` does with each
+update:
+  lead: The script changes several times a day. Every run shows in its first lines how old your version is.
+  command: sh gl-helper-triage.sh --update
+  note: "It takes a new version only when its signature fits, and never an older one. A version before 2.50 does not know this command: download the script again. On firmware without the tool that checks the signature, the script says so and asks first."
+looks_for:
+  - title: The `gl-helper` malware
+    items:
+      - Its files `gl-helper` and `gb` in `/etc/glinet/.cache` and `/etc/config/.gl`, and in the directories the installer falls back to.
+      - Its scripts, such as `watch.sh` and `run.sh`.
+      - Its lines in `rc.local` and in the crontabs, also in the firmware’s own cron directory.
+      - An SSH key named `gl-agent`.
+      - The remote terminal service set to the attacker’s server.
+      - Its two servers, `65.20.71.131` and `66.245.219.252`.
+  - title: The remote shell
+    items:
+      - A process that uses `/tmp/f` and connects to `170.39.226.219`.
+      - The pipe `/tmp/f`, which stays until the next restart.
+      - GL.iNet’s indicator process `crond -i /tmp/.log`.
+      - "Tools that shells use: `nc`, `socat`, `/bin/sh -i`."
+  - title: The command from the cloud
+    items:
+      - The empty file `/etc/mp_ip_mapping_info`. It is still there after a restart.
+      - The firewall rule the command left behind.
+  - title: Running programs
+    items:
+      - Every running program is compared with the firmware image.
+      - A program that was started from `/tmp`, is not part of the firmware or differs from it is listed for review.
+      - This shows only what runs right now.
+  - title: Network and firewall
+    items:
+      - Open connections, each with its program.
+      - Every line of the firewall configuration that is not in the firmware image. Your own port forwards appear there too.
+      - Running rules that redirect traffic.
+  - title: Replaced tools and autostart
+    items:
+      - System tools that were replaced, `netstat` for one.
+      - "Autostart entries that point to the malware: crontabs, `rc.local`, init scripts, and the lists of files an update keeps."
+  - title: The older backdoor
+    items:
+      - "`/etc/init.d/urandom_seed` with extra lines."
+      - "`/bin/ulogd`, and `/usr/bin/monitord` as a copy of the Lua interpreter."
+      - A running `monitord` or `ujaild`.
+      - Its files on the list an update keeps.
+      - Compiled Lua in the writable part of the system.
+      - Its server names in the configuration. None of them belongs to AdGuard or OpenWrt.
+      - The script reports this backdoor and does not remove it. Reflash with “keep settings” off, and do not restore a backup from that device.
+  - title: Its own tools
+    items:
+      - The script takes its tools from the firmware image, not from the running system.
+      - It checks that those tools load the firmware’s own libraries. The line `Trusted tools` at the top says how that went.
+report:
+  lead: "At the end the script offers to send a short report, also when it found nothing: clean devices show which models and versions were not hit. Nothing leaves the device before you answer y."
+  sent:
+    - Model, firmware version, script version, time of the check, time since the last start.
+    - Which known traces were found, and where.
+    - "For the malware’s files: fingerprint, size and time."
+    - Changed lines of autostart files and the firewall rules the attack used. Lines you added yourself are part of this, and the script shows them before it asks.
+    - Whether GoodCloud and AstroWarp are on, and whether the device is bound to an account.
+    - A device ID, so that two reports from one device count once. It is a hash, and the server hashes it again.
+  never:
+    - Host name, IP address or MAC address.
+    - The name of your GoodCloud account.
+    - Passwords, keys, or hashes of them.
+    - Any other file.
+    - The address the report came from is not stored.
+  controls:
+    - key: v
+      text: shows everything that would be sent
+    - key: --no-report
+      text: never asks
+    - key: --no-device-id
+      text: leaves the device ID out
+afterwards:
+  - audience: Router
+    items:
+      - Install GL.iNet’s security firmware for your model. Its notice names the version for each.
+      - If the device was hit, install it without keeping settings, from a file you downloaded yourself. The update deletes the known files. It leaves the older backdoor’s programs and anything else that was changed.
+      - Prefer such a reflash to a factory reset. Root can write to the image a reset restores from.
+      - Export the device log from your GoodCloud account. It may show the attacker’s command.
+      - Change the device password, the cloud password and your SSH keys.
+      - Delete the router’s VPN profile at the other end and create a new one.
+      - Check the devices behind the router.
+  - audience: KVM (Comet)
+    items:
+      - "Install the security firmware: 1.10.3 or later, 1.8.7 or later for the RMQ1."
+      - If the KVM was hit, reset it afterwards. An update that keeps settings also keeps the password, the SSH keys and everything under `/etc/kvmd/user`. GL.iNet says a reset is not needed.
+      - Look for keys and scripts you did not add.
+      - Check the computer attached to the KVM.
+more:
+  - title: Advisory CSA-2026-01
+    text: What happened, who is affected, what is known.
+    url: /security/csa-2026-01/
+  - title: RemoteToHome’s findings
+    text: How the remote shell got in, what the KVM firmware does, how to recover a device.
+    url: https://github.com/RemoteToHome-io/gl-security-incident-2026
+  - title: Source code and README on GitHub
+    text: All options, the script for running it from your computer, the tests.
+    url: https://github.com/admonstrator/glinet-csa-2026-01
+ai_note: "This page was written by an AI model. It rests on what the community sees and has been working on since the incident began: the anonymous reports, the forum and the firmware."
+report_problem:
+  label: Report a problem
+  text: Bugs and false alarms. Never attach an evidence archive.
+  url: https://github.com/admonstrator/glinet-csa-2026-01/issues
+hero_note: Over SSH, as root. The script only reads. Its first lines show its version and how old it is.
+run_note: You can read the script before you run it. On an infected device `netstat` is replaced by a script that hides the malware’s connections. The script never calls it.

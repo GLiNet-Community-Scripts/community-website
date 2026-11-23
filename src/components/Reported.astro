@@ -1,0 +1,56 @@
+---
+/*
+ * The table of models and firmware versions on which traces were reported: the list kept
+ * by hand in the advisory, with the live list from the anonymous reports added. It is
+ * drawn here for the build and again in the reader's browser (scripts/reported-live.ts).
+ * With `compact` the table stands in a box that scrolls, with a field to search it, and
+ * the heading and the notes are left to the page around it.
+ */
+import { when } from '../lib/format';
+import { byVer, laterOf, pluralKind, repGroups, series, type LiveReported, type RepModel } from '../lib/reported';
+
+interface Props {
+  rep: { as_of: string; live?: string; source: { label: string; url: string }; note?: string; models: RepModel[] };
+  live: LiveReported | null;
+  models: RepModel[];
+  compact?: boolean;
+}
+const { rep, live, models, compact = false } = Astro.props;
+const groups = repGroups(models);
+---
+<div data-reported-live={rep.live} data-reported-own={rep.live ? JSON.stringify(rep.models) : undefined} data-reported-as-of={rep.live ? rep.as_of : undefined}>
+  {!compact && <h3 class="sa-h3">Where traces have been reported</h3>}
+  <p class="adv-refs">
+    <span data-reported-as-of>As of {when(laterOf(rep.as_of, live))}</span>{' '}
+    <span data-reported-count>{models.length} models</span>{' '}
+    <span>Source: <a href={rep.source.url}>{rep.source.label}&nbsp;↗</a></span>
+  </p>
+  {compact && <div class="g-find"><input type="search" placeholder="Type a model, for example MT6000" aria-label="Search the table of models" /></div>}
+  <div class:list={{ 'g-scroll': compact }} data-reported-tables>
+    {groups.map((g) => (
+      <div class="sa-table-wrap rep-wrap">
+        <table class="rep-table">
+          <caption>{pluralKind(g.kind)} <span>{g.models.length} {g.models.length === 1 ? 'model' : 'models'}</span></caption>
+          <thead>
+            <tr><th>Model</th>{g.cols.map((c) => <th class="v">{c}</th>)}</tr>
+          </thead>
+          <tbody>
+            {g.models.map((m) => (
+              <tr>
+                <th scope="row"><b>{m.name}</b>{m.sku && m.sku !== m.name && <small>{m.sku}</small>}</th>
+                {m.firmware.length === 0 ? (
+                  <td class="unknown" colspan={g.cols.length}>Traces reported, firmware not known</td>
+                ) : g.cols.map((c) => {
+                  const vs = m.firmware.filter((v) => series(v) === c).sort(byVer);
+                  return <td class={vs.length ? 'c' : 'c none'}>{vs.map((v) => <span class="ver">{v}</span>)}</td>;
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ))}
+  </div>
+  <p class="rep-legend"><span class="ver">4.8.3</span> Traces reported on this firmware <span class="sep">·</span> Empty: no report so far. That does not mean “not affected”.</p>
+  {!compact && rep.note && rep.note.split(/\n\s*\n/).map((p) => <p>{p.trim()}</p>)}
+</div>

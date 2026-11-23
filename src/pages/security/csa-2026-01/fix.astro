@@ -3,84 +3,26 @@
  * The community's fix for CSA-2026-01: a script that checks a device for the
  * known traces of the malware. The script lives in
  * https://github.com/admonstrator/glinet-csa-2026-01; this page is its guide.
+ * Its texts are in content/fixes/csa-2026-01.yaml, the list of versions is here.
  */
 import Layout from "../../../layouts/Layout.astro";
 import SiteHeader from "../../../components/SiteHeader.astro";
 import Footer from "../../../components/Footer.astro";
-import Terminal from "../../../components/Terminal.astro";
+import Cmd from "../../../components/Cmd.astro";
+import Txt from "../../../components/Txt.astro";
 import { loadContent } from "../../../lib/content";
+import { loadFixGuide } from "../../../lib/fix-guide";
 
 const { site, generatedAt, security } = loadContent();
 const advisory = security.advisories.find((a) => a.id === "CSA-2026-01")!;
 const url = new URL(`${advisory.url}fix/`, site.url).href;
-const repo = "https://github.com/admonstrator/glinet-csa-2026-01";
-const rth = "https://github.com/RemoteToHome-io/gl-security-incident-2026";
-const steps = [
-  {
-    title: "Check",
-    text: "Only reads and prints a report. It changes nothing.",
-    command:
-      "curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh",
-    variants: [
-      {
-        name: "curl",
-        command:
-          "curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh",
-      },
-      {
-        name: "wget",
-        command:
-          "wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh",
-      },
-    ],
-  },
-  {
-    title: "Save the evidence",
-    text: "Writes an archive to /tmp, which is in RAM, so copy it to your computer before you reboot. It contains your configuration, possibly with Wi-Fi and VPN keys, so don’t post it anywhere.",
-    command: "sh gl-helper-triage.sh --archive",
-  },
-  {
-    title: "Clean up",
-    text: "Only if the check found something. Saves the evidence again, stops the malware, removes its files and autostart entries, then checks again.",
-    command: "sh gl-helper-triage.sh --fix",
-  },
-];
-const labels = [
-  { label: "IOC", meaning: "A known trace of the malware", fix: "Removes it" },
-  {
-    label: "PERSIST",
-    meaning:
-      "A changed rc.local or root crontab without a reference to the malware",
-    fix: "Resets it only when an IOC was found",
-  },
-  {
-    label: "REVIEW",
-    meaning:
-      "An unusual change, not proof of an infection. Check whether it is yours.",
-    fix: "Never touches it",
-  },
-  {
-    label: "INFO",
-    meaning: "Context, for example files installed by a package",
-    fix: "Never touches it",
-  },
-];
-// The last line of the report, as the script prints it.
-const verdicts = [
-  {
-    verdict: "INFECTED",
-    text: "The malware’s files, a remote shell, GL.iNet’s indicator process or the older backdoor were found. Save the evidence and follow the steps under “Afterwards”.",
-  },
-  {
-    verdict: "ATTACKED",
-    text: "A command sent through GoodCloud ran on the device as root, but no malware files and no remote shell are there now. Which commands ran, and what they did, cannot be told afterwards. It may have been a first scan with nothing installed yet, or something not known so far: the one such command that was recovered only looked for the malware, others opened a remote shell. If the script names traces of the malware’s installer instead, the installer was at work and its files are gone. Either way, treat the device like an infected one: every key and password on it may have been read.",
-  },
-  {
-    verdict: "no gl-helper indicators found",
-    text: "None of the known traces. Below it the script says when the device last started. If that was after the attacks began, a remote shell and what it left in memory are gone, so the result says little about the time before.",
-  },
-];
+const f = loadFixGuide(advisory.slug);
+const tool = advisory.community_fix!;
+const WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+const count = (n: number) => WORDS[n] ?? String(n);
+const arrow = (u: string) => (u.startsWith("/") ? "→" : "↗");
 // What later versions of the script find that earlier ones did not. Newest first.
+// A command, a path or an option stands between backticks.
 const versions = [
   {
     v: "2.51",
@@ -88,11 +30,11 @@ const versions = [
   },
   {
     v: "2.50",
-    text: "can update itself: sh gl-helper-triage.sh --update. It takes a new version only when its signature fits a key built into the script, and never an older one. Where the firmware has no tool to check the signature, it says so and asks first.",
+    text: "can update itself: `sh gl-helper-triage.sh --update`. It takes a new version only when its signature fits a key built into the script, and never an older one. Where the firmware has no tool to check the signature, it says so and asks first.",
   },
   {
     v: "2.49",
-    text: "really checks that its own tools load the firmware’s libraries. Since 2.37 that check found nothing on a real router, because the tool it used stops at a certain byte in program files. Run it again if you rely on the line “Trusted tools”.",
+    text: "really checks that its own tools load the firmware’s libraries. Since 2.37 that check found nothing on a real router, because the tool it used stops at a certain byte in program files. Run it again if you rely on the line `Trusted tools`.",
   },
   {
     v: "2.48",
@@ -104,7 +46,7 @@ const versions = [
   },
   {
     v: "2.46",
-    text: "also finds and removes the malware’s lines in the firmware’s own cron directory (/etc/gl_crontabs/crontabs.d). It notices firmware that brings GL.iNet’s cleanup, which deletes known traces at its first start, and says that a clean result then does not cover the time before the update. A clean result now also says that it is not proof.",
+    text: "also finds and removes the malware’s lines in the firmware’s own cron directory (`/etc/gl_crontabs/crontabs.d`). It notices firmware that brings GL.iNet’s cleanup, which deletes known traces at its first start, and says that a clean result then does not cover the time before the update. A clean result now also says that it is not proof.",
   },
   {
     v: "2.45",
@@ -116,11 +58,11 @@ const versions = [
   },
   {
     v: "2.42",
-    text: "prints the result last, after the GoodCloud advice, and keeps the question about the anonymous report to a few lines. Typing v there shows everything that would be sent.",
+    text: "prints the result last, after the GoodCloud advice, and keeps the question about the anonymous report to a few lines. Typing `v` there shows everything that would be sent.",
   },
   {
     v: "2.41",
-    text: "prints the address of the result page in a form short enough to type: csa.gl-i.net and nine characters. The long addresses of 2.39 and 2.40 still work.",
+    text: "prints the address of the result page in a form short enough to type: `csa.gl-i.net` and nine characters. The long addresses of 2.39 and 2.40 still work.",
   },
   {
     v: "2.40",
@@ -132,7 +74,7 @@ const versions = [
   },
   {
     v: "2.38",
-    text: "no longer calls a device infected because a copy of the script itself is saved on it, for example in /etc/config. Earlier versions did.",
+    text: "no longer calls a device infected because a copy of the script itself is saved on it, for example in `/etc/config`. Earlier versions did.",
   },
   {
     v: "2.37",
@@ -140,11 +82,11 @@ const versions = [
   },
   {
     v: "2.36",
-    text: "explains below an ATTACKED verdict what it means and what it does not: a command ran, but which one and what it did is not known. It may have been a first scan with nothing installed yet.",
+    text: "explains below an `ATTACKED` verdict what it means and what it does not: a command ran, but which one and what it did is not known. It may have been a first scan with nothing installed yet.",
   },
   {
     v: "2.35",
-    text: "shows the first and the last call of the cloud handler that the attack came through, where the file system keeps both times, recognises the older backdoor’s known second program by its fingerprint, marks file times from a router whose clock was not set yet, and takes a note of your own for the report with --note.",
+    text: "shows the first and the last call of the cloud handler that the attack came through, where the file system keeps both times, recognises the older backdoor’s known second program by its fingerprint, marks file times from a router whose clock was not set yet, and takes a note of your own for the report with `--note`.",
   },
   {
     v: "2.34",
@@ -160,7 +102,7 @@ const versions = [
   },
   {
     v: "2.28",
-    text: "finds the older backdoor’s loader under any name, by looking for compiled Lua in the writable part of the system, and counts gl-inet.top as a server of the malware.",
+    text: "finds the older backdoor’s loader under any name, by looking for compiled Lua in the writable part of the system, and counts `gl-inet.top` as a server of the malware.",
   },
   {
     v: "2.22",
@@ -180,14 +122,8 @@ const versions = [
   },
   {
     v: "2.14",
-    text: "finds the older backdoor (urandom_seed, ulogd, monitord). Earlier versions listed its files without saying what they are.",
+    text: "finds the older backdoor (`urandom_seed`, `ulogd`, `monitord`). Earlier versions listed its files without saying what they are.",
   },
-];
-const markers = [
-  "/etc/glinet/.cache/gl-helper",
-  "/etc/glinet/.cache/gb",
-  "/etc/config/.gl/gl-helper",
-  "/etc/config/.gl/gb",
 ];
 ---
 
@@ -199,7 +135,7 @@ const markers = [
   <SiteHeader site={site} security={security} page="advisory" />
 
   <main id="top">
-    <article class="container sa-article fix">
+    <article class="container sa-article fix guide">
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="/">Community Apps</a>
         <span class="sep">/</span>
@@ -218,14 +154,7 @@ const markers = [
             <span>Community fix</span> <span>Not a GL.iNet tool</span>
           </p>
           <h1>Check your GL.iNet device for the gl-helper malware</h1>
-          <p class="sub">
-            On 20 November 2026 GL.iNet said that its cloud remote management
-            had been abused to install malware on some routers and KVM devices.
-            Its own quick check looks at running processes. The community built
-            a script that runs the same check and also looks at the files on a
-            device. It saves the evidence and removes the known traces on
-            request.
-          </p>
+          <p class="sub"><Txt text={f.intro} /></p>
         </div>
         <img
           src="/img/csa-2026-01-fix.svg"
@@ -235,418 +164,168 @@ const markers = [
         />
       </header>
 
-      <section class="fix-warn" aria-labelledby="h-warn">
-        <h2 id="h-warn">Read this first</h2>
-        <ul>
-          <li>
-            <b>This is community work, not a GL.iNet tool.</b> GL.iNet has not
-            reviewed or endorsed it. Use it at your own risk.
-          </li>
-          <li>
-            <b>Run it before you restart, reset or update the device.</b> Some
-            traces exist only until the next restart, and the KVM firmware
-            1.10.2 for the RM1PE deletes the malware’s files at boot without
-            keeping a copy. GL.iNet’s security firmware for routers does the
-            same at its first start, so check first, then update, then check
-            again. <a href={`${advisory.url}#security-firmware`}>Why</a>
-          </li>
-          <li>
-            <b>
-              It does not replace a factory reset or GL.iNet’s security
-              firmware.
-            </b>{" "}
-            The script finds and removes only the traces we know of.
-          </li>
-          <li>
-            <b>In a business network, wait.</b> Talk to your cyber insurer or
-            incident response provider before you change or reset the device.{" "}
-            <a href={`${advisory.url}#insurer`}>Why</a>
-          </li>
-        </ul>
-      </section>
+      <div class="g-hero">
+        <span class="k">The one command</span>
+        <Cmd command={tool.command!} variants={tool.command_variants} />
+        <p><Txt text={f.hero_note} /></p>
+      </div>
 
-      <section id="versions" aria-labelledby="h-versions">
-        <h2 id="h-versions">Checked before? Check again</h2>
-        <p>
-          The script changes as the community learns more. A device that an
-          early version called clean may not be. The first line of its output
-          shows the version you ran.{" "}
-          <b>If it is older than the one below, run it again</b>: it costs a
-          minute and changes nothing on the device.
-        </p>
-        <p>
-          From version 2.50 on the script gets the current version itself. It
-          takes the download only when its signature fits, and never an older
-          version:
-        </p>
-        <Terminal command="sh gl-helper-triage.sh --update" label="root@device" />
-        <p class="adv-fine">
-          Every run shows this command in its first lines, with the age of the
-          version you have. A version before 2.50 does not know it: download
-          the script again with the command under “Run it”. On firmware
-          without the tool that checks the signature, the script says so and
-          asks before it updates.
-        </p>
-        <p
-          class="ver-now"
-          data-version-src="https://app.gl-i.net/csa-2026-01-fix"
-        >
-          Current version:{" "}
-          <b data-script-version>
-            shown in the first line of the script’s output
-          </b>
-          <span data-script-released hidden></span>
-        </p>
-        <details class="ver-log">
-          <summary>What changed in which version</summary>
-          <ul class="unknowns">
-            {versions.map((v) => (
-              <li>
-                <b>{v.v}</b> {v.text}
-              </li>
-            ))}
-          </ul>
-        </details>
-      </section>
-
-      <section id="run" class="do-box" aria-labelledby="h-run">
+      <section class="g-blk" id="run" aria-labelledby="h-run">
         <h2 id="h-run">Run it</h2>
-        <p>
-          Log in to the device over SSH as root. You can{" "}
-          <a href={`${repo}/blob/main/gl-helper-triage.sh`}>
-            read the script&nbsp;↗
-          </a>{" "}
-          first.
-        </p>
-        <ol class="fix-steps">
-          {steps.map((s) => (
+        <p class="g-sub">{count(f.steps.length)} commands. Most people need only the first.</p>
+        <ol class="g-steps">
+          {f.steps.map((s, i) => (
             <li>
-              <b>{s.title}</b>
-              <p>{s.text}</p>
-              <Terminal
-                command={s.command}
-                label="root@device"
-                variants={s.variants}
-              />
+              <span class="num">{i + 1}</span>
+              <div class="st">
+                <h3><Txt text={s.title} /></h3>
+                <p><Txt text={s.text} /></p>
+                <Cmd command={s.command} variants={s.command === tool.command ? tool.command_variants : []} />
+              </div>
             </li>
           ))}
         </ol>
-        <p class="adv-fine">
-          On an infected device <code>netstat</code> is replaced by a script
-          that hides the malware’s connections. The script never calls it and
-          reads the list of connections from the system directly.
-        </p>
+        {f.run_note && <p class="g-fine"><Txt text={f.run_note} /></p>}
       </section>
 
-      <section id="share" aria-labelledby="h-share">
-        <h2 id="h-share">Help us see who was hit</h2>
-        <p>
-          At the end the script offers to send a short anonymous report to the
-          community, even when it found nothing: reports from clean devices show
-          which models and firmware versions were not hit. It says in a few
-          lines what the report contains and sends it only after you answer{" "}
-          <code>y</code>; <code>v</code> first shows everything that would be
-          sent, your own lines from autostart files and firewall word for word.
-          With <code>--no-report</code> it never asks.
-        </p>
-        <p>
-          The report says which model and firmware version the device has, when
-          it was checked, which known traces were found and, for the reported
-          remote shell, when it started and which port it used. For the
-          malware’s own files and for replaced system tools it adds a
-          fingerprint (SHA-256), the size and the time of the file, so that we
-          can tell variants apart.
-        </p>
-        <p>
-          It also contains what the attacker left, as text: rc.local in full
-          when it was changed, the lines of the root crontab and other autostart
-          files that are not in the firmware image, the rules of the firewall
-          chain the attack used, and the command lines of the malware’s
-          processes.{" "}
-          <b>Lines you added to those files yourself are part of this.</b> The
-          script shows these lines word for word before it asks. Read them, and
-          answer <code>n</code> if you see a password or token of yours.
-        </p>
-        <p>
-          The report carries a device ID, so that several reports from one
-          device count once. It is a hash of the hardware address of the first
-          network interface. The address itself is not sent, and the server
-          hashes the ID again with a secret before it stores it, so it cannot be
-          turned back into the address. Two reports from your device can be
-          linked to each other, but not to you. <code>--no-device-id</code>{" "}
-          leaves it out.
-        </p>
-        <p>
-          The report contains no host name, no IP or MAC address and no other
-          file. Other changes on the device are only counted. The sender’s
-          address is not stored.
-        </p>
-      </section>
+      {f.notes.length > 0 && (
+        <section class="g-blk" id="warn" aria-labelledby="h-warn">
+          <h2 id="h-warn">Read this first</h2>
+          <div class="g-notes">
+            {f.notes.map((n) => (
+              <div class="g-card"><b><Txt text={n.title} /></b><p><Txt text={n.text} /></p></div>
+            ))}
+          </div>
+        </section>
+      )}
 
-      <section id="report" aria-labelledby="h-report">
-        <h2 id="h-report">Reading the report</h2>
-        <p class="ver-now plain">
-          <b>The short way:</b> at the end, under the verdict, the script prints
-          an address like{" "}
-          <a href="https://csa.gl-i.net/">
-            <code>csa.gl-i.net/#AA006011D-2PJ2W</code>
-          </a>
-          . Open it in a browser, or type it if you cannot click it; capitals do
-          not matter. The page explains what was found, what that means and what
-          to do, in plain words, in English, German and Chinese, and says
-          whether newer firmware exists for your model. The code stands for the
-          result, the model and its firmware version. Nothing in it tells your
-          device from another of its kind, and opening the address sends nothing
-          from the device. You can post it in the forum as it is.
-        </p>
-        <p>
-          The rest of this section is for those who want to read the output
-          itself.
-        </p>
-        <div class="sa-table-wrap fix-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Label</th>
-                <th>Meaning</th>
-                <th>
-                  What <span class="mono">--fix</span> does
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {labels.map((l) => (
-                <tr>
-                  <td>
-                    <code>{l.label}</code>
-                  </td>
-                  <td>{l.meaning}</td>
-                  <td>{l.fix}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <section class="g-blk" id="result" aria-labelledby="h-result">
+        <h2 id="h-result">Read your result</h2>
+        <p class="g-sub">The short way, and the {count(f.result.verdicts.length).toLowerCase()} verdicts.</p>
+        <div class="g-card g-short">
+          <div class="addr">{f.result.address}</div>
+          {f.result.text.map((p) => <p><Txt text={p} /></p>)}
         </div>
-        <h3 class="sa-h3">The verdict</h3>
-        <ul class="unknowns">
-          {verdicts.map((v) => (
-            <li>
-              <b>{v.verdict}</b> {v.text}
-            </li>
+        <div class="g-verdicts">
+          {f.result.verdicts.map((v) => (
+            <div class:list={["g-card", `v-${v.tone}`]}>
+              <b>{v.verdict}</b>
+              <p><Txt text={v.text} /></p>
+              <p class="then"><Txt text={v.then} /></p>
+            </div>
           ))}
-        </ul>
-        <p>
-          Exit codes: <code>0</code> clean, <code>1</code> traces found,{" "}
-          <code>2</code> fixed and clean, <code>3</code> fix incomplete,{" "}
-          <code>4</code> error.
-        </p>
+        </div>
+        <details class="g-fold">
+          <summary><Txt text={f.result.labels_title} /></summary>
+          <div class="g-fold-body">
+            <table class="g-table">
+              <thead><tr><th>Label</th><th>Meaning</th><th>What <code>--fix</code> does</th></tr></thead>
+              <tbody>
+                {f.result.labels.map((l) => (
+                  <tr><td><code>{l.label}</code></td><td><Txt text={l.meaning} /></td><td><Txt text={l.fix} /></td></tr>
+                ))}
+              </tbody>
+            </table>
+            <p class="g-fine"><Txt text={f.result.exit_codes} /></p>
+          </div>
+        </details>
       </section>
 
-      <section id="traces" aria-labelledby="h-traces">
+      <section class="g-blk" id="versions" aria-labelledby="h-versions">
+        <h2 id="h-versions">Keep it current</h2>
+        <p class="g-sub"><Txt text={f.update.lead} /></p>
+        <Cmd command={f.update.command} />
+        <p class="g-fine"><Txt text={f.update.note} /></p>
+        <p class="g-now" data-version-src={tool.version_url}>
+          Current version:{" "}
+          <b data-script-version>shown in the first line of the script’s output</b>
+          <span data-script-released hidden></span>
+        </p>
+        <details class="g-fold">
+          <summary>What changed in which version</summary>
+          <div class="g-fold-body">
+            <ul class="g-log">
+              {versions.map((v) => (
+                <li><b>{v.v}</b> <Txt text={v.text} /></li>
+              ))}
+            </ul>
+          </div>
+        </details>
+      </section>
+
+      <section class="g-blk" id="traces" aria-labelledby="h-traces">
         <h2 id="h-traces">What it looks for</h2>
-        <p>
-          The traces come from the cleanup GL.iNet shipped in the KVM firmware
-          RM1PE 1.10.2. That cleanup runs when one of these files exists:
-        </p>
-        <ul class="unknowns">
-          {markers.map((m) => (
-            <li>
-              <code>{m}</code>
-            </li>
-          ))}
-        </ul>
-        <p>
-          A forum user has since read the malware’s installer (
-          <a href="https://forum.gl-inet.com/t/2026-11-20-gl-inet-security-notice-goodcloud-kvm-routers/73056/90">
-            post in GL.iNet’s forum&nbsp;↗
-          </a>
-          ). From it the script also knows the directories the installer falls
-          back to (<code>/etc/gl_nas/.cache</code>, <code>/userdata/.gl</code>,{" "}
-          <code>/overlay/.gl</code>,<code>/tmp/.gl</code>), its other files such
-          as <code>watch.sh</code> and <code>run.sh</code>, its line in the
-          running crontab, an SSH key named <code>gl-agent</code>, the remote
-          terminal service set to the attacker’s server, and its two servers{" "}
-          <code>65.20.71.131</code> and <code>66.245.219.252</code>.
-        </p>
-        <p>
-          It also runs{" "}
-          <a href={`${advisory.url}#check`}>GL.iNet’s quick check</a> for a
-          running process
-          <code>crond -i /tmp/.log</code>, and looks for the remote shell that
-          forum users and RemoteToHome Consulting found on GL-AXT1800 routers: a
-          process that uses <code>/tmp/f</code> and connects to
-          <code>170.39.226.219</code>. GL.iNet staff says to treat a router with
-          such a shell as compromised. The pipe <code>/tmp/f</code> counts too:
-          it stays after the shell was stopped, until the next restart. The
-          script also runs the further checks staff recommends: processes such
-          as <code>nc</code>, <code>socat</code> or <code>/bin/sh -i</code>, and
-          connections held by a shell.
-        </p>
-        <p>
-          Every running program is compared with the read-only firmware image. A
-          program that was started from
-          <code>/tmp</code>, is not part of the firmware or differs from it is
-          listed as <code>REVIEW</code>, or as
-          <code>INFO</code> when a package installed it. All of this only shows
-          what is running right now.
-        </p>
-        <p>
-          The report lists the open network connections with their program, and
-          every line of the firewall configuration that is not in the firmware
-          image. Your own port forwards appear there too. It also shows the
-          running firewall rules that redirect traffic.
-        </p>
-        <p>
-          The script also finds system tools that were replaced (for example{" "}
-          <code>netstat</code>), processes started from these paths, and
-          autostart entries that point to them: crontabs, <code>rc.local</code>,
-          init scripts and the lists of files a firmware update keeps.{" "}
-          <a href={`${repo}#-indicators`}>
-            All details are in the README&nbsp;↗
-          </a>
-        </p>
-        <h3 class="sa-h3">An older backdoor, found by forum users</h3>
-        <p>
-          While looking for traces of 20 November, users of GL.iNet’s forum
-          found a second backdoor that is not part of GL.iNet’s notice, on
-          routers of many models, on some since September 2025 (
-          <a href="https://forum.gl-inet.com/t/found-other-malware-while-looking-for-11-20-evidence/73097">
-            ehidle’s report&nbsp;↗
-          </a>
-          ,<a href={`${advisory.url}#older-backdoor`}>what is known so far</a>).
-          GL.iNet’s quick check does not see it. The script reports it with its
-          own verdict when it finds
-        </p>
-        <ul class="unknowns">
-          <li>
-            <code>/etc/init.d/urandom_seed</code> with extra lines that mention{" "}
-            <code>monitord</code> or <code>ulogd</code>
-          </li>
-          <li>
-            <code>/bin/ulogd</code>, or <code>/usr/bin/monitord</code> as a copy
-            of the Lua interpreter
-          </li>
-          <li>
-            a running <code>monitord</code> or <code>ujaild</code>; the known
-            second program is recognised by its fingerprint
-          </li>
-          <li>
-            its two files added to the list a firmware update keeps (
-            <code>/lib/upgrade/keep.d/netifd</code>). Not every device with the
-            backdoor has this
-          </li>
-          <li>
-            compiled Lua in the writable part of the system that no package
-            installed: with the loader’s function names in it, the loader under
-            another name
-          </li>
-          <li>
-            one of its server names in the configuration:{" "}
-            <code>adguardns.com</code>, <code>adguardns.org</code>,{" "}
-            <code>lede-openproject.org</code>, <code>adxinsight.com</code>,{" "}
-            <code>openwrt-project.org</code>. None of them belongs to AdGuard or
-            OpenWrt
-          </li>
-        </ul>
-        <p>
-          <code>--fix</code> does not remove this backdoor. Its second part runs
-          in memory only and nobody has taken it apart yet, so a cleanup could
-          not promise a clean device. Install the firmware again with “keep
-          settings” off, and do not restore a backup taken from that device.
-        </p>
+        <p class="g-sub">{count(f.looks_for.length)} groups of traces. Open one to see what belongs to it.</p>
+        {f.looks_for.map((group) => (
+          <details class="g-fold">
+            <summary>
+              <Txt text={group.title} />
+              <span class="hint">{group.items.length} {group.items.length === 1 ? "check" : "checks"}</span>
+            </summary>
+            <div class="g-fold-body">
+              <ul class="g-ul">{group.items.map((x) => <li><Txt text={x} /></li>)}</ul>
+            </div>
+          </details>
+        ))}
       </section>
 
-      <section id="after" aria-labelledby="h-after">
+      <section class="g-blk" id="share" aria-labelledby="h-share">
+        <h2 id="h-share">The anonymous report</h2>
+        <p class="g-sub"><Txt text={f.report.lead} /></p>
+        <div class="g-two">
+          <div class="g-card yes">
+            <h3>Sent, after you agree</h3>
+            <ul class="g-ul">{f.report.sent.map((x) => <li><Txt text={x} /></li>)}</ul>
+          </div>
+          <div class="g-card no">
+            <h3>Never sent</h3>
+            <ul class="g-ul">{f.report.never.map((x) => <li><Txt text={x} /></li>)}</ul>
+          </div>
+        </div>
+        {f.report.controls.length > 0 && (
+          <p class="g-ctl">{f.report.controls.map((c) => <span><code>{c.key}</code> {c.text}</span>)}</p>
+        )}
+      </section>
+
+      <section class="g-blk" id="after" aria-labelledby="h-after">
         <h2 id="h-after">Afterwards</h2>
-        <ul class="unknowns">
-          <li>Keep the evidence archive.</li>
-          <li>
-            KVM: install GL.iNet’s security firmware. Only the 1.10.2 build for
-            the RM1PE removes the malware’s files by itself; the builds for the
-            RM1 and RM1V2 do not.
-          </li>
-          <li>
-            Router: update <b>without keeping settings</b>. The malware hides in{" "}
-            <code>/etc/config</code>, which an update with kept settings
-            preserves.
-          </li>
-          <li>
-            A factory reset wipes the writable part of the system. RemoteToHome
-            found that root can also write to the image a reset restores from,
-            so a reflash without kept settings is safer.{" "}
-            <a href={`${advisory.url}#reflash`}>Why</a>
-          </li>
-          <li>
-            Check the computer attached to a KVM, and the devices behind a
-            router.
-          </li>
-          <li>
-            Change the device password, your GL.iNet cloud account password and
-            your SSH keys. Export the device log from your GoodCloud account
-            first: it may show the attacker’s command.{" "}
-            <a href={`${advisory.url}#keys`}>Why</a>
-          </li>
-          <li>
-            If the device was hit, everything it held a key for is exposed too.
-            Remove the router’s VPN profile on the server or with the VPN
-            provider and create a new one, and remove the router’s SSH keys from
-            every machine that trusts them.{" "}
-            <a href={`${rth}#if-you-find-something`}>
-              RemoteToHome’s recovery steps&nbsp;↗
-            </a>
-          </li>
-          <li>
-            KVM: after an update that keeps settings, the password, the SSH keys
-            and everything under <code>/etc/kvmd/user</code> are still the old
-            ones. Change them and look for keys and scripts you did not add.
-          </li>
-        </ul>
+        <p class="g-sub">What to do once the device is checked.</p>
+        {f.afterwards.length > 1 && (
+          <div class="g-seg" data-seg="after" role="group" aria-label="Kind of device">
+            {f.afterwards.map((a, i) => <button type="button" class:list={{ on: i === 0 }} data-v={a.audience}>{a.audience}</button>)}
+          </div>
+        )}
+        {f.afterwards.map((a, i) => (
+          <ul class="g-todo" data-after={a.audience} hidden={i > 0}>
+            {a.items.map((x) => <li><i></i><span><Txt text={x} /></span></li>)}
+          </ul>
+        ))}
       </section>
 
-      <section id="more" aria-labelledby="h-more">
+      <section class="g-blk" id="more" aria-labelledby="h-more">
         <h2 id="h-more">More</h2>
-        <ul class="sources">
-          <li>
-            <a href={advisory.url}>Advisory {advisory.id}</a>
-            <p>What happened and what GL.iNet recommends</p>
-          </li>
-          <li>
-            <a href={rth}>RemoteToHome’s findings on the incident&nbsp;↗</a>
-            <p>
-              How the remote shell got in, what the KVM firmware does, and how
-              to recover a device
-            </p>
-          </li>
-          <li>
-            <a href={repo}>Source code and README on GitHub&nbsp;↗</a>
-            <p>
-              All options, the script for running it from your computer, tests
-              and limits
-            </p>
-          </li>
-          <li>
-            <a href={`${repo}/issues`}>Report a problem&nbsp;↗</a>
-            <p>Bugs and false alarms. Never attach an evidence archive.</p>
-          </li>
-        </ul>
+        <div class="g-notes three">
+          {f.more.map((m) => (
+            <a class="g-card" href={m.url}><b>{m.title}&nbsp;{arrow(m.url)}</b><p>{m.text}</p></a>
+          ))}
+        </div>
+        {f.report_problem && (
+          <p class="g-fine">
+            <a href={f.report_problem.url}>{f.report_problem.label}&nbsp;{arrow(f.report_problem.url)}</a>{" "}
+            {f.report_problem.text}
+          </p>
+        )}
       </section>
 
       <p class="adv-fine sa-fine">
         By <a href="https://github.com/Admonstrator">Admon</a> and the
-        community:
+        community:{" "}
         <a href="https://remotetohome.io">RemoteToHome Consulting</a> and users
         of GL.iNet’s forum contributed findings and checks. An independent
         community project. Provided as-is under the MIT licence, without any
         warranty. Get firmware only from GL.iNet.
       </p>
-      <p class="adv-fine">
-        Thanks to <a href="https://remotetohome.io">RemoteToHome Consulting</a>{" "}
-        for the analysis of the remote shell and of the KVM firmware, for the
-        recovery steps and for how to read the firmware build, to the forum
-        users kosrkosr and TakashiSasaki for the first reports of the shell, to
-        AdamK for the connection checks, and to everyone who sent a report or
-        posted their output.
-      </p>
+      {f.ai_note && <p class="g-ai"><span>AI-generated</span>{f.ai_note}</p>}
 
       <nav class="sa-pager" aria-label="Back">
         <a href={advisory.url}>
@@ -663,5 +342,6 @@ const markers = [
     import "../../../scripts/alerts.ts";
     import "../../../scripts/security.ts";
     import "../../../scripts/script-version.ts";
+    import "../../../scripts/guide.ts";
   </script>
 </Layout>

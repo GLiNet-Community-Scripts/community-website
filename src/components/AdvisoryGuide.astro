@@ -1,0 +1,328 @@
+---
+/*
+ * The guide of an advisory: what to do, who was at risk, what is known and from whom, what
+ * is open, a timeline with a chart, the checks by hand, the sources. It replaces the plain
+ * sections of the advisory page where the advisory brings a `guide`. The table of reported
+ * models comes from the page, in the slot "reported". Everything that reacts to a click is
+ * wired in scripts/guide.ts.
+ */
+import Cmd from './Cmd.astro';
+import Txt from './Txt.astro';
+import { SOURCE_TYPE, type Advisory } from '../lib/advisories';
+import { LANES, dated, lane, moment, timelineChart } from '../lib/guide';
+
+interface Props {
+  advisory: Advisory;
+}
+const { advisory: a } = Astro.props;
+const g = a.guide!;
+const fix = a.community_fix;
+
+const WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen', 'Twenty'];
+const count = (n: number) => WORDS[n] ?? String(n);
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '');
+const arrow = (url: string) => (url.startsWith('/') ? '→' : '↗');
+
+// timeline: newest first, as the advisory hands it over; a dot of the chart links to #ev-N
+const events = a.timeline;
+const day = (ms: number) => new Date(ms).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+const days: { key: string; title: string; events: { i: number; at: string; text: string; more?: string; who: 'A' | 'V' | 'C' }[] }[] = [];
+events.forEach((e, i) => {
+  const ms = moment(e.at), key = new Date(ms).toISOString().slice(0, 10);
+  if (days.at(-1)?.key !== key) days.push({ key, title: day(ms), events: [] });
+  days.at(-1)!.events.push({ i, at: e.at, text: e.text, more: e.more, who: lane(e.tag) });
+});
+
+// sources: GL.iNet's own first, the rest in the order of the advisory
+const vendor = (s: (typeof a.sources)[number]) => SOURCE_TYPE[s.type].kind === 'vendor';
+const sources = [...a.sources.filter(vendor), ...a.sources.filter((s) => !vendor(s))];
+const shortDay = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const SHOWN = 6;
+
+const questions = g.questions.reduce((n, q) => n + q.items.length, 0);
+const STATUS = { open: 'open', likely: 'likely yes', disputed: 'disputed', no: 'no' };
+const sweepFrom = g.sweep.length ? Math.floor(Math.min(...g.sweep.map((s) => Date.parse(s.at))) / 7_200_000) * 7_200_000 : 0;
+const sweepTo = g.sweep.length ? Math.ceil((Math.max(...g.sweep.map((s) => Date.parse(s.at))) + 1) / 7_200_000) * 7_200_000 : 1;
+const pos = (ms: number) => `${(((ms - sweepFrom) / (sweepTo - sweepFrom)) * 100).toFixed(2)}%`;
+const clock = (ms: number) => new Date(ms).toISOString().slice(11, 16);
+const ticks: number[] = [];
+for (let t = sweepFrom; t <= sweepTo; t += 7_200_000) ticks.push(t);
+const share = (hit: number, of: number) => (hit ? Math.max(1, Math.round((100 * hit) / of)) : 0);
+---
+
+{g.glance.length > 0 && (
+  <div class="g-glance">
+    {g.glance.map((t) => (
+      <div class="g-tile"><span class="k">{t.label}</span><b>{t.value}</b><span class="s">{t.note}</span></div>
+    ))}
+  </div>
+)}
+{g.glance_note && <p class="g-fine">{g.glance_note}</p>}
+
+<section class="g-blk" id="do" aria-labelledby="h-do">
+  <h2 id="h-do">{a.active ? 'Do this now' : 'What to do'}</h2>
+  <p class="g-sub">{count(g.steps[0].steps.length)} steps, in this order. Each one says why.</p>
+  {g.steps.length > 1 && (
+    <div class="g-seg" data-seg="steps" role="group" aria-label="Kind of device">
+      {g.steps.map((s, i) => <button type="button" class:list={{ on: i === 0 }} data-v={s.audience}>{s.audience}</button>)}
+    </div>
+  )}
+  {g.steps.map((list, n) => (
+    <ol class="g-steps" data-kind={list.audience} hidden={n > 0}>
+      {list.steps.map((s, i) => {
+        const script = Boolean(fix?.command) && s.command === fix!.command;
+        return (
+          <li id={script && n === 0 ? 'community-fix' : undefined}>
+            <span class="num">{i + 1}</span>
+            <div class="st">
+              <h3><Txt text={s.title} /></h3>
+              <p><Txt text={s.text} /></p>
+              {s.command && <Cmd command={s.command} variants={script ? fix!.command_variants : []} />}
+              {script && fix!.version_url && (
+                <p class="g-fine g-ver" data-version-src={fix!.version_url}>
+                  Current version: <b data-script-version>shown in the first line of the script’s output</b>
+                  <span data-script-released hidden></span>
+                  {fix!.rerun && <span class="again"><Txt text={fix!.rerun} /></span>}
+                </p>
+              )}
+              {s.table && (
+                <div class="g-kvbox">
+                  <p class="g-fine"><Txt text={s.table.caption} /></p>
+                  <dl class="g-kv">
+                    {s.table.rows.map((r) => <Fragment><dt>{r.k}</dt><dd>{r.v}</dd></Fragment>)}
+                  </dl>
+                </div>
+              )}
+              {s.link && <p class="g-link"><a href={s.link.url}>{s.link.label}&nbsp;↗</a></p>}
+              {s.why.length > 0 && (
+                <details class="g-why">
+                  <summary>Why</summary>
+                  {s.why.map((p) => <p><Txt text={p} /></p>)}
+                </details>
+              )}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  ))}
+  {(g.steps_note || fix) && (
+    <p class="g-fine">
+      {g.steps_note && <Txt text={g.steps_note} />}
+      {fix && <Fragment>{' '}<a href={fix.link.url}>{fix.link.label}&nbsp;{arrow(fix.link.url)}</a></Fragment>}
+    </p>
+  )}
+</section>
+
+<section class="g-blk" id="risk" aria-labelledby="h-risk">
+  <h2 id="h-risk">Was my device at risk?</h2>
+  {g.risk.length > 0 && (
+    <Fragment>
+      <p class="g-sub">{count(g.risk.length)} things made the difference in the reports.</p>
+      <div class="g-risk">
+        {g.risk.map((r) => <div class="g-card"><b><Txt text={r.title} /></b><p><Txt text={r.text} /></p></div>)}
+      </div>
+    </Fragment>
+  )}
+  {a.affected.reported && (
+    <Fragment>
+      <h3 class="g-h3">Models and firmware versions with reported traces</h3>
+      <slot name="reported" />
+      {g.table_help.length > 0 && (
+        <details class="g-why">
+          <summary>How to read this table</summary>
+          {g.table_help.map((p) => <p><Txt text={p} /></p>)}
+        </details>
+      )}
+    </Fragment>
+  )}
+</section>
+
+{g.topics.length > 0 && (
+  <section class="g-blk" id="details" aria-labelledby="h-details">
+    <h2 id="h-details">What we know</h2>
+    <p class="g-sub">Pick a topic. The label says who it comes from.</p>
+    <div class="g-md">
+      <div class="g-md-nav" role="tablist" aria-label="Topics">
+        {g.topics.map((t, i) => (
+          <button type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} class:list={{ on: i === 0 }} data-i={i}>
+            <b><Txt text={t.title} /></b><span class:list={['g-pill', `p-${slug(t.source)}`]}>{t.source}</span>
+          </button>
+        ))}
+      </div>
+      <div class="g-md-pane">
+        {g.topics.map((t, i) => (
+          <div class="g-topic" role="tabpanel" data-i={i} hidden={i > 0}>
+            <h3><Txt text={t.title} /></h3>
+            <p class="lead"><Txt text={t.lead} /></p>
+            {t.body.map((p) => p === '@sweep' ? (
+              <div class="g-sweep">
+                <div class="sw-axis"><span></span><div>{ticks.map((t) => <i style={`left:${pos(t)}`}>{clock(t)}</i>)}</div><span></span></div>
+                {g.sweep.map((s) => (
+                  <div class="sw-row">
+                    <span class="sw-m">{s.model}</span>
+                    <div class="sw-track"><i style={`left:${pos(Date.parse(s.at))}`} title={`${clock(Date.parse(s.at))} UTC`}></i><b style={`left:${pos(Date.parse(s.at))}`}>{clock(Date.parse(s.at))}</b></div>
+                    <span class="sw-n">{s.n} of {s.of}</span>
+                  </div>
+                ))}
+                {g.sweep_note && <p class="g-fine">{g.sweep_note}</p>}
+              </div>
+            ) : p === '@series' ? (
+              <Fragment>
+                <p class="g-fine">Routers with traces, by firmware series</p>
+                <div class="g-bars">
+                  {g.series.map((s) => (
+                    <div class="bar">
+                      <span class="bn">{s.name}</span>
+                      <span class="track"><i style={`width:${share(s.hit, s.of)}%`}></i></span>
+                      <span class="bv">{s.hit ? `${Math.round((100 * s.hit) / s.of)} %` : 'none'}</span>
+                      <span class="bc">{s.hit} of {s.of}</span>
+                    </div>
+                  ))}
+                </div>
+              </Fragment>
+            ) : (
+              <p><Txt text={p} /></p>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{g.backdoor && (
+  <section class="g-blk" id="backdoor" aria-labelledby="h-backdoor">
+    <h2 id="h-backdoor">A second, older backdoor</h2>
+    <p class="g-sub"><Txt text={g.backdoor.lead} /></p>
+    <div class="g-card g-bd">
+      <dl>
+        {g.backdoor.rows.map((r) => <Fragment><dt>{r.label}</dt><dd><Txt text={r.text} /></dd></Fragment>)}
+      </dl>
+      {g.backdoor.command && <Cmd command={g.backdoor.command} />}
+      {g.backdoor.command_note && <p class="g-fine"><Txt text={g.backdoor.command_note} /></p>}
+    </div>
+    {g.backdoor.note && <p class="g-fine"><Txt text={g.backdoor.note} /></p>}
+  </section>
+)}
+
+{g.questions.length > 0 && (
+  <section class="g-blk" id="unknowns" aria-labelledby="h-unknowns">
+    <h2 id="h-unknowns">What we don’t know yet</h2>
+    <p class="g-sub">{count(questions)} questions. Click one for what we have so far.</p>
+    <div class="g-qlegend">
+      {Object.entries(STATUS).map(([k, label]) => <span><i class:list={['g-dot', `q-${k}`]}></i>{label}</span>)}
+    </div>
+    <div class="g-cols">
+      {g.questions.map((group) => (
+        <div class="g-card g-q">
+          <h3>{group.group}</h3>
+          {group.items.map((q) => (
+            <details>
+              <summary><i class:list={['g-dot', `q-${q.status}`]} title={STATUS[q.status]}></i><span><Txt text={q.q} /></span></summary>
+              <p><Txt text={q.a} /></p>
+            </details>
+          ))}
+        </div>
+      ))}
+    </div>
+  </section>
+)}
+
+<section class="g-blk" id="timeline" aria-labelledby="h-timeline">
+  <h2 id="h-timeline">Timeline</h2>
+  <p class="g-sub">What the attacker did, what GL.iNet did and what the community found. Click a dot to jump to its entry.</p>
+  <div class="g-card g-chartbox">
+    <Fragment set:html={timelineChart(g.hours, events)} />
+    <p class="g-fine">
+      {g.hours_note}{' '}Row “Attack”: our reading of the reports and of users’ captures. A hollow dot: the time of day is not known.
+    </p>
+  </div>
+  <div class="g-tools">
+    <div class="g-seg" data-seg="who" role="group" aria-label="Who">
+      <button type="button" class="on" data-v="">All</button>
+      {(Object.keys(LANES) as (keyof typeof LANES)[]).map((k) => <button type="button" data-v={k}>{LANES[k]}</button>)}
+    </div>
+    <div class="g-seg" data-seg="tz" role="group" aria-label="Clock">
+      <button type="button" class="on" data-v="utc">UTC</button><button type="button" data-v="local">My time</button>
+    </div>
+    <div class="g-seg" data-seg="order" role="group" aria-label="Order">
+      <button type="button" class="on" data-v="new">Newest first</button><button type="button" data-v="old">Oldest first</button>
+    </div>
+    <input type="search" class="g-search" placeholder="Search the timeline" aria-label="Search the timeline" />
+  </div>
+  <div class="g-list capped">
+    {days.map((d) => (
+      <div class="g-day" data-day={d.key}>
+        <h3>{d.title}</h3>
+        {d.events.map((e) => (
+          <div class:list={['g-ev', `ev-${e.who}`]} id={`ev-${e.i}`} data-who={e.who} data-at={e.at}>
+            <div class="t">
+              <time datetime={e.at}>{dated(e.at) ? 'that day' : e.at.slice(11, 16)}</time>
+              <span class:list={['g-pill', `p-${slug(LANES[e.who])}`]}>{LANES[e.who]}</span>
+            </div>
+            <div><b><Txt text={e.text} /></b>{e.more && <p><Txt text={e.more} /></p>}</div>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+  <p class="g-fine g-none" hidden>Nothing in the timeline matches.</p>
+  <button type="button" class="g-more" data-more="list">Show the whole timeline at once</button>
+</section>
+
+{g.checks.length > 0 && (
+  <section class="g-blk" id="check" aria-labelledby="h-check">
+    <h2 id="h-check">Check by hand</h2>
+    <p class="g-sub">If you cannot run the script: the checks GL.iNet and its staff name. Each says what a good and a bad answer look like.</p>
+    <details class="g-fold">
+      <summary>Show the {count(g.checks.length).toLowerCase()} checks</summary>
+      <div class="g-fold-body">
+        {g.checks.map((c, i) => (
+          <div class="g-check">
+            <h3><span class="n">{i + 1}</span><span><Txt text={c.title} /></span></h3>
+            <Cmd command={c.command} />
+            <dl>
+              <dt class="ok">Good</dt><dd><Txt text={c.good} /></dd>
+              <dt class="bad">Bad</dt><dd><Txt text={c.bad} /></dd>
+            </dl>
+            {c.note && <p class="g-fine"><Txt text={c.note} /></p>}
+          </div>
+        ))}
+        {g.checks_note && <p class="g-fine"><Txt text={g.checks_note} /></p>}
+      </div>
+    </details>
+  </section>
+)}
+
+<section class="g-blk" id="sources" aria-labelledby="h-sources">
+  <h2 id="h-sources">Sources</h2>
+  <p class="g-sub">{sources.length} sources. GL.iNet’s own come first.</p>
+  <div class="g-card g-srcs">
+    {sources.map((s, i) => (
+      <div class:list={['g-src', { extra: i >= SHOWN }]}>
+        <span class:list={['g-pill', vendor(s) ? 'p-gl-inet' : 'p-community']}>{vendor(s) ? 'GL.iNet' : 'Community'}</span>
+        <div>
+          {s.url ? <a href={s.url}>{s.label}&nbsp;↗</a> : <b>{s.label ?? 'Confirmation to the maintainers of this site'}</b>}
+          {s.note && <small>{s.note}</small>}
+        </div>
+        <time datetime={s.date}>{shortDay(s.date)}</time>
+      </div>
+    ))}
+  </div>
+  {sources.length > SHOWN && <button type="button" class="g-more" data-more="srcs">Show all {sources.length} sources, with notes</button>}
+  {a.contacts.length > 0 && (
+    <p class="adv-refs sa-contacts">
+      {a.contacts.map((c, j) => <Fragment>{j > 0 && ' '}<span>{c.label} <a href={`mailto:${c.email}`}>{c.email}</a></span></Fragment>)}
+    </p>
+  )}
+</section>
+
+{g.thanks && (
+  <section class="g-blk" id="thanks" aria-labelledby="h-thanks">
+    <h2 id="h-thanks">Thanks</h2>
+    <p class="g-sub">This page stands on the work of others.</p>
+    <p class="g-chips">{g.thanks.names.map((n) => <span>{n}</span>)}</p>
+    {g.thanks.note && <p class="g-fine">{g.thanks.note}</p>}
+  </section>
+)}

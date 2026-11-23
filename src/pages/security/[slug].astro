@@ -3,13 +3,15 @@ import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import Footer from '../../components/Footer.astro';
 import AdvisoryEyebrow from '../../components/AdvisoryEyebrow.astro';
+import AdvisoryGuide from '../../components/AdvisoryGuide.astro';
+import Reported from '../../components/Reported.astro';
 import Terminal from '../../components/Terminal.astro';
 import Tile from '../../components/Tile.astro';
 import { SEVERITY, SOURCE_TYPE } from '../../lib/advisories';
 import { loadContent } from '../../lib/content';
 import { dayTime, longDate, when } from '../../lib/format';
 import { UI } from '../../lib/ui';
-import { byVer, laterOf, mergeReported, parseLive, pluralKind, repGroups, series, type LiveReported } from '../../lib/reported';
+import { mergeReported, parseLive, type LiveReported } from '../../lib/reported';
 
 export function getStaticPaths() {
   return loadContent().security.advisories.map((a) => ({ params: { slug: a.slug } }));
@@ -46,7 +48,6 @@ if (rep?.live) {
   if (!repLive) console.warn(`[advisory] ${a.id}: no live "reported" list from ${rep.live}, using the list in the YAML alone`);
 }
 const repModels = mergeReported(rep?.models ?? [], repLive);
-const groups = repGroups(repModels);
 const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': 'By GL.iNet staff', unconfirmed: 'Not yet' }[a.confirmed];
 ---
 
@@ -55,7 +56,7 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
   <SiteHeader site={site} security={security} page="advisory" current={a} />
 
   <main id="top">
-    <article class="container sa-article" data-level={level}>
+    <article class:list={['container', 'sa-article', { guide: a.guide }]} data-level={level}>
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="/">Community Apps</a><span class="sep">/</span><a href="/security/">Security advisories</a><span class="sep">/</span><span aria-current="page" class="mono">{a.id}</span>
       </nav>
@@ -83,6 +84,12 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
         {a.rollout && <Fragment>{' '}<span>{a.rollout.released} of {a.rollout.total} models have the fix</span></Fragment>}
       </p>
 
+      {a.guide ? (
+        <AdvisoryGuide advisory={a}>
+          <Fragment slot="reported">{rep && <Reported rep={rep} live={repLive} models={repModels} compact />}</Fragment>
+        </AdvisoryGuide>
+      ) : (
+      <Fragment>
       <section id="do" class="do-box" aria-labelledby="h-do">
         <h2 id="h-do">{a.active ? 'Do this now' : 'What to do'}</h2>
         {fix?.command ? (
@@ -187,43 +194,7 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
             {a.affected.not_affected && <Fragment>{' '}<span>Not affected: {a.affected.not_affected}</span></Fragment>}
           </p>
         )}
-        {rep && (
-          <div data-reported-live={rep.live} data-reported-own={rep.live ? JSON.stringify(rep.models) : undefined} data-reported-as-of={rep.live ? rep.as_of : undefined}>
-            <h3 class="sa-h3">Where traces have been reported</h3>
-            <p class="adv-refs">
-              <span data-reported-as-of>As of {when(laterOf(rep.as_of, repLive))}</span>{' '}
-              <span data-reported-count>{repModels.length} models</span>{' '}
-              <span>Source: <a href={rep.source.url}>{rep.source.label}&nbsp;↗</a></span>
-            </p>
-            <div data-reported-tables>
-            {groups.map((g) => (
-              <div class="sa-table-wrap rep-wrap">
-                <table class="rep-table">
-                  <caption>{pluralKind(g.kind)} <span>{g.models.length} {g.models.length === 1 ? 'model' : 'models'}</span></caption>
-                  <thead>
-                    <tr><th>Model</th>{g.cols.map((c) => <th class="v">{c}</th>)}</tr>
-                  </thead>
-                  <tbody>
-                    {g.models.map((m) => (
-                      <tr>
-                        <th scope="row"><b>{m.name}</b>{m.sku && m.sku !== m.name && <small>{m.sku}</small>}</th>
-                        {m.firmware.length === 0 ? (
-                          <td class="unknown" colspan={g.cols.length}>Traces reported, firmware not known</td>
-                        ) : g.cols.map((c) => {
-                          const vs = m.firmware.filter((v) => series(v) === c).sort(byVer);
-                          return <td class={vs.length ? 'c' : 'c none'}>{vs.map((v) => <span class="ver">{v}</span>)}</td>;
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ))}
-            </div>
-            <p class="rep-legend"><span class="ver">4.8.3</span> Traces reported on this firmware <span class="sep">·</span> Empty: no report so far. That does not mean “not affected”.</p>
-            {rep.note && rep.note.split(/\n\s*\n/).map((p) => <p>{p.trim()}</p>)}
-          </div>
-        )}
+        {rep && <Reported rep={rep} live={repLive} models={repModels} />}
         {a.models.length > 0 && (
           <div class="sa-table-wrap">
             <table class="sa-table">
@@ -309,6 +280,8 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
           </p>
         )}
       </section>
+      </Fragment>
+      )}
 
       {(apps.length > 0 || a.apps_note) && (
         <section id="apps" aria-labelledby="h-apps">
@@ -332,6 +305,7 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
         Written by the community, not GL.iNet. Get firmware only from GL.iNet; we never host firmware or ask for passwords.{' '}
         <a href="/security/feed.xml">Follow updates via RSS</a>.
       </p>
+      {a.guide?.ai_note && <p class="g-ai"><span>AI-generated</span>{a.guide.ai_note}</p>}
 
       <nav class="sa-pager" aria-label="More advisories">
         <a href="/security/">← All security advisories</a>
@@ -352,5 +326,6 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
     import '../../scripts/security.ts';
     import '../../scripts/script-version.ts';
     import '../../scripts/reported-live.ts';
+    import '../../scripts/guide.ts';
   </script>
 </Layout>

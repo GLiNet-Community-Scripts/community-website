@@ -1,0 +1,11 @@
+---
+/*
+ * Running text from the content files. What stands between backticks (a path, a command,
+ * an option, an address) is set as code, so that it can be told from the words around it.
+ */
+interface Props {
+  text: string;
+}
+const parts = Astro.props.text.split('`');
+---
+{parts.map((part, i) => (i % 2 ? <code>{part}</code> : part))}

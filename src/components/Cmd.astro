@@ -1,0 +1,26 @@
+---
+/*
+ * A command on one line with a button that copies it. With `variants` (the same step with
+ * curl and with wget) the reader switches between them. The buttons are wired in
+ * scripts/guide.ts.
+ */
+interface Props {
+  command: string;
+  variants?: { name: string; command: string }[];
+}
+const { command, variants = [] } = Astro.props;
+const list = variants.length > 1 ? variants : [{ name: '', command }];
+---
+<div class="g-cmdset">
+  {list.length > 1 && (
+    <div class="g-seg small" data-seg="dl" role="group" aria-label="Tool">
+      {list.map((v, i) => <button type="button" class:list={{ on: i === 0 }} data-v={v.name}>{v.name}</button>)}
+    </div>
+  )}
+  {list.map((v, i) => (
+    <div class="g-cmd" data-dl={v.name || undefined} hidden={i > 0}>
+      <code>{v.command}</code>
+      <button type="button" data-copy-cmd>Copy</button>
+    </div>
+  ))}
+</div>

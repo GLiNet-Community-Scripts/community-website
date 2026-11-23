@@ -110,6 +110,59 @@ const SourceSchema = z
     }
   });
 
+// A guide replaces the plain sections of an advisory page (steps, check, details, unknowns,
+// community notes) for an incident that needs more: steps with their reasons, topics with
+// their source, open questions with their state, a timeline with a chart. In its texts, a
+// path, command, option or address stands between backticks and is set in a monospace face.
+const Para = z.string().min(1);
+const GuideSchema = z.object({
+  // Up to four figures at the top, the first one highlighted.
+  glance: z.array(z.object({ label: Para, value: Para, note: Para })).max(4).default([]),
+  glance_note: Para.optional(),
+  // "Do this now": one list of steps per kind of device. "why" is folded away, "table" is
+  // shown (for example firmware versions by model).
+  steps: z
+    .array(
+      z.object({
+        audience: Para,
+        steps: z
+          .array(
+            z.object({
+              title: Para,
+              text: Para,
+              command: Para.optional(),
+              table: z.object({ caption: Para, rows: z.array(z.object({ k: Para, v: Para })).min(1) }).optional(),
+              link: z.object({ label: Para, url: Https }).optional(),
+              why: z.array(Para).default([]),
+            }),
+          )
+          .min(1),
+      }),
+    )
+    .min(1),
+  steps_note: Para.optional(),
+  risk: z.array(z.object({ title: Para, text: Para })).default([]),
+  table_help: z.array(Para).default([]),
+  // "What we know". A paragraph "@sweep" or "@series" stands for the chart of that name.
+  topics: z.array(z.object({ title: Para, source: z.enum(['GL.iNet', 'Community', 'Reports', 'Our reading']), lead: Para, body: z.array(Para).min(1) })).default([]),
+  series: z.array(z.object({ name: Para, hit: z.number().int().min(0), of: z.number().int().min(1) })).default([]),
+  sweep: z.array(z.object({ model: Para, at: Moment, n: z.number().int().min(0), of: z.number().int().min(1) })).default([]),
+  sweep_note: Para.optional(),
+  // Devices hit per hour (UTC), for the bars of the timeline chart: "2026-11-20T22".
+  hours: z.array(z.object({ hour: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}$/), n: z.number().int().min(0) })).default([]),
+  hours_note: Para.optional(),
+  backdoor: z
+    .object({ lead: Para, rows: z.array(z.object({ label: Para, text: Para })).min(1), command: Para.optional(), command_note: Para.optional(), note: Para.optional() })
+    .optional(),
+  questions: z
+    .array(z.object({ group: Para, items: z.array(z.object({ q: Para, status: z.enum(['open', 'likely', 'disputed', 'no']), a: Para })).min(1) }))
+    .default([]),
+  checks: z.array(z.object({ title: Para, command: Para, good: Para, bad: Para, note: Para.optional() })).default([]),
+  checks_note: Para.optional(),
+  thanks: z.object({ names: z.array(Para).min(1), note: Para.optional() }).optional(),
+  ai_note: Para.optional(),
+});
+
 const AdvisorySchema = z.object({
   id: z.string().regex(/^CSA-\d{4}-\d{2,}$/, 'expected an ID like CSA-2026-01'),
   title: z.string().min(1).max(120),
@@ -175,7 +228,9 @@ const AdvisorySchema = z.object({
     .default([]),
   details: z.string().min(1).optional(),
   unknowns: z.array(z.string().min(1)).default([]),
-  timeline: z.array(z.object({ at: Moment, text: z.string().min(1), tag: z.string().min(1).optional() })).min(1),
+  // "more": a second line under the entry, shown smaller. In a guide, "tag" also picks the
+  // row of the chart: Attack, Vendor or Community.
+  timeline: z.array(z.object({ at: Moment, text: z.string().min(1), more: z.string().min(1).optional(), tag: z.string().min(1).optional() })).min(1),
   sources: z.array(SourceSchema).min(1),
   contacts: z
     .array(
@@ -218,6 +273,7 @@ const AdvisorySchema = z.object({
       image: z.string().regex(/^\/[a-z0-9/._-]+$/).optional(),
     })
     .optional(),
+  guide: GuideSchema.optional(),
   // Our own view as the community team, kept apart from what GL.iNet says.
   community: z
     .object({
@@ -327,7 +383,7 @@ function readAdvisories(appIds: Set<string>, now: number): Advisory[] {
       }
       for (const id of a.apps) if (!appIds.has(id)) die(`apps: unknown app "${id}" (use the id from the app's page anchor)`);
       const noteIds = (a.community?.notes ?? []).flatMap((n) => (n.id ? [n.id] : []));
-      const sectionIds = ['top', 'do', 'community-fix', 'community', 'models', 'check', 'details', 'timeline', 'sources', 'apps'];
+      const sectionIds = ['top', 'do', 'community-fix', 'community', 'models', 'risk', 'check', 'details', 'backdoor', 'unknowns', 'timeline', 'sources', 'thanks', 'apps'];
       for (const id of noteIds) {
         if (noteIds.indexOf(id) !== noteIds.lastIndexOf(id)) die(`community.notes: duplicate id "${id}"`);
         if (sectionIds.includes(id)) die(`community.notes: id "${id}" is already a section of the page`);
