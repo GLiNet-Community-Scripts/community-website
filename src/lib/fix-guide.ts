@@ -13,6 +13,7 @@ const Link = z.union([z.string().regex(/^\/[a-z0-9/-]*$/), z.string().url().refi
 const FixGuideSchema = z.object({
   intro: T,
   hero_note: T,
+  hero_link: z.object({ label: T, url: Link }).optional(),
   steps: z.array(z.object({ title: T, text: T, command: T })).min(1),
   run_note: T.optional(),
   notes: z.array(z.object({ title: T, text: T })).default([]),

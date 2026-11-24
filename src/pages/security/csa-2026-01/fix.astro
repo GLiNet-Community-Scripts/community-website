@@ -183,7 +183,10 @@ const versions = [
       <div class="g-hero">
         <span class="k">The one command</span>
         <Cmd command={tool.command!} variants={tool.command_variants} />
-        <p><Txt text={f.hero_note} /></p>
+        <p>
+          <Txt text={f.hero_note} />
+          {f.hero_link && <Fragment>{" "}<a href={f.hero_link.url}>{f.hero_link.label}&nbsp;{arrow(f.hero_link.url)}</a></Fragment>}
+        </p>
       </div>
 
       <section class="g-blk" id="run" aria-labelledby="h-run">

@@ -128,9 +128,13 @@ guide:
         - title: Check the device
           text: Run the community script over SSH. It only reads, and it takes a minute.
           command: curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh
+          link:
+            label: How to log in over SSH, from GL.iNet
+            url: https://docs.gl-inet.com/router/en/4/tutorials/ssh_log_in_to_the_router/
           why:
             - GL.iNet’s first quick check looked for one running process. The remote shell does not run that process, leaves no file and is gone after a restart.
-            - The script runs that check and also looks at files, autostart entries and the firewall. GL.iNet’s notice now names it as the first choice for a broader check, an independent project, and says to use it to check only. No SSH? Use the checks by hand further down.
+            - The script runs that check and also looks at files, autostart entries and the firewall. GL.iNet’s notice now names it as the first choice for a broader check, an independent project, and says to use it to check only.
+            - SSH is on by default on GL.iNet routers, in the local network. Log in as `root` with the admin password. If you switched SSH off, switch it on under Security, Admin Access in the admin panel, before firmware 4.9 under System, Security.
         - title: Save what it finds
           text: If the script reports traces, run it again with `--archive` before you change anything.
           command: sh gl-helper-triage.sh --archive
@@ -181,6 +185,14 @@ guide:
             - GL.iNet now advises this for every device that was connected to GoodCloud, as a precaution. An update cannot take back a key or password that was already copied.
             - The attacker had a root shell on the devices that were hit. Everything stored on the device could be copied, and cleaning the device does not take that back.
             - "Delete the router’s VPN profile at the other end and create a new one. Export the device log from your GoodCloud account before you change that password: it may show the attacker’s command."
+        - title: Switch SSH off again
+          text: "If you switched it on for the check: under Security, Admin Access in the admin panel, before firmware 4.9 under System, Security."
+          link:
+            label: GL.iNet’s page on the SSH switch
+            url: https://docs.gl-inet.com/router/en/4/interface_guide/admin_access/#ssh
+          why:
+            - What is switched off cannot be used. If you do not use SSH yourself, it need not be on.
+            - GL.iNet’s firmware has SSH on by default. A reinstall without settings switches it back on, so do this after the security firmware is installed.
     - audience: KVM (Comet)
       steps:
         - title: Check the KVM

@@ -140,6 +140,7 @@ afterwards:
       - Change the device password, the cloud password and your SSH keys. GL.iNet advises a new admin password and new VPN and SSH keys for every device that was connected to GoodCloud, even if nothing was found.
       - Delete the router’s VPN profile at the other end and create a new one.
       - Check the devices behind the router.
+      - If you switched SSH on for the check, switch it off again under Security, Admin Access, before firmware 4.9 under System, Security. A reinstall without settings switches it back on, as GL.iNet’s firmware has it on by default.
   - audience: KVM (Comet)
     items:
       - "Install the security firmware: 1.10.3 or later, 1.8.7 or later for the RMQ1."
@@ -162,5 +163,8 @@ report_problem:
   label: Report a problem
   text: Bugs and false alarms. Never attach an evidence archive.
   url: https://github.com/admonstrator/glinet-csa-2026-01/issues
-hero_note: Over SSH, as root. The script only reads. Its first lines show its version and how old it is.
+hero_note: On a router over SSH, as `root`. On a KVM in its web interface, under Toolbox, Terminal. The script only reads. Its first lines show its version and how old it is.
+hero_link:
+  label: How to log in over SSH, from GL.iNet
+  url: https://docs.gl-inet.com/router/en/4/tutorials/ssh_log_in_to_the_router/
 run_note: You can read the script before you run it. On an infected device `netstat` is replaced by a script that hides the malware’s connections. The script never calls it.
