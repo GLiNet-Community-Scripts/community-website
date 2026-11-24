@@ -14,19 +14,19 @@ export function ago(iso: string, now: number = Date.now()): string {
 }
 
 export const longDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  new Date(iso).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 
 export const stamp = (iso: string) =>
-  new Date(iso).toLocaleString('en-GB', {
-    day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC', timeZoneName: 'short',
+  new Date(iso).toLocaleString('en-US', {
+    day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'UTC', timeZoneName: 'short',
   });
 
-/** A date ("20 Nov 2026") or a moment ("20 Nov 2026, 17:05 UTC"), as written in the YAML. */
+/** A date ("Nov 20, 2026") or a moment ("Nov 20, 2026, 17:05 UTC"), as written in the YAML. */
 export const when = (s: string) => (s.includes('T') ? stamp(s) : longDate(s));
 
-/** Short form for tight lists: "20 Nov" or "20 Nov, 17:05". */
+/** Short form for tight lists: "Nov 20" or "Nov 20, 17:05". */
 export function dayTime(s: string): string {
   const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', timeZone: 'UTC' };
   if (s.includes('T')) Object.assign(opts, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
-  return new Date(s).toLocaleString('en-GB', opts);
+  return new Date(s).toLocaleString('en-US', opts);
 }

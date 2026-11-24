@@ -20,7 +20,7 @@ const years = [...new Set(advisories.map((a) => a.year))];
 const count = (b: Advisory['bucket']) => advisories.filter((a) => a.bucket === b).length;
 const latest = advisories.map((a) => a.updated).sort((x, y) => Date.parse(y) - Date.parse(x))[0];
 const pub = new Date(advisories.at(-1)?.published ?? Date.now());
-const month = (d: string) => new Date(d).toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' });
+const month = (d: string) => new Date(d).toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' });
 const day = (d: string) => new Date(d).getUTCDate();
 ---
 

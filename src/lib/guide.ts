@@ -37,7 +37,7 @@ export function timelineChart(hours: { hour: string; n: number }[], events: Guid
   const W = 928, L = 86, R = 14;
   const x = (ms: number) => L + ((ms - t0) / (t1 - t0)) * (W - L - R);
   const max = Math.max(1, ...hours.map((h) => h.n));
-  const short = (ms: number) => new Date(ms).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+  const short = (ms: number) => new Date(ms).toLocaleDateString('en-US', { day: 'numeric', month: 'short', timeZone: 'UTC' });
   let s = `<svg class="g-chart" viewBox="0 0 ${W} 236" role="img" aria-label="The attack, GL.iNet's steps and the community's findings on one time axis">`;
   for (let d = t0; d <= t1; d += DAY) {
     s += `<line class="g" x1="${x(d).toFixed(1)}" y1="14" x2="${x(d).toFixed(1)}" y2="196"/>`;

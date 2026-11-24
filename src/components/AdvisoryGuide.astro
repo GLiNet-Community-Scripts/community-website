@@ -25,7 +25,7 @@ const arrow = (url: string) => (url.startsWith('/') ? '→' : '↗');
 
 // timeline: newest first, as the advisory hands it over; a dot of the chart links to #ev-N
 const events = a.timeline;
-const day = (ms: number) => new Date(ms).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+const day = (ms: number) => new Date(ms).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
 const days: { key: string; title: string; events: { i: number; at: string; text: string; more?: string; who: 'A' | 'V' | 'C' }[] }[] = [];
 events.forEach((e, i) => {
   const ms = moment(e.at), key = new Date(ms).toISOString().slice(0, 10);
@@ -36,7 +36,7 @@ events.forEach((e, i) => {
 // sources: GL.iNet's own first, the rest in the order of the advisory
 const vendor = (s: (typeof a.sources)[number]) => SOURCE_TYPE[s.type].kind === 'vendor';
 const sources = [...a.sources.filter(vendor), ...a.sources.filter((s) => !vendor(s))];
-const shortDay = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const shortDay = (iso: string) => new Date(iso).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 const SHOWN = 6;
 
 const questions = g.questions.reduce((n, q) => n + q.items.length, 0);

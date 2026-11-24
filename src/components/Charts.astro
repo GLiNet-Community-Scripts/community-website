@@ -15,7 +15,7 @@ const { popular, recent, categoryTitle, org } = Astro.props;
 const repoUrl = (app: App) => `https://github.com/${org}/${app.repo}`;
 const readme = (app: App) => `https://github.com/${app.upstream}#readme`;
 const day = (iso: string) => new Date(iso).getUTCDate();
-const month = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' });
+const month = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' });
 ---
 
 <div class="charts">
