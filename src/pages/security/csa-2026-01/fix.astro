@@ -26,39 +26,39 @@ const arrow = (u: string) => (u.startsWith("/") ? "→" : "↗");
 const versions = [
   {
     v: "2.54",
-    text: "knows the server `up.adsanalypro.com` and finds the malware’s programs by the packer they are wrapped in, also under another name. It reads quotes on a line as `sh` does, so a fetch from an address with `&` in it and a cron line that `echo` writes into the crontab count as traces. Your own blocks of the older backdoor’s servers, in an ad blocker or as a DNS sinkhole, no longer count as the backdoor. Without a base image to restore from, `--fix` now removes only the malware’s lines and keeps the rest of the file. It recommends reinstalling the firmware without keeping settings instead of a factory reset, and on a KVM unticking “Save current configuration”.",
+    text: "knows the server `up.adsanalypro.com` and finds the malware’s programs by the packer they are wrapped in, even under a different name. It reads quotes on a line the way `sh` does, so a fetch from an address containing `&` and a cron line that `echo` writes into the crontab count as traces. If you block the older backdoor’s servers yourself, in an ad blocker or with a DNS sinkhole, that no longer counts as the backdoor. Without a base image to restore from, `--fix` now removes only the malware’s lines and keeps the rest of the file. It recommends reinstalling the firmware without keeping settings instead of a factory reset, and, on a KVM, unchecking “Save current configuration”.",
   },
   {
     v: "2.53",
-    text: "treats the attacker’s servers the same everywhere: a line that fetches from one is a trace, a line that blocks one is shown as your own protection, and a line that only names one is listed for review. A path of the malware counts only where a command starts it, so a comment or a log line that names it no longer makes the device infected or `--fix` reset the file. It also checks `/etc/firewall.user` and `/etc/firewall.d`, and finds the reverse shell that reads its commands from `/tmp/f`.",
+    text: "treats the attacker’s servers the same everywhere: a line that fetches from one is a trace, a line that blocks one is shown as your own protection, and a line that only names one is listed for review. A malware path counts only where a command starts it, so a comment or log line that mentions it no longer marks the device as infected or makes `--fix` reset the file. It also checks `/etc/firewall.user` and `/etc/firewall.d`, and finds the reverse shell that reads its commands from `/tmp/f`.",
   },
   {
     v: "2.52",
-    text: "no longer says “No IOC found” after `--fix` when `/etc/rtty_conf` still names the attacker’s server, as GL.iNet’s cleanup can leave it. `--fix` does not change that file: it now says so and ends with exit code 1, or 3 after removing other traces. A factory reset or reflash puts it right.",
+    text: "no longer says “No IOC found” after `--fix` when `/etc/rtty_conf` still points to the attacker’s server, which can happen after GL.iNet’s cleanup. `--fix` does not change that file: it now says so and ends with exit code 1, or 3 after removing other traces. A factory reset or reflash fixes it.",
   },
   {
     v: "2.51",
-    text: "shows in its first lines how old the version is that you run, and the command that gets the current one.",
+    text: "shows in its first lines how old your version is, and the command to get the current one.",
   },
   {
     v: "2.50",
-    text: "can update itself: `sh gl-helper-triage.sh --update`. It takes a new version only when its signature fits a key built into the script, and never an older one. Where the firmware has no tool to check the signature, it says so and asks first.",
+    text: "can update itself: `sh gl-helper-triage.sh --update`. It installs a new version only if its signature matches a key built into the script, and never an older one. Where the firmware has no tool to check the signature, it says so and asks first.",
   },
   {
     v: "2.49",
-    text: "really checks that its own tools load the firmware’s libraries. Since 2.37 that check found nothing on a real router, because the tool it used stops at a certain byte in program files. Run it again if you rely on the line `Trusted tools`.",
+    text: "actually checks that its own tools load the firmware’s libraries. Since 2.37, that check had found nothing on a real router, because the tool it used stops at a certain byte in program files. Run it again if you rely on the line `Trusted tools`.",
   },
   {
     v: "2.48",
-    text: "tells whether the state file was written before or after the update by the day the firmware was built. Version 2.47 used a file whose date is wrong on real devices.",
+    text: "uses the day the firmware was built to tell whether the state file was written before or after the update. Version 2.47 used a file whose date is wrong on real devices.",
   },
   {
     v: "2.47",
-    text: "no longer reports an attack on a router that was just updated to the security firmware. That firmware can write the empty state file itself at its first start; version 2.46 took it for a trace.",
+    text: "no longer reports an attack on a router that was just updated to the security firmware. That firmware can write the empty state file itself on its first boot; version 2.46 mistook it for a trace.",
   },
   {
     v: "2.46",
-    text: "also finds and removes the malware’s lines in the firmware’s own cron directory (`/etc/gl_crontabs/crontabs.d`). It notices firmware that brings GL.iNet’s cleanup, which deletes known traces at its first start, and says that a clean result then does not cover the time before the update. A clean result now also says that it is not proof.",
+    text: "also finds and removes the malware’s lines in the firmware’s own cron directory (`/etc/gl_crontabs/crontabs.d`). It recognizes firmware that includes GL.iNet’s cleanup, which deletes known traces on first boot, and says that a clean result then does not cover the time before the update. A clean result now also states that it is not proof.",
   },
   {
     v: "2.45",
@@ -66,7 +66,7 @@ const versions = [
   },
   {
     v: "2.44",
-    text: "makes the line with the address of the result page stand out, in a way that can be read in dark and light terminal themes.",
+    text: "makes the line with the address of the result page stand out, readable in both dark and light terminal themes.",
   },
   {
     v: "2.42",
@@ -78,7 +78,7 @@ const versions = [
   },
   {
     v: "2.40",
-    text: "shows the address of the page that explains the result directly under the verdict. Before, it came last and was missed by anyone who stopped at the question about the report.",
+    text: "shows the address of the page that explains the result directly under the verdict. Previously it came last, and anyone who stopped at the question about the report missed it.",
   },
   {
     v: "2.39",
@@ -98,7 +98,7 @@ const versions = [
   },
   {
     v: "2.35",
-    text: "shows the first and the last call of the cloud handler that the attack came through, where the file system keeps both times, recognises the older backdoor’s known second program by its fingerprint, marks file times from a router whose clock was not set yet, and takes a note of your own for the report with `--note`.",
+    text: "shows the first and the last call of the cloud handler that the attack came through, where the file system keeps both times, recognizes the older backdoor’s known second program by its fingerprint, marks file times from a router whose clock was not set yet, and lets you add a note of your own to the report with `--note`.",
   },
   {
     v: "2.34",
@@ -126,11 +126,11 @@ const versions = [
   },
   {
     v: "2.17",
-    text: "finds the trace that a command from the attacker ran, also after a restart. Earlier versions called such a device clean once the firewall rule was gone.",
+    text: "finds the trace that a command from the attacker ran, even after a restart. Earlier versions called such a device clean once the firewall rule was gone.",
   },
   {
     v: "2.16",
-    text: "no longer skips changed files that belong to the firmware’s own packages. Before, the older backdoor could go unseen on a real device.",
+    text: "no longer skips changed files that belong to the firmware’s own packages. Previously, the older backdoor could go unnoticed on a real device.",
   },
   {
     v: "2.14",
@@ -145,7 +145,7 @@ const versions = [
 
 <Layout
   title={`Community fix for ${advisory.id}: check a device for the gl-helper malware · gl-i.net (unofficial)`}
-  description="A community script that checks a GL.iNet router or KVM device for the malware from GL.iNet's security notice of 20 November 2026, saves the evidence and cleans up. Not a GL.iNet tool."
+  description="A community script that checks a GL.iNet router or KVM device for the malware from GL.iNet's security notice of November 20, 2026, saves the evidence and cleans up. Not a GL.iNet tool."
   url={url}
 >
   <SiteHeader site={site} security={security} page="advisory" />
@@ -220,7 +220,7 @@ const versions = [
 
       <section class="g-blk" id="result" aria-labelledby="h-result">
         <h2 id="h-result">Read your result</h2>
-        <p class="g-sub">The short way, and the {count(f.result.verdicts.length).toLowerCase()} verdicts.</p>
+        <p class="g-sub">The quick version, and the {count(f.result.verdicts.length).toLowerCase()} verdicts.</p>
         <div class="g-card g-short">
           <div class="addr">{f.result.address}</div>
           {f.result.text.map((p) => <p><Txt text={p} /></p>)}
@@ -274,7 +274,7 @@ const versions = [
 
       <section class="g-blk" id="traces" aria-labelledby="h-traces">
         <h2 id="h-traces">What it looks for</h2>
-        <p class="g-sub">{count(f.looks_for.length)} groups of traces. Open one to see what belongs to it.</p>
+        <p class="g-sub">{count(f.looks_for.length)} groups of traces. Open one to see what it covers.</p>
         {f.looks_for.map((group) => (
           <details class="g-fold">
             <summary>
@@ -307,8 +307,8 @@ const versions = [
       </section>
 
       <section class="g-blk" id="after" aria-labelledby="h-after">
-        <h2 id="h-after">Afterwards</h2>
-        <p class="g-sub">What to do once the device is checked.</p>
+        <h2 id="h-after">After the check</h2>
+        <p class="g-sub">What to do once the device has been checked.</p>
         {f.afterwards.length > 1 && (
           <div class="g-seg" data-seg="after" role="group" aria-label="Kind of device">
             {f.afterwards.map((a, i) => <button type="button" class:list={{ on: i === 0 }} data-v={a.audience}>{a.audience}</button>)}
@@ -341,7 +341,7 @@ const versions = [
         community:{" "}
         <a href="https://remotetohome.io">RemoteToHome Consulting</a> and users
         of GL.iNet’s forum contributed findings and checks. An independent
-        community project. Provided as-is under the MIT licence, without any
+        community project. Provided as-is under the MIT license, without any
         warranty. Get firmware only from GL.iNet.
       </p>
       {f.ai_note && <p class="g-ai"><span>AI-generated</span>{f.ai_note}</p>}

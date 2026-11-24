@@ -5,44 +5,44 @@
 intro: GL.iNet’s quick check looks at running processes. This script runs that check and also looks at the files on the device. It can save the evidence and remove the known traces.
 steps:
   - title: Check
-    text: Only reads and prints a report.
+    text: Read-only. It prints a report.
     command: curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh
   - title: Save the evidence
-    text: Writes an archive to `/tmp`. That is in memory, so copy it to your computer before you restart. It holds your configuration, perhaps with Wi-Fi and VPN keys. Do not post it.
+    text: Writes an archive to `/tmp`, which is in memory, so copy it to your computer before you restart. It contains your configuration, possibly including Wi-Fi and VPN keys. Do not post it.
     command: sh gl-helper-triage.sh --archive
   - title: Clean up
     text: Only if the check found something. Saves the evidence again, stops the malware, removes its files and autostart entries, and checks again.
     command: sh gl-helper-triage.sh --fix
 notes:
   - title: Community work, not a GL.iNet tool
-    text: GL.iNet’s notice names this script as the first choice for a broader check, as an independent third-party project, and says to use it to check only. GL.iNet did not write it. Use it at your own risk.
+    text: GL.iNet’s notice calls this script the first choice for a broader check, describes it as an independent third-party project, and says to use it for checking only. GL.iNet did not write it. Use it at your own risk.
   - title: Run it before you restart, reset or update
-    text: A restart removes the remote shell. The security firmware deletes known traces at its first start.
+    text: A restart removes the remote shell. The security firmware deletes known traces the first time it boots.
   - title: It does not replace the security firmware
-    text: The script finds and removes only the traces we know of. Install GL.iNet’s security firmware in any case.
+    text: The script finds and removes only the traces we know of. Install GL.iNet’s security firmware either way.
   - title: Nothing found? New passwords and keys anyway
     text: If the device was connected to GoodCloud, give it a new admin password and new VPN and SSH keys, even if the script finds nothing. GL.iNet advises this for every such device. An update cannot take back what was already copied.
-  - title: In a business network, wait
+  - title: On a business network, wait
     text: Talk to your cyber insurer or incident response provider before you change the device.
 result:
   address: csa.gl-i.net/#AA006011D-2PJ2W
   text:
-    - The script ends with an address like this one. Open it in a browser, or type it. Capitals do not matter.
-    - The page says what was found, what it means and what to do, in English, German and Chinese. It also says whether newer firmware exists for your model.
-    - The code stands for the result, the model and its firmware version. It does not tell your device from another of its kind, and opening the address sends nothing from the device. You can post it in the forum as it is.
+    - The script ends with an address like this one. Open it in a browser or type it in. Upper and lower case do not matter.
+    - The page says what was found, what it means and what to do, in English, German and Chinese. It also tells you whether newer firmware is available for your model.
+    - The code stands for the result, the model and its firmware version. It cannot tell your device apart from others of the same kind, and opening the address sends nothing from the device. You can post it in the forum as is.
   verdicts:
     - verdict: INFECTED
       tone: bad
       text: The malware’s files, a remote shell, GL.iNet’s indicator process or the older backdoor are on the device.
-      then: Save the evidence. Then follow “Afterwards”.
+      then: Save the evidence. Then follow “After the check”.
     - verdict: ATTACKED
       tone: warn
-      text: A command sent through GoodCloud ran as root. No malware files and no remote shell are there now.
-      then: What ran cannot be told afterwards. Treat the device as one that was hit.
+      text: A command sent through GoodCloud ran as root. No malware files or remote shell are present now.
+      then: There is no way to tell afterward what ran. Treat the device as if it had been hit.
     - verdict: no gl-helper indicators found
       tone: ok
       text: None of the known traces.
-      then: Not proof that nothing happened. If the device restarted or was updated since the attacks began, the result says little about the time before. Was it connected to GoodCloud? Then install the security firmware and give it a new admin password and new VPN and SSH keys anyway.
+      then: Not proof that nothing happened. If the device has restarted or been updated since the attacks began, the result says little about the time before that. Was it connected to GoodCloud? Then install the security firmware and give it a new admin password and new VPN and SSH keys anyway.
   labels:
     - label: IOC
       meaning: A known trace of the malware.
@@ -61,13 +61,13 @@ result:
 update:
   lead: The script changes several times a day. Every run shows in its first lines how old your version is.
   command: sh gl-helper-triage.sh --update
-  note: "It takes a new version only when its signature fits, and never an older one. A version before 2.50 does not know this command: download the script again. On firmware without the tool that checks the signature, the script says so and asks first."
+  note: "It installs a new version only if its signature checks out, and never an older one. Versions before 2.50 do not have this option: download the script again. On firmware that lacks the tool to check the signature, the script says so and asks first."
 looks_for:
   - title: The `gl-helper` malware
     items:
       - Its files `gl-helper` and `gb` in `/etc/glinet/.cache` and `/etc/config/.gl`, and in the directories the installer falls back to.
       - Its scripts, such as `watch.sh` and `run.sh`.
-      - Its lines in `rc.local` and in the crontabs, also in the firmware’s own cron directory.
+      - Its lines in `rc.local` and in the crontabs, including the firmware’s own cron directory.
       - An SSH key named `gl-agent`.
       - The remote terminal service set to the attacker’s server.
       - Its two servers, `65.20.71.131` and `66.245.219.252`.
@@ -84,16 +84,16 @@ looks_for:
   - title: Running programs
     items:
       - Every running program is compared with the firmware image.
-      - A program that was started from `/tmp`, is not part of the firmware or differs from it is listed for review.
-      - This shows only what runs right now.
+      - Any program that was started from `/tmp`, is not part of the firmware, or differs from it is listed for review.
+      - This only shows what is running right now.
   - title: Network and firewall
     items:
       - Open connections, each with its program.
       - Every line of the firewall configuration that is not in the firmware image. Your own port forwards appear there too.
-      - Running rules that redirect traffic.
+      - Active rules that redirect traffic.
   - title: Replaced tools and autostart
     items:
-      - System tools that were replaced, `netstat` for one.
+      - System tools that were replaced, such as `netstat`.
       - "Autostart entries that point to the malware: crontabs, `rc.local`, init scripts, and the lists of files an update keeps."
   - title: The older backdoor
     items:
@@ -107,16 +107,16 @@ looks_for:
   - title: Its own tools
     items:
       - The script takes its tools from the firmware image, not from the running system.
-      - It checks that those tools load the firmware’s own libraries. The line `Trusted tools` at the top says how that went.
+      - It checks that those tools load the firmware’s own libraries. The line `Trusted tools` at the top shows the result.
 report:
-  lead: "At the end the script offers to send a short report, also when it found nothing: clean devices show which models and versions were not hit. Nothing leaves the device before you answer y."
+  lead: "At the end, the script offers to send a short report, even if it found nothing: reports from clean devices show which models and versions were not hit. Nothing leaves the device until you answer y."
   sent:
-    - Model, firmware version, script version, time of the check, time since the last start.
+    - Model, firmware version, script version, time of the check, time since the last boot.
     - Which known traces were found, and where.
     - "For the malware’s files: fingerprint, size and time."
     - Changed lines of autostart files and the firewall rules the attack used. Lines you added yourself are part of this, and the script shows them before it asks.
     - Whether GoodCloud and AstroWarp are on, and whether the device is bound to an account.
-    - A device ID, so that two reports from one device count once. It is a hash, and the server hashes it again.
+    - A device ID, so that two reports from one device count only once. It is a hash, and the server hashes it again.
   never:
     - Host name, IP address or MAC address.
     - The name of your GoodCloud account.
@@ -133,18 +133,18 @@ report:
 afterwards:
   - audience: Router
     items:
-      - Install GL.iNet’s security firmware for your model. Its notice names the version for each.
-      - If the device was hit, or you suspect it, install it without keeping settings, from a file you downloaded yourself, set it up again and do not restore a backup. GL.iNet now advises the same. The update deletes the known files. It leaves the older backdoor’s programs and anything else that was changed.
-      - Prefer such a reflash to a factory reset. A reset keeps the installed firmware image, and on at least one model root can write to it.
+      - Install GL.iNet’s security firmware for your model. Its notice lists the version for each model.
+      - If the device was hit, or you suspect it was, install it without keeping settings, from a file you downloaded yourself, set it up again and do not restore a backup. GL.iNet now gives the same advice. The update deletes the known files. It leaves the older backdoor’s programs and anything else that was changed.
+      - Choose a reflash like this over a factory reset. A reset keeps the installed firmware image, and on at least one model, root can write to it.
       - Export the device log from your GoodCloud account. It may show the attacker’s command.
       - Change the device password, the cloud password and your SSH keys. GL.iNet advises a new admin password and new VPN and SSH keys for every device that was connected to GoodCloud, even if nothing was found.
       - Delete the router’s VPN profile at the other end and create a new one.
       - Check the devices behind the router.
-      - If you switched SSH on for the check, switch it off again under Security, Admin Access, before firmware 4.9 under System, Security. A reinstall without settings switches it back on, as GL.iNet’s firmware has it on by default.
+      - If you switched SSH on for the check, switch it off again under Security > Admin Access (on firmware before 4.9, System > Security). A reinstall without settings turns it back on, because GL.iNet’s firmware has SSH on by default.
   - audience: KVM (Comet)
     items:
       - "Install the security firmware: 1.10.3 or later, 1.8.7 or later for the RMQ1."
-      - If the KVM was hit, or you suspect it, clear “Save current configuration” when you install it, set it up again and do not restore a backup. GL.iNet now advises the same. An update that keeps settings also keeps the password, the SSH keys and everything under `/etc/kvmd/user`, boot scripts there included.
+      - If the KVM was hit, or you suspect it was, clear “Save current configuration” when you install it, set it up again and do not restore a backup. GL.iNet now gives the same advice. An update that keeps settings also keeps the password, the SSH keys and everything under `/etc/kvmd/user`, including any boot scripts there.
       - If it was connected to GoodCloud, change its admin password and any VPN and SSH keys, even if nothing was found.
       - Look for keys and scripts you did not add.
       - Check the computer attached to the KVM.
@@ -158,13 +158,13 @@ more:
   - title: Source code and README on GitHub
     text: All options, the script for running it from your computer, the tests.
     url: https://github.com/admonstrator/glinet-csa-2026-01
-ai_note: "This page was written by an AI model. It rests on what the community sees and has been working on since the incident began: the anonymous reports, the forum and the firmware."
+ai_note: "This page was written by an AI model. It is based on what the community has seen and worked on since the incident began: the anonymous reports, the forum and the firmware."
 report_problem:
   label: Report a problem
   text: Bugs and false alarms. Never attach an evidence archive.
   url: https://github.com/admonstrator/glinet-csa-2026-01/issues
-hero_note: On a router over SSH, as `root`. On a KVM in its web interface, under Toolbox, Terminal. The script only reads. Its first lines show its version and how old it is.
+hero_note: On a router, over SSH as `root`. On a KVM, in its web interface under Toolbox > Terminal. The script only reads. Its first lines show its version and how old it is.
 hero_link:
-  label: How to log in over SSH, from GL.iNet
+  label: GL.iNet’s guide to logging in over SSH
   url: https://docs.gl-inet.com/router/en/4/tutorials/ssh_log_in_to_the_router/
-run_note: You can read the script before you run it. On an infected device `netstat` is replaced by a script that hides the malware’s connections. The script never calls it.
+run_note: You can read the script before you run it. On an infected device, `netstat` is replaced by a script that hides the malware’s connections. The script never runs it.

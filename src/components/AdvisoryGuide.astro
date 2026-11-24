@@ -119,7 +119,7 @@ const share = (hit: number, of: number) => (hit ? Math.max(1, Math.round((100 * 
   <h2 id="h-risk">Was my device at risk?</h2>
   {g.risk.length > 0 && (
     <Fragment>
-      <p class="g-sub">{count(g.risk.length)} things made the difference in the reports.</p>
+      <p class="g-sub">{count(g.risk.length)} things made a difference in the reports.</p>
       <div class="g-risk">
         {g.risk.map((r) => <div class="g-card"><b><Txt text={r.title} /></b><p><Txt text={r.text} /></p></div>)}
       </div>
@@ -176,7 +176,7 @@ const share = (hit: number, of: number) => (hit ? Math.max(1, Math.round((100 * 
                     <div class="bar">
                       <span class="bn">{s.name}</span>
                       <span class="track"><i style={`width:${share(s.hit, s.of)}%`}></i></span>
-                      <span class="bv">{s.hit ? `${Math.round((100 * s.hit) / s.of)} %` : 'none'}</span>
+                      <span class="bv">{s.hit ? `${Math.round((100 * s.hit) / s.of)}%` : 'none'}</span>
                       <span class="bc">{s.hit} of {s.of}</span>
                     </div>
                   ))}
@@ -236,7 +236,7 @@ const share = (hit: number, of: number) => (hit ? Math.max(1, Math.round((100 * 
   <div class="g-card g-chartbox">
     <Fragment set:html={timelineChart(g.hours, events)} />
     <p class="g-fine">
-      {g.hours_note}{' '}Row “Attack”: our reading of the reports and of users’ captures. A hollow dot: the time of day is not known.
+      {g.hours_note}{' '}The “Attack” row is our reading of the reports and of users’ captures. A hollow dot means the time of day is not known.
     </p>
   </div>
   <div class="g-tools">
@@ -275,7 +275,7 @@ const share = (hit: number, of: number) => (hit ? Math.max(1, Math.round((100 * 
 {g.checks.length > 0 && (
   <section class="g-blk" id="check" aria-labelledby="h-check">
     <h2 id="h-check">Check by hand</h2>
-    <p class="g-sub">If you cannot run the script: the checks GL.iNet and its staff name. Each says what a good and a bad answer look like.</p>
+    <p class="g-sub">If you cannot run the script, use the checks GL.iNet and its staff have published. Each one shows what a good and a bad result look like.</p>
     <details class="g-fold">
       <summary>Show the {count(g.checks.length).toLowerCase()} checks</summary>
       <div class="g-fold-body">
@@ -322,7 +322,7 @@ const share = (hit: number, of: number) => (hit ? Math.max(1, Math.round((100 * 
 {g.thanks && (
   <section class="g-blk" id="thanks" aria-labelledby="h-thanks">
     <h2 id="h-thanks">Thanks</h2>
-    <p class="g-sub">This page stands on the work of others.</p>
+    <p class="g-sub">This page builds on the work of others.</p>
     <p class="g-chips">{g.thanks.names.map((n) => <span>{n}</span>)}</p>
     {g.thanks.note && <p class="g-fine">{g.thanks.note}</p>}
   </section>
