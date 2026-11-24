@@ -9,7 +9,7 @@ severity: critical
 exploited: true
 status: fix-rolling-out
 published: 2026-11-21
-updated: 2026-11-23T21:30Z
+updated: 2026-11-24T21:45Z
 cve: requested
 confirmed: gl-inet-public
 
@@ -90,7 +90,7 @@ actions:
   steps:
   - title: Install the stable security firmware
     text: >-
-      Available for 18 models; the notice lists the version for each. It removes the known malware even when settings are kept. If access is known or suspected, GL.iNet advises installing it with "Keep Settings" off, setting the router up again, and not restoring a backup. A factory reset alone does not install the fixes. If your model is not listed, check the download center or contact support.
+      Available for 18 models; the notice lists the minimum version for each, and newer builds followed on November 24. Install the newest stable release for your model. It removes the known malware even when settings are kept. If access is known or suspected, GL.iNet advises installing it with "Keep Settings" off, setting the router up again, and not restoring a backup. A factory reset alone does not install the fixes. If your model is not listed, check the download center or contact support; 14 older models got new firmware on November 23 and 24.
     link: { label: GL.iNet's notice, url: https://www.gl-inet.com/blogs/blog/glinet-security-notice-2026-11-20 }
   - title: Check the router before you update, if you want to
     text: >-
@@ -148,34 +148,35 @@ guide:
             - Use the switch on the device. Owners report that the client keeps running and connecting even after the device has been removed from the GoodCloud account.
             - Switching it off lowers the risk from now on. It does not clean a device that was already hit. The device disappears from GoodCloud, so make sure you can reach a remote device another way.
         - title: Install the security firmware
-          text: GL.iNet’s notice lists the version for each model. If the device was hit, or you suspect it was, install it from a file you downloaded yourself with “Keep Settings” off, set the device up again and do not restore a backup. GL.iNet now gives the same advice.
+          text: Install the newest stable release for your model. GL.iNet’s notice lists the minimum version, and newer builds for all 18 models came out on November 24. If the device was hit, or you suspect it was, install it from a file you downloaded yourself with “Keep Settings” off, set the device up again and do not restore a backup. GL.iNet now gives the same advice.
           why:
-            - The version number alone does not tell you whether you have the fix. Older builds of 4.8.4, 4.9.1, 4.10.3 and 4.11.1 exist, and the reports show traces on some of them. The security builds are dated November 22 or 23, 2026.
+            - The version number alone does not tell you whether you have the fix. Older builds of 4.8.4, 4.9.1, 4.10.3 and 4.11.1 exist, and the reports show traces on some of them. The security builds are dated November 22 to 24, 2026.
+            - "On November 23 and 24, GL.iNet also released firmware for 14 older models that its notice does not list: 4.3.31 for the GL-AP1300, GL-AR300M, GL-AR300M16, GL-AR750, GL-AR750S, GL-B1300, GL-E750, GL-MT1300, GL-MT300N-V2, GL-X750 and GL-XE300, and 4.5.24 for the GL-A1300, GL-B3000 and GL-X300B. Their changelogs list security fixes, so install it on these models too."
             - Model not on the list? GL.iNet says that does not mean it is unaffected. Check its download center or email support@gl-inet.com. Do not install firmware meant for another model. If you installed a security beta, GL.iNet says to switch to the stable firmware.
-            - "GL-AXT1800: GL.iNet says to install the security build from its download link. That build reports `4.8.4 release2`, built on November 23. The 4.8.4 betas from April and from November 11 are not the security build. If you are not sure which build you have, contact support."
-            - For the GL-MT6000 and the GL-MT3000, GL.iNet also published open builds based on OpenWrt 25 on November 23, as betas. Their changelog lists the same security fix. The open builds based on OpenWrt 24, from June, do not include it.
+            - "GL-AXT1800: install 4.8.5, released November 24. The first security build reports `4.8.4 release2`, built on November 23, and the 4.8.4 betas from April and from November 11 are not the security build. If your router shows 4.8.4, updating to 4.8.5 removes the doubt."
+            - For the GL-MT6000 and the GL-MT3000, GL.iNet also publishes open builds based on OpenWrt 25 as betas, first on November 23, the newest 4.11.2 on November 24. Its changelog says it removes the malware’s leftover files. The open builds based on OpenWrt 24, from May and June, do not include the fix.
             - GL.iNet says the update removes the known malware even when settings are kept, and calls that a targeted cleanup, not a general malware scan. Keeping your settings is still your choice, but you can be less certain that the device is clean.
             - "Why reflash a device that was hit? The update deletes the known files and autostart entries. It leaves the older backdoor’s loader and anything else that was changed. In RemoteToHome’s test, other entries in `rc.local`, cron and `/etc/udhcpc.user.d`, an added account and an added SSH key survived an update with settings kept, and the scripts ran on the new firmware."
             - A factory reset keeps the installed firmware image, and on a GL-AXT1800, root can write to that image. A reflash writes a fresh image and clears the settings in one step.
           table:
-            caption: Security firmware by model, from GL.iNet’s notice of November 23. Each version or later.
+            caption: Newest stable firmware by model, released November 24. In brackets, the minimum version from GL.iNet’s notice of November 23.
             rows:
-              - k: 4.11.1
-                v: GL-MG1300, GL-MT3000, GL-MT6000
+              - k: 4.11.2
+                v: GL-MG1300, GL-MT3000, GL-MT6000 (at least 4.11.1)
+              - k: 4.10.4
+                v: GL-E5800 (at least 4.10.3)
               - k: 4.10.3
-                v: GL-E5800
-              - k: 4.10.2
-                v: GL-BE3600, GL-BE9300
-              - k: 4.9.3
-                v: GL-BE14000
-              - k: 4.9.1
-                v: GL-BE6500, GL-MT3600BE, GL-MT5000
-              - k: 4.8.7
-                v: GL-BE10000
-              - k: 4.8.4
-                v: GL-AX1800, GL-AXT1800, GL-SFT1200, GL-X3000, GL-XE3000
-              - k: 4.7.14
-                v: GL-MT2500, GL-MT2500A, GL-X2000
+                v: GL-BE3600, GL-BE9300 (at least 4.10.2)
+              - k: 4.9.4
+                v: GL-BE14000 (at least 4.9.3)
+              - k: 4.9.2
+                v: GL-BE6500, GL-MT3600BE, GL-MT5000 (at least 4.9.1)
+              - k: 4.8.8
+                v: GL-BE10000 (at least 4.8.7)
+              - k: 4.8.5
+                v: GL-AX1800, GL-AXT1800, GL-SFT1200, GL-X3000, GL-XE3000 (at least 4.8.4)
+              - k: 4.7.15
+                v: GL-MT2500, GL-MT2500A, GL-X2000 (at least 4.7.14)
           link:
             label: GL.iNet’s notice, with the download for each model
             url: https://www.gl-inet.com/blogs/blog/glinet-security-notice-2026-11-20
@@ -567,6 +568,14 @@ guide:
 # The page shows these on a time axis, in the row of their tag (Attack, Vendor, Community).
 # "text" is the headline of an entry, "more" the line below it.
 timeline:
+  - at: 2026-11-24T16:47Z
+    text: GL.iNet releases newer firmware for all 18 router models
+    more: From 4.7.15 to 4.11.2, within an hour. Its notice still lists the builds of November 22 and 23 as the minimum.
+    tag: Vendor
+  - at: 2026-11-23T21:11Z
+    text: New firmware for 14 older router models
+    more: 4.3.31 and 4.5.24, for models that GL.iNet’s notice does not list, such as the GL-AR750S and the GL-MT300N-V2. Their changelogs list security fixes.
+    tag: Vendor
   - at: 2026-11-23T21:03Z
     text: 2,365 devices in the anonymous reports
     more: Of the devices that are not yet updated, 43 percent of the routers and 49 percent of the KVM devices show traces.
@@ -883,7 +892,7 @@ sources:
   label: "Firmware archive on gl-i.net"
   url: https://firmware.gl-i.net/
   note: Lists GL.iNet's firmware per model with its release date. The versions of the security firmware named on this page come from it.
-  date: 2026-11-22
+  date: 2026-11-24
 
 contacts:
 - { label: Is my device affected?, email: support@gl-inet.com }

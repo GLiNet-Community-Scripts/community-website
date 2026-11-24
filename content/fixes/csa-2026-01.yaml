@@ -133,7 +133,7 @@ report:
 afterwards:
   - audience: Router
     items:
-      - Install GL.iNet’s security firmware for your model. Its notice lists the version for each model.
+      - Install the newest stable firmware for your model. GL.iNet’s notice lists the minimum version for each model.
       - If the device was hit, or you suspect it was, install it without keeping settings, from a file you downloaded yourself, set it up again and do not restore a backup. GL.iNet now gives the same advice. The update deletes the known files. It leaves the older backdoor’s programs and anything else that was changed.
       - Choose a reflash like this over a factory reset. A reset keeps the installed firmware image, and on at least one model, root can write to it.
       - Export the device log from your GoodCloud account. It may show the attacker’s command.
