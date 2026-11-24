@@ -25,6 +25,10 @@ const arrow = (u: string) => (u.startsWith("/") ? "→" : "↗");
 // A command, a path or an option stands between backticks.
 const versions = [
   {
+    v: "2.55",
+    text: "knows more names from newer builds of the installer (`.rk1`, `gl-helper.dl` and the downloader’s files in `/etc/glinet/.cache`), reads the crontab in `/var/spool/cron/crontabs` and looks into the malware’s folders outside the overlay. It recognizes the malware’s programs while they run under another name or from a deleted file. A file that starts the malware can no longer pass as a copy of this script, and on a device without an overlay or a base image the startup scripts and the firewall’s scripts are still checked for the malware. An empty `/etc/mp_ip_mapping_info` that the SD-WAN module wrote when it started, and a `netstat` link made after November 21, are listed for review instead of counted as traces. If `/etc/rtty_conf` differs from the firmware’s, the servers it names are listed for review. While `--fix` works, it holds cron so the malware cannot start itself again in the meantime.",
+  },
+  {
     v: "2.54",
     text: "knows the server `up.adsanalypro.com` and finds the malware’s programs by the packer they are wrapped in, even under a different name. It reads quotes on a line the way `sh` does, so a fetch from an address containing `&` and a cron line that `echo` writes into the crontab count as traces. If you block the older backdoor’s servers yourself, in an ad blocker or with a DNS sinkhole, that no longer counts as the backdoor. Without a base image to restore from, `--fix` now removes only the malware’s lines and keeps the rest of the file. It recommends reinstalling the firmware without keeping settings instead of a factory reset, and, on a KVM, unchecking “Save current configuration”.",
   },
