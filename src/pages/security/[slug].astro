@@ -4,6 +4,7 @@ import SiteHeader from '../../components/SiteHeader.astro';
 import Footer from '../../components/Footer.astro';
 import AdvisoryEyebrow from '../../components/AdvisoryEyebrow.astro';
 import AdvisoryGuide from '../../components/AdvisoryGuide.astro';
+import ScriptVersion from '../../components/ScriptVersion.astro';
 import Reported from '../../components/Reported.astro';
 import Terminal from '../../components/Terminal.astro';
 import Tile from '../../components/Tile.astro';
@@ -33,15 +34,15 @@ const cve = a.cve === 'requested' ? 'Requested' : a.cve.length === 0 ? 'None ass
 const before = a.community?.notes.filter((n) => n.before) ?? [];
 const fix = a.community_fix;
 // The "reported" table: the list kept by hand in the YAML, with the live list from the
-// anonymous reports added where the advisory names one. Fetched here for the build and
-// again in the reader's browser (scripts/reported-live.ts); without an answer the list
-// kept by hand stands alone.
+// anonymous reports added where the advisory names one: the "reported" part of the
+// worker's live.json. Fetched here for the build and again in the reader's browser
+// (scripts/reported-live.ts); without an answer the list kept by hand stands alone.
 const rep = a.affected.reported;
 let repLive: LiveReported | null = null;
 if (rep?.live) {
   try {
     const res = await fetch(rep.live, { signal: AbortSignal.timeout(8000) });
-    repLive = res.ok ? parseLive(await res.json()) : null;
+    repLive = res.ok ? parseLive((await res.json())?.reported) : null;
   } catch {
     repLive = null;
   }
@@ -107,8 +108,7 @@ const confirmed = { 'gl-inet-public': 'By GL.iNet, publicly', 'gl-inet-staff': '
                   {/* a command in the text stands between backticks and is set as one */}
                   {fix.rerun && <span>{fix.rerun.split('`').map((part, n) => (n % 2 ? <code>{part}</code> : part))}</span>}
                   <span class="do-ver-now">
-                    Current version: <b data-script-version>shown in the first line of the script’s output</b>
-                    <span data-script-released hidden></span>
+                    Current version: <ScriptVersion src={fix.version_url} />
                   </span>
                 </p>
               )}

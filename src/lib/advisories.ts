@@ -195,7 +195,8 @@ const AdvisorySchema = z.object({
         source: z.object({ label: z.string().min(1), url: Https }),
         note: z.string().min(1).optional(),
         // Optional: a list worked out from the reports, added to the models below at
-        // build time and in the browser. Its shape: see parseLive in lib/reported.ts.
+        // build time and in the browser. The address of the worker's live.json; the list
+        // is its "reported" part, the shape: see parseLive in lib/reported.ts.
         live: Https.optional(),
         models: z.array(z.object({ name: z.string().min(1), sku: z.string().min(1).optional(), kind: z.string().min(1).optional(), firmware: z.array(z.string().min(1)).default([]) })).min(1),
       })
@@ -262,8 +263,9 @@ const AdvisorySchema = z.object({
       // Optional: the same command with other tools (curl, wget). The reader can
       // switch between them; the first one is shown.
       command_variants: z.array(z.object({ name: z.string().min(1).max(12), command: z.string().min(1) })).max(4).default([]),
-      // Optional: where the script is served. The page reads its version and release time
-      // from there and shows them with the tool, next to `rerun`.
+      // Optional: the worker's live.json. The page reads the version of the script served
+      // now and its release time from there ("script": see lib/script-version.ts) and shows
+      // them with the tool, next to `rerun`.
       version_url: z.string().url().optional(),
       // Optional: why to run the tool again, one or two sentences, shown with the version.
       // a command in it goes between backticks

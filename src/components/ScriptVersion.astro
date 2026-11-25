@@ -1,0 +1,16 @@
+---
+/*
+ * "Current version: 2.55 · released 3 hours ago (2026-11-24 14:41 UTC)", as the build
+ * found it in the worker's live.json. The reader's browser brings it up to date and turns
+ * the time into "… ago" (scripts/script-version.ts).
+ */
+import { scriptVersion } from '../lib/script-version';
+
+interface Props {
+  src: string;
+}
+const v = await scriptVersion(Astro.props.src);
+const at = v?.released ? v.released.slice(0, 16).replace('T', ' ') + ' UTC' : '';
+---
+<b data-script-version>{v ? v.version : 'shown in the first line of the script’s output'}</b>
+<span data-script-released data-at={v?.released || undefined} hidden={!at}>{at && `released ${at}`}</span>

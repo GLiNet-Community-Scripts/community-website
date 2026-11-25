@@ -1,10 +1,11 @@
 // Brings the "reported" table of an advisory up to date in the reader's browser. The page
 // is built at most once a day, the live list changes within a quarter of an hour. The
-// element with data-reported-live names the list's address and carries the list kept by
-// hand; the table is drawn again from both. Without an answer, or with one that does not
-// look right, the table from the build stays as it is.
+// element with data-reported-live names the worker's live.json and carries the list kept
+// by hand; the table is drawn again from both. Without an answer, or with one that does
+// not look right, the table from the build stays as it is.
 import { byVer, laterOf, mergeReported, parseLive, pluralKind, repGroups, series, type RepModel } from '../lib/reported';
 import { when } from '../lib/format';
+import { liveJson } from './live-json';
 
 const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = '') => {
   const e = document.createElement(tag);
@@ -55,16 +56,13 @@ for (const box of document.querySelectorAll<HTMLElement>('[data-reported-live]')
   } catch {
     continue;
   }
-  fetch(src)
-    .then((r) => (r.ok ? r.json() : null))
-    .then((j) => {
-      const live = parseLive(j);
-      if (!live) return;
-      const models = mergeReported(own, live);
-      tables.replaceChildren(...repGroups(models).map(table));
-      const at = box.querySelector('[data-reported-as-of]'), n = box.querySelector('[data-reported-count]');
-      if (at) at.textContent = `As of ${when(laterOf(asOf, live))}`;
-      if (n) n.textContent = `${models.length} models`;
-    })
-    .catch(() => {});
+  liveJson(src).then((j) => {
+    const live = parseLive(j !== null && typeof j === 'object' ? (j as { reported?: unknown }).reported : null);
+    if (!live) return;
+    const models = mergeReported(own, live);
+    tables.replaceChildren(...repGroups(models).map(table));
+    const at = box.querySelector('[data-reported-as-of]'), n = box.querySelector('[data-reported-count]');
+    if (at) at.textContent = `As of ${when(laterOf(asOf, live))}`;
+    if (n) n.textContent = `${models.length} models`;
+  });
 }

@@ -7,6 +7,7 @@
  * wired in scripts/guide.ts.
  */
 import Cmd from './Cmd.astro';
+import ScriptVersion from './ScriptVersion.astro';
 import Txt from './Txt.astro';
 import { SOURCE_TYPE, type Advisory } from '../lib/advisories';
 import { LANES, dated, lane, moment, timelineChart } from '../lib/guide';
@@ -81,8 +82,7 @@ const share = (hit: number, of: number) => (hit ? Math.max(1, Math.round((100 * 
               {s.command && <Cmd command={s.command} variants={script ? fix!.command_variants : []} />}
               {script && fix!.version_url && (
                 <p class="g-fine g-ver" data-version-src={fix!.version_url}>
-                  Current version: <b data-script-version>shown in the first line of the script’s output</b>
-                  <span data-script-released hidden></span>
+                  Current version: <ScriptVersion src={fix!.version_url} />
                   {fix!.rerun && <span class="again"><Txt text={fix!.rerun} /></span>}
                 </p>
               )}

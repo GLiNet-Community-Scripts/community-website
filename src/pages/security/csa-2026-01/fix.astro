@@ -10,6 +10,7 @@ import SiteHeader from "../../../components/SiteHeader.astro";
 import Footer from "../../../components/Footer.astro";
 import Cmd from "../../../components/Cmd.astro";
 import Txt from "../../../components/Txt.astro";
+import ScriptVersion from "../../../components/ScriptVersion.astro";
 import { loadContent } from "../../../lib/content";
 import { loadFixGuide } from "../../../lib/fix-guide";
 
@@ -260,9 +261,7 @@ const versions = [
         <Cmd command={f.update.command} />
         <p class="g-fine"><Txt text={f.update.note} /></p>
         <p class="g-now" data-version-src={tool.version_url}>
-          Current version:{" "}
-          <b data-script-version>shown in the first line of the script’s output</b>
-          <span data-script-released hidden></span>
+          Current version: <ScriptVersion src={tool.version_url!} />
         </p>
         <details class="g-fold">
           <summary>What changed in which version</summary>

@@ -33,7 +33,7 @@ affected:
   #     (fewer than five devices, reports of the first day without a device id).
   reported:
     as_of: 2026-11-23T21:03Z
-    live: https://csa.gl-i.net/2026-01/reported.json
+    live: https://csa.gl-i.net/2026-01/live.json
     source:
       label: Anonymous reports of the community script
       url: https://gl-i.net/security/csa-2026-01/fix/
@@ -913,7 +913,7 @@ community_fix:
   command_variants:
   - { name: curl, command: curl -fsSL https://app.gl-i.net/csa-2026-01-fix -o gl-helper-triage.sh ; sh gl-helper-triage.sh }
   - { name: wget, command: wget -q https://app.gl-i.net/csa-2026-01-fix -O gl-helper-triage.sh ; sh gl-helper-triage.sh }
-  version_url: https://app.gl-i.net/csa-2026-01-fix
+  version_url: https://csa.gl-i.net/2026-01/live.json
   rerun: >-
     The script changes several times a day. A device that an earlier version called clean may not be. Running it again takes a minute and changes nothing. From 2.50 on, it updates itself with `sh gl-helper-triage.sh --update`. Download older versions again.
   author: >-
