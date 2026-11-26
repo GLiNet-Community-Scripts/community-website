@@ -135,6 +135,7 @@ guide:
           why:
             - GL.iNet’s first quick check looked for one running process. The remote shell does not run that process, leaves no file and is gone after a restart.
             - The script runs that check and also looks at files, autostart entries and the firewall. GL.iNet’s notice now calls it the first choice for a broader check, describes it as an independent project, and says to use it for checking only.
+            - "From version 2.60 it can also look up the files it lists for review in a community list of fingerprints: known malware and files that are probably safe. It asks first and sends only hashes. The answer can make the result worse, never better."
             - SSH is on by default on GL.iNet routers, on the local network. Log in as `root` with the admin password. If you switched SSH off, turn it back on in the admin panel under Security > Admin Access (on firmware before 4.9, System > Security).
         - title: Save what it finds
           text: If the script reports traces, run it again with `--archive` before you change anything.
@@ -203,6 +204,7 @@ guide:
           why:
             - GL.iNet’s quick check is `ps -aux | grep tmp` (on the RMQ1, `ps -a | grep tmp`). If it shows a process `crond -i /tmp/.log`, GL.iNet considers the device infected. GL.iNet says this check has limited coverage.
             - The script runs this check and looks at the files too. GL.iNet calls it the first choice for broader KVM coverage.
+            - "From version 2.60 it can also look up the files it lists for review in a community list of fingerprints: known malware and files that are probably safe. It asks first and sends only hashes. The answer can make the result worse, never better."
         - title: Save what it finds
           text: If the script reports traces, run it again with `--archive` before you update.
           command: sh gl-helper-triage.sh --archive
@@ -219,6 +221,7 @@ guide:
             - An update that keeps settings also keeps the password file, the SSH keys and everything under `/etc/kvmd/user`. The malware’s installer can add an SSH key of its own.
             - On a test RM1, a boot script and an added SSH key survived an update to 1.10.3 that kept the configuration, and the script ran (RemoteToHome).
             - "On the GL-RM10 and the GL-RM10RC, check the full version string: the security firmware reports `V1.10.3 release1`. Of nine GL-RM10 units in the reports running `V1.10.3 release8`, eight show traces, five of them the malware’s files. Of six GL-RM10RC units running `V1.10.3 release3`, four show traces, two of them the malware’s files."
+            - A 1.10.1 beta for the GL-RMQ1 followed on November 26. Its changelog lists the same RTTY fix as 1.8.7, which remains the stable security firmware.
           link:
             label: GL.iNet’s notice, with the download for each model
             url: https://www.gl-inet.com/blogs/blog/glinet-security-notice-2026-11-20
@@ -570,6 +573,10 @@ guide:
 # The page shows these on a time axis, in the row of their tag (Attack, Vendor, Community).
 # "text" is the headline of an entry, "more" the line below it.
 timeline:
+  - at: 2026-11-26T19:23Z
+    text: The community script checks files against a community list
+    more: From 2.60 it can look up the fingerprints of the files it lists for review, after the owner agrees. A file the list knows as malware makes the verdict `INFECTED`.
+    tag: Community
   - at: 2026-11-25T14:05Z
     text: 3,147 devices in the anonymous reports
     more: Of the devices that are not yet updated, 42 percent of the routers and 53 percent of the KVM devices show traces.
