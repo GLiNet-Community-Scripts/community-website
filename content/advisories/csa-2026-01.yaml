@@ -9,7 +9,7 @@ severity: critical
 exploited: true
 status: fix-rolling-out
 published: 2026-11-21
-updated: 2026-11-25T15:06Z
+updated: 2026-11-26T21:57Z
 cve: requested
 confirmed: gl-inet-public
 
