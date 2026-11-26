@@ -27,6 +27,17 @@ const FixGuideSchema = z.object({
   }),
   update: z.object({ lead: T, command: T, note: T }),
   looks_for: z.array(z.object({ title: T, items: z.array(T).min(1) })).min(1),
+  // Optional: the fingerprint check (from 2.60), shown before the anonymous report.
+  lookup: z
+    .object({
+      lead: T,
+      answers: z.array(z.object({ answer: T, tone: z.enum(['bad', 'warn', 'ok']).optional(), text: T })).min(1),
+      sent: z.array(T).min(1),
+      never: z.array(T).min(1),
+      controls: z.array(z.object({ key: T, text: T })).default([]),
+      note: T.optional(),
+    })
+    .optional(),
   report: z.object({ lead: T, sent: z.array(T).min(1), never: z.array(T).min(1), controls: z.array(z.object({ key: T, text: T })).default([]) }),
   afterwards: z.array(z.object({ audience: T, items: z.array(T).min(1) })).min(1),
   more: z.array(z.object({ title: T, text: T, url: Link })).default([]),

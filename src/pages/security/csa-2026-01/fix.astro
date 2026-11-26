@@ -299,6 +299,35 @@ const versions = [
         ))}
       </section>
 
+      {f.lookup && (
+        <section class="g-blk" id="lookup" aria-labelledby="h-lookup">
+          <h2 id="h-lookup">The fingerprint check</h2>
+          <p class="g-sub"><Txt text={f.lookup.lead} /></p>
+          <div class="g-verdicts">
+            {f.lookup.answers.map((a) => (
+              <div class:list={["g-card", a.tone && `v-${a.tone}`]}>
+                <b>{a.answer}</b>
+                <p><Txt text={a.text} /></p>
+              </div>
+            ))}
+          </div>
+          <div class="g-two">
+            <div class="g-card yes">
+              <h3>Sent, after you agree</h3>
+              <ul class="g-ul">{f.lookup.sent.map((x) => <li><Txt text={x} /></li>)}</ul>
+            </div>
+            <div class="g-card no">
+              <h3>Never sent</h3>
+              <ul class="g-ul">{f.lookup.never.map((x) => <li><Txt text={x} /></li>)}</ul>
+            </div>
+          </div>
+          {f.lookup.controls.length > 0 && (
+            <p class="g-ctl">{f.lookup.controls.map((c) => <span><code>{c.key}</code> {c.text}</span>)}</p>
+          )}
+          {f.lookup.note && <p class="g-fine"><Txt text={f.lookup.note} /></p>}
+        </section>
+      )}
+
       <section class="g-blk" id="share" aria-labelledby="h-share">
         <h2 id="h-share">The anonymous report</h2>
         <p class="g-sub"><Txt text={f.report.lead} /></p>

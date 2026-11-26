@@ -46,7 +46,7 @@ result:
   labels:
     - label: IOC
       meaning: A known trace of the malware.
-      fix: Removes it.
+      fix: Removes it, except a file known only from the community list.
     - label: PERSIST
       meaning: A changed `rc.local` or root crontab that does not name the malware.
       fix: Resets it only when an IOC was found.
@@ -108,12 +108,37 @@ looks_for:
     items:
       - The script takes its tools from the firmware image, not from the running system.
       - It checks that those tools load the firmware’s own libraries. The line `Trusted tools` at the top shows the result.
+lookup:
+  lead: "From 2.60 the script can look up the files it lists for review in a list the community keeps: the malware’s known files, and files the community team has checked, such as its own Tailscale and AdGuard Home builds. It compares fingerprints (SHA-256), not what a file does, so only an exact copy of a file on the list is known. The answer can make the result worse, never better."
+  answers:
+    - answer: "community list: known malware"
+      tone: bad
+      text: The verdict becomes `INFECTED`, with exit code 1. `--fix` leaves the file in place, so reinstall the firmware without keeping settings.
+    - answer: "community list: probably safe, not a proof"
+      text: Nothing. The file stays listed for review. The community team marked this exact file as probably safe, or it comes from one of the community’s builds.
+    - answer: "community list: not known"
+      text: Nothing. Most files are not on the list.
+  sent:
+    - "For each file listed for review, up to 40 and programs first: the SHA-256 of its kind and path, and the SHA-256 of the file."
+    - The script version and a random number for this run.
+  never:
+    - A path or a file name in plain text, or anything from inside a file.
+    - Accounts listed for review.
+    - Device ID, model, firmware or host name.
+    - The server stores none of it. For files on its own list, it only counts on how many days they were asked about.
+  controls:
+    - key: --lookup
+      text: checks without asking and still shows what it sends
+    - key: --no-lookup
+      text: never asks
+  note: "It asks only during a check (`--check`, the default, or `--archive`), not with `--fix`, and only when something is listed for review. Without a terminal it sends nothing unless you add `--lookup`. It sends only with a tool that checks the server’s certificate (`curl`, `uclient-fetch` or GNU `wget`) and gives up after 25 seconds. Ctrl-C stops the check, not the run. With `--archive`, the request and the answer go into the archive as `lookup.txt`."
 report:
   lead: "At the end, the script offers to send a short report, even if it found nothing: reports from clean devices show which models and versions were not hit. Nothing leaves the device until you answer y."
   sent:
     - Model, firmware version, script version, time of the check, time since the last boot.
     - Which known traces were found, and where.
     - "For the malware’s files: fingerprint, size and time."
+    - "What it listed for review, up to 40 findings: kind and path, and for a file its fingerprint and times. An account the firmware does not have is sent with its name."
     - Changed lines of autostart files and the firewall rules the attack used. Lines you added yourself are part of this, and the script shows them before it asks.
     - Whether GoodCloud and AstroWarp are on, and whether the device is bound to an account.
     - A device ID, so that two reports from one device count only once. It is a hash, and the server hashes it again.
