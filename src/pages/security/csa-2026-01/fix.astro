@@ -26,6 +26,10 @@ const arrow = (u: string) => (u.startsWith("/") ? "→" : "↗");
 // A command, a path or an option stands between backticks.
 const versions = [
   {
+    v: "2.61",
+    text: "asks the community list before it shows the findings, so that each file it asked about carries the answer in the list itself: `community list: known malware`, `probably safe, not a proof` or `not known`. A finding that was not asked about has no such line.",
+  },
+  {
     v: "2.60",
     text: "can ask the community list whether the files it lists for review are known: as malware, as probably safe, or not at all. It asks only on the device itself, after you agree or with `--lookup`, and sends only fingerprints: for each file the SHA-256 of its kind and path and the SHA-256 of the file, never a path, a file, an account or anything about the device. The answer can only make the result worse, never better: a file the list knows as malware makes the verdict `INFECTED` (`--fix` does not remove it, reinstall the firmware), and a file it has as probably safe stays listed for review. It sends only with a tool that checks the server’s certificate and gives up after 25 seconds; Ctrl-C stops the check, not the run, and `--no-lookup` never asks. Where more than 40 findings are listed for review, the report and the check take programs first. `triage-remote.sh` passes `--lookup` on, and a device with known malware never ends as remediated.",
   },
