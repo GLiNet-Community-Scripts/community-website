@@ -278,7 +278,7 @@ guide:
         - "@sweep"
         - The time is when a file the attack leaves behind was last written. A later command overwrites it, so the first command may have come earlier.
         - If this is right, whoever sent the commands knew the model of each device beforehand. The cloud knows it, and the malware’s installer names eleven router models.
-        - On most devices a command ran and nothing else was found. 72 devices had a remote shell. The last trace in the reports dates from November 21, 18:58 UTC.
+        - On most devices a command ran and nothing else was found. 72 devices had a remote shell. The last trace of a command in the reports dates from November 21, 18:58 UTC.
         - Two reports do not fit this schedule. A GL-MT6000 on 4.11.0 was still running a command that had come in through the same AstroWarp handler. It fetched the malware’s installer from `66.245.219.252` and left the installer’s downloader in `/userdata/.gl`, written on November 11 at 08:31 UTC by the router’s clock. A GL-AXT1800 on 4.8.2 had the full set of the KVM malware, with `gl-helper` running and started again from `rc.local` and cron, and files written on November 17. They are the only routers in the reports with the malware’s files, and we cannot verify the reports.
     - title: What the reports show
       source: Reports
