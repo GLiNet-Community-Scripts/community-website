@@ -32,7 +32,7 @@ affected:
   #   - "models": kept by hand from the dashboard, for what the live list leaves out
   #     (fewer than five devices, reports of the first day without a device id).
   reported:
-    as_of: 2026-11-25T14:05Z
+    as_of: 2026-11-28T12:56Z
     live: https://csa.gl-i.net/2026-01/live.json
     source:
       label: Anonymous reports of the community script
@@ -104,22 +104,22 @@ actions:
 
 # The long form of the page. In these texts a path, a command, an option or an address
 # stands between backticks; the page sets it in a monospace face. Figures from the anonymous
-# reports: export of 25 November 2026, 14:05 UTC.
+# reports: export of 28 November 2026, 12:56 UTC.
 guide:
   glance:
     - label: Status
       value: Firmware is out
       note: For 18 router and 7 KVM models, per GL.iNet’s notice of Nov 23
     - label: In the reports
-      value: 3,147 devices
-      note: 2,652 routers, 495 KVM devices
+      value: 3,747 devices
+      note: 3,169 routers, 578 KVM devices
     - label: Routers with traces
-      value: 42%
-      note: 783 of 1,877 not yet updated
+      value: 40%
+      note: 831 of 2,054 not yet updated
     - label: KVM devices with traces
-      value: 53%
-      note: 170 of 321 not yet updated
-  glance_note: Anonymous reports of the community script, Nov 25, 2026, 14:05 UTC. Unverified, and only from people who chose to send one.
+      value: 52%
+      note: 177 of 339 not yet updated
+  glance_note: Anonymous reports of the community script, Nov 28, 2026, 12:56 UTC. Unverified, and only from people who chose to send one.
   do_note:
     title: Was the device connected to GoodCloud?
     text: Then give it a new admin password and new VPN and SSH keys after the update, even if the check finds nothing. GL.iNet advises this for every such device. Some KVMs connect before they are linked to an account.
@@ -161,10 +161,12 @@ guide:
             - "Why reflash a device that was hit? The update deletes the known files and autostart entries. It leaves the older backdoor’s loader and anything else that was changed. In RemoteToHome’s test, other entries in `rc.local`, cron and `/etc/udhcpc.user.d`, an added account and an added SSH key survived an update with settings kept, and the scripts ran on the new firmware."
             - A factory reset keeps the installed firmware image, and on a GL-AXT1800, root can write to that image. A reflash writes a fresh image and clears the settings in one step.
           table:
-            caption: Newest stable firmware by model, released November 24. In brackets, the minimum version from GL.iNet’s notice of November 23.
+            caption: Newest stable firmware by model, released November 24, for the GL-MT6000 and the GL-MT3000 on November 27. In brackets, the minimum version from GL.iNet’s notice of November 23.
             rows:
+              - k: 4.11.3
+                v: GL-MT3000, GL-MT6000 (at least 4.11.1)
               - k: 4.11.2
-                v: GL-MG1300, GL-MT3000, GL-MT6000 (at least 4.11.1)
+                v: GL-MG1300 (at least 4.11.1)
               - k: 4.10.4
                 v: GL-E5800 (at least 4.10.3)
               - k: 4.10.3
@@ -220,7 +222,7 @@ guide:
           why:
             - An update that keeps settings also keeps the password file, the SSH keys and everything under `/etc/kvmd/user`. The malware’s installer can add an SSH key of its own.
             - On a test RM1, a boot script and an added SSH key survived an update to 1.10.3 that kept the configuration, and the script ran (RemoteToHome).
-            - "On the GL-RM10 and the GL-RM10RC, check the full version string: the security firmware reports `V1.10.3 release1`. Of nine GL-RM10 units in the reports running `V1.10.3 release8`, eight show traces, five of them the malware’s files. Of six GL-RM10RC units running `V1.10.3 release3`, four show traces, two of them the malware’s files."
+            - "On the GL-RM10 and the GL-RM10RC, check the full version string: the security firmware reports `V1.10.3 release1`. Of ten GL-RM10 units in the reports running `V1.10.3 release8`, eight show traces, five of them the malware’s files. Of six GL-RM10RC units running `V1.10.3 release3`, four show traces, two of them the malware’s files."
             - A 1.10.1 beta for the GL-RMQ1 followed on November 26. Its changelog lists the same RTTY fix as 1.8.7, which remains the stable security firmware.
           link:
             label: GL.iNet’s notice, with the download for each model
@@ -237,7 +239,7 @@ guide:
     - title: GoodCloud was switched on
       text: "Of 100 such routers in the reports, 60 show traces. With GoodCloud off: 20."
     - title: Router firmware 4.7 to 4.10
-      text: "On 4.7 to 4.9, about seven in ten routers show traces. On 4.10, about half. On 4.6 and older: none. On 4.11: one router of 522."
+      text: "On 4.7 to 4.9, about seven in ten routers show traces. On 4.10, about half. On 4.6 and older: none. On 4.11: one router of 576."
     - title: Restarted or updated since November 20
       text: Then a clean result means little. The remote shell leaves no file, and the security firmware deletes known traces.
   table_help:
@@ -276,16 +278,16 @@ guide:
         - "@sweep"
         - The time is when a file the attack leaves behind was last written. A later command overwrites it, so the first command may have come earlier.
         - If this is right, whoever sent the commands knew the model of each device beforehand. The cloud knows it, and the malware’s installer names eleven router models.
-        - On most devices a command ran and nothing else was found. 64 devices had a remote shell. The last trace in the reports dates from November 21, 18:58 UTC.
-        - One report does not fit this schedule. A GL-MT6000 on 4.11.0 was still running a command that had come in through the same AstroWarp handler. It fetched the malware’s installer from `66.245.219.252` and left the installer’s downloader in `/userdata/.gl`. By the router’s clock, those files were written on November 11 at 08:31 UTC, nine days before the date in GL.iNet’s notice. It is the only router in the reports with the malware’s files, and we cannot verify the report.
+        - On most devices a command ran and nothing else was found. 72 devices had a remote shell. The last trace in the reports dates from November 21, 18:58 UTC.
+        - Two reports do not fit this schedule. A GL-MT6000 on 4.11.0 was still running a command that had come in through the same AstroWarp handler. It fetched the malware’s installer from `66.245.219.252` and left the installer’s downloader in `/userdata/.gl`, written on November 11 at 08:31 UTC by the router’s clock. A GL-AXT1800 on 4.8.2 had the full set of the KVM malware, with `gl-helper` running and started again from `rc.local` and cron, and files written on November 17. They are the only routers in the reports with the malware’s files, and we cannot verify the reports.
     - title: What the reports show
       source: Reports
-      lead: 3,147 devices. The share with traces depends on the firmware.
+      lead: 3,747 devices. The share with traces depends on the firmware.
       body:
-        - 2,652 routers and 495 KVM devices have sent a report. 775 of the routers and 174 of the KVM devices already run the security firmware and report clean. Of the other routers, 42 percent show traces of the attack. Of the other KVM devices, 53 percent do.
+        - 3,169 routers and 578 KVM devices have sent a report. 1,115 of the routers and 239 of the KVM devices already run the security firmware. All of them report clean except one router, which we are looking into. Of the other routers, 40 percent show traces of the attack. Of the other KVM devices, 52 percent do.
         - "@series"
-        - Nobody knows why only one of 522 routers on 4.11 shows traces. The unchecked code is in 4.11.0 too, so this does not show that 4.11 was safe.
-        - A device on the security firmware reports clean, even if it showed traces before. We saw 65 routers and 36 KVM devices with traces before their update, and all of them report clean after it. That is why the percentages here leave out updated devices.
+        - Nobody knows why only one of 576 routers on 4.11 shows traces. The unchecked code is in 4.11.0 too, so this does not show that 4.11 was safe.
+        - The security firmware deletes known traces on its first boot. We saw 81 routers and 44 KVM devices with traces before their update, and all of them report clean after it. That is why the percentages here leave out updated devices.
     - title: The remote shell
       source: Community
       lead: A root shell that leaves no file and is gone after a restart.
@@ -309,7 +311,7 @@ guide:
       body:
         - One forum user recorded a GL-RM1 being taken over on November 19 at 02:35 UTC, a day before the date in GL.iNet’s notice. It connected to `65.20.71.131`, fetched files from `66.245.219.252` and looked up `gl-inet.top`, a name that was registered anew on November 16.
         - Firmware 1.10.2 for the RM1PE deletes the malware’s files at boot and keeps no copy. The 1.10.2 builds for the RM1 and RM1V2 have no such cleanup.
-        - "The stable security firmware is 1.10.3 (1.8.7 for the RMQ1). GL.iNet says it removes the malware. RemoteToHome examined 1.10.3 for all six models: each deletes the malware’s files at boot and keeps no copy. All 174 KVM devices in the reports running `V1.10.3 release1` report clean. A `V1.10.3 release8` for the GL-RM10, in the reports since November 22, 00:10 UTC, does not remove it: eight of nine such devices show traces. Nor does `V1.10.3 release3` for the GL-RM10RC: four of six show traces."
+        - "The stable security firmware is 1.10.3 (1.8.7 for the RMQ1). GL.iNet says it removes the malware. RemoteToHome examined 1.10.3 for all six models: each deletes the malware’s files at boot and keeps no copy. All 239 KVM devices in the reports running `V1.10.3 release1` report clean. A `V1.10.3 release8` for the GL-RM10, in the reports since November 22, 00:10 UTC, does not remove it: eight of ten such devices show traces. Nor does `V1.10.3 release3` for the GL-RM10RC: four of six show traces."
     - title: The security firmware
       source: Community
       lead: It closes the flaw and deletes known traces the first time it boots.
@@ -338,39 +340,39 @@ guide:
   series:
     - name: 4.6 and older
       hit: 0
-      of: 171
+      of: 196
     - name: "4.7"
-      hit: 82
-      of: 115
+      hit: 87
+      of: 125
     - name: "4.8"
-      hit: 346
-      of: 481
+      hit: 373
+      of: 530
     - name: "4.9"
-      hit: 216
-      of: 320
+      hit: 229
+      of: 344
     - name: "4.10"
-      hit: 138
-      of: 259
+      hit: 141
+      of: 274
     - name: "4.11"
       hit: 1
-      of: 522
+      of: 576
   sweep:
     - model: GL-AXT1800
       at: 2026-11-20T22:15Z
-      n: 60
-      of: 61
+      n: 65
+      of: 68
     - model: GL-BE9300
       at: 2026-11-21T00:10Z
-      n: 105
-      of: 108
+      n: 107
+      of: 110
     - model: GL-MT3000
       at: 2026-11-21T00:22Z
-      n: 80
-      of: 84
+      n: 85
+      of: 89
     - model: GL-X3000
       at: 2026-11-21T01:03Z
-      n: 25
-      of: 58
+      n: 26
+      of: 63
     - model: GL-E5800
       at: 2026-11-21T02:38Z
       n: 7
@@ -389,28 +391,28 @@ guide:
       of: 16
     - model: GL-MT6000
       at: 2026-11-21T05:50Z
-      n: 55
-      of: 107
+      n: 59
+      of: 118
     - model: GL-SFT1200
       at: 2026-11-21T06:04Z
-      n: 23
-      of: 30
+      n: 24
+      of: 31
     - model: GL-MT2500
       at: 2026-11-21T06:13Z
-      n: 77
-      of: 86
+      n: 83
+      of: 92
     - model: GL-BE3600
       at: 2026-11-21T06:22Z
-      n: 25
-      of: 29
+      n: 26
+      of: 30
     - model: GL-AX1800
       at: 2026-11-21T06:36Z
-      n: 29
-      of: 33
+      n: 32
+      of: 36
     - model: GL-MT5000
       at: 2026-11-21T06:45Z
-      n: 58
-      of: 80
+      n: 63
+      of: 87
     - model: GL-BE6500
       at: 2026-11-21T06:59Z
       n: 13
@@ -418,15 +420,17 @@ guide:
   sweep_note: "November 20, 22:00, to November 21, 08:00 UTC. The dot marks the minute in which most routers of a model were hit. On the right: how many of that model’s hit routers fall into that minute or the one next to it."
   hours:
     - hour: 2026-11-20T20
-      n: 23
+      n: 27
+    - hour: 2026-11-20T21
+      n: 1
     - hour: 2026-11-20T22
-      n: 60
+      n: 65
     - hour: 2026-11-20T23
       n: 2
     - hour: 2026-11-21T00
-      n: 221
+      n: 231
     - hour: 2026-11-21T01
-      n: 55
+      n: 58
     - hour: 2026-11-21T02
       n: 34
     - hour: 2026-11-21T03
@@ -434,9 +438,9 @@ guide:
     - hour: 2026-11-21T04
       n: 30
     - hour: 2026-11-21T05
-      n: 102
+      n: 110
     - hour: 2026-11-21T06
-      n: 222
+      n: 238
     - hour: 2026-11-21T07
       n: 7
     - hour: 2026-11-21T08
@@ -445,12 +449,12 @@ guide:
       n: 4
     - hour: 2026-11-21T18
       n: 2
-  hours_note: "Bars: routers hit per hour, by the time of the trace the attack leaves. 781 routers, reports up to Nov 25, 14:05 UTC."
+  hours_note: "Bars: routers hit per hour, by the time of the trace the attack leaves. 828 routers, reports up to Nov 28, 12:56 UTC."
   backdoor:
     lead: While looking for traces from November 20, forum users found a different backdoor. GL.iNet’s check does not detect it. The community script does.
     rows:
       - label: Where
-        text: 110 devices in the reports, 59 of them GL-MT2500. Also GL-MT6000, GL-X3000, GL-MT3000, GL-AX1800 and others. RemoteToHome found it on 49 of the routers it manages.
+        text: 127 devices in the reports, 70 of them GL-MT2500. Also GL-MT6000, GL-X3000, GL-MT3000, GL-AX1800 and others. RemoteToHome found it on 49 of the routers it manages.
       - label: Since when
         text: Its files are dated from September 2025 to May 2026. How it got onto the devices is not known.
       - label: What it can do
@@ -461,16 +465,16 @@ guide:
         text: Reflash with “keep settings” off, from a file you downloaded yourself. Do not restore a backup from that device. Until then, take it off the internet or block its server names. Change every password and key that was on it.
     command: /rom/bin/busybox cmp /etc/init.d/urandom_seed /rom/etc/init.d/urandom_seed
     command_note: Quick check. No output means the start script is the firmware’s original.
-    note: "GL.iNet’s security firmware restores the start script but leaves the loader `/bin/ulogd`: on 14 devices in the reports it is still there after the update. In RemoteToHome’s test, the backdoor’s own entry in the keep list carried it through an update with settings kept, and it no longer started. GL.iNet’s notice now lists it as a separate finding whose way in is not known, and says not to assume that its cleanup resolves it. The community script reports it and does not remove it."
+    note: "GL.iNet’s security firmware restores the start script but leaves the loader `/bin/ulogd`: on 18 devices in the reports it is still there after the update. In RemoteToHome’s test, the backdoor’s own entry in the keep list carried it through an update with settings kept, and it no longer started. GL.iNet’s notice now lists it as a separate finding whose way in is not known, and says not to assume that its cleanup resolves it. The community script reports it and does not remove it."
   questions:
     - group: The attack
       items:
         - q: Has the wave of new attacks ended?
           status: likely
-          a: No report shows a new command after November 21, 18:58 UTC, among 3,147 devices. GL.iNet says devices can no longer be newly infected along this path. RemoteToHome said on November 22 that it still saw routers being exploited.
+          a: No report shows a new command after November 21, 18:58 UTC, among 3,747 devices. GL.iNet says devices can no longer be newly infected along this path. RemoteToHome said on November 22 that it still saw routers being exploited.
         - q: Is the attacker off the devices that were hit?
           status: no
-          a: "On routers that were not restarted, the remote shell keeps trying to connect: 35 devices showed that from November 22 on, five of them on November 24 or 25. A restart ends it. Whatever was installed or copied before that stays."
+          a: "On routers that were not restarted, the remote shell keeps trying to connect: 39 devices showed that from November 22 on, nine of them on November 24 or later, the last on November 28. A restart ends it. Whatever was installed or copied before that stays."
         - q: When did it start?
           status: open
           a: GL.iNet says November 20. One KVM was taken over on November 19. One router report points to November 11.
@@ -573,6 +577,14 @@ guide:
 # The page shows these on a time axis, in the row of their tag (Attack, Vendor, Community).
 # "text" is the headline of an entry, "more" the line below it.
 timeline:
+  - at: 2026-11-28T12:56Z
+    text: 3,747 devices in the anonymous reports
+    more: Of the devices that are not yet updated, 40 percent of the routers and 52 percent of the KVM devices show traces.
+    tag: Community
+  - at: 2026-11-27T11:11Z
+    text: Firmware 4.11.3 for the GL-MT6000 and the GL-MT3000
+    more: Its changelog lists two bug fixes, for Mesh logs and for AdGuard Home over HTTPS.
+    tag: Vendor
   - at: 2026-11-26T19:23Z
     text: The community script checks files against a community list
     more: From 2.60 it can look up the fingerprints of the files it lists for review, after the owner agrees. A file the list knows as malware makes the verdict `INFECTED`.
